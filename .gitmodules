@@ -1,0 +1,26 @@
+[submodule "vendor/harfbuzz"]
+	path = vendor/harfbuzz
+	url = https://github.com/behdad/harfbuzz
+    ignore = dirty
+[submodule "vendor/freetype2"]
+	path = vendor/freetype2
+	url = git://git.sv.nongnu.org/freetype/freetype2.git
+    ignore = dirty
+[submodule "vendor/lodepng"]
+	path = vendor/lodepng
+	url = https://github.com/lvandeve/lodepng.git
+[submodule "vendor/libnsgif"]
+	path = vendor/libnsgif
+	url = http://git.netsurf-browser.org/libnsgif.git
+[submodule "vendor/googletest"]
+	path = vendor/googletest
+	url = https://github.com/google/googletest.git
+[submodule "vendor/glew"]
+	path = vendor/glew
+	url = https://github.com/nigels-com/glew.git
+[submodule "vendor/opencv"]
+	path = vendor/opencv
+	url = https://github.com/opencv/opencv.git
+[submodule "vendor/sdl2"]
+	path = vendor/sdl2
+	url = https://github.com/spurious/SDL-mirror.git
