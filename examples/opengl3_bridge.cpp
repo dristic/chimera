@@ -22,10 +22,13 @@ GLuint gUniformLocationTex;
 
 GLuint gVboHandle, gElementsHandle, gVaoHandle;
 
+std::mutex mVideoMutex{};
 std::vector<VideoRef*> OpenGL3Bridge::mVideoRefs = {};
 
 void OpenGL3Bridge::processVideo() {
     for (;;) {
+        std::lock_guard<std::mutex> guard(mVideoMutex);
+
         for (auto& video : mVideoRefs) {
             if (video != nullptr) {
                 video->cap->read(video->frame);

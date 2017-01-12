@@ -5,6 +5,13 @@
 Browse::Browse(Nova::Context& context, Nova::Div* root, Nova::OpenGL3Bridge& bridge) {
     Nova::Document& document = context.document;
 
+    /*
+        .iconBg {
+            width: 75px;
+            height: 780px;
+            background-color: rgba(15, 40, 67, 1);
+        }
+    */
     document.styleManager.addRule([](Nova::StyleRule& rule) {
         rule.addClass("iconBg");
         rule.withWidth(75)
@@ -121,12 +128,12 @@ Browse::Browse(Nova::Context& context, Nova::Div* root, Nova::OpenGL3Bridge& bri
     gifImg->src("assets/loader.gif");
     content->append(gifImg);
 
-    auto video = document.createElement<Nova::Img>();
-    video->style
-        .withWidth(640)
-        .withHeight(360);
-    video->src("assets/space.mp4");
-    content->append(video);
+    // auto video = document.createElement<Nova::Img>();
+    // video->style
+    //     .withWidth(640)
+    //     .withHeight(360);
+    // video->src("assets/space.mp4");
+    // content->append(video);
 
     auto textArea = document.createElement<Nova::Div>();
     textArea->style

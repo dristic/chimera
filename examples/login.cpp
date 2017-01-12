@@ -11,10 +11,10 @@ Login::Login(
 
     auto video = document.createElement<Nova::Img>();
     video->style
-        .withWidth(1280)
+        .withWidth(960)
         .withHeight(720)
         .withPosition(Nova::Position::Absolute);
-    //video->src("assets/space.mp4");
+    video->src("assets/space.mp4");
     root->append(video);
 
     // Exit Button
@@ -39,7 +39,7 @@ Login::Login(
     loginContainer->style
         .withWidth(1280)
         .withHeight(720)
-        .withJustifyContent(Nova::Align::Center)
+        .withJustifyContent(Nova::Align::Right)
         .withPadding({150, 0, 0, 0});
     root->append(loginContainer);
 
@@ -66,7 +66,7 @@ Login::Login(
         .withHeight(40)
         .withFontSize(32);
     titleDiv->style.color = {1.0f, 1.0f, 1.0f, 1.0f};
-    titleDiv->textContent = "Nova UI";
+    titleDiv->textContent = "Login";
     loginBg->append(titleDiv);
 
     auto input = document.createElement<Nova::Input>();

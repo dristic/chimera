@@ -166,6 +166,8 @@ void Div::render(DrawData* data, Style* parentStyle) {
             if (style.justifyContent == Align::Center) {
                 float midpoint = (rect.width - element->style.width) / 2;
                 element->rect.x = xValue + midpoint;
+            } else if (style.justifyContent == Align::Right) {
+                element->rect.x = xValue + rect.width - element->rect.width;
             } else {
                 element->rect.x = xValue + style.padding.left;
             }

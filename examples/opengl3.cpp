@@ -99,6 +99,9 @@ int main() {
     Login loginPage{context, div, bridge};
 
     loginPage.onlogin = [&context, &div, &bridge]() {
+        div->getChildren()[0]->style
+            .withWidth(640)
+            .withHeight(720);
         div->remove(div->getChildren()[2]);
 
         Browse browsePage{context, div, bridge};
