@@ -140,6 +140,7 @@ class StyleRule {
     StyleRule();
     ~StyleRule();
 
+    void addId(std::string name);
     void addTag(std::string name);
     void addClass(std::string name);
     void addPseudoClass(PseudoClass pseudo);
@@ -184,6 +185,11 @@ class StyleRule {
         return *this;
     }
 
+    StyleRule& withMargin(LayoutProperty margin) {
+        addValue(StyleProp::Margin, margin);
+        return *this;
+    }
+
     StyleRule& withWidth(int width) {
         addValue(StyleProp::Width, width);
         return *this;
@@ -219,6 +225,7 @@ class StyleRule {
         return *this;
     }
 
+    std::string idName;
     std::string tagName;
     std::string className;
     PseudoClass pseudoClass;

@@ -15,6 +15,10 @@ StyleRule::StyleRule()
 
 StyleRule::~StyleRule() { }
 
+void StyleRule::addId(std::string name) {
+    idName = name;
+}
+
 void StyleRule::addTag(std::string name) {
     tagName = name;
 }
@@ -68,6 +72,19 @@ void StyleRule::addValue(StyleProp property, LayoutProperty value) {
                 value,
                 [](Style& style, LayoutProperty& layout) {
                     style.padding = layout;
+                })
+        };
+
+        mProperties[property] = std::move(styleValue);
+        break;
+    }
+    case StyleProp::Margin:
+    {
+        std::unique_ptr<StyleValueInternal> styleValue{
+            new StyleValue<LayoutProperty>(
+                value,
+                [](Style& style, LayoutProperty& layout) {
+                    style.margin = layout;
                 })
         };
 
@@ -223,7 +240,7 @@ bool StyleRule::matches(Element* element) {
         element->className.find(className);
 
     bool matches = element->mPseudoClass == pseudoClass
-        && (element->tagName == tagName || classFound != std::string::npos);
+        && (element->mId == idName || element->tagName == tagName || classFound != std::string::npos);
     
     return matches;
 }

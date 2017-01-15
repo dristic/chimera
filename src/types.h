@@ -9,6 +9,7 @@ namespace Nova {
 
 enum class EventType {
     Input,
+    Change,
     MouseMove,
     MouseDown,
     Scroll,

@@ -34,7 +34,7 @@ void Element::remove(Element* element) {
     mDocument->notifyRemoval(element);
 }
 
-std::vector<Element*>& Element::getChildren() {
+const std::vector<Element*>& Element::getChildren() const {
     return mChildren;
 }
 
@@ -43,7 +43,9 @@ void Element::on(EventType type, EventCallback func) {
 }
 
 void Element::dispatch(EventType type, Event* event) {
-    mEventObservers[type](event);
+    if (mEventObservers.find(type) != mEventObservers.end()) {
+        mEventObservers[type](event);
+    }
 }
 
 bool Element::handleEvent(Event* event) {
@@ -239,6 +241,9 @@ bool Input::handleEvent(Event* event) {
         if (mDocument->focusManager.focusedElement == this) {
             auto textInputEvent = dynamic_cast<TextInputEvent*>(event);
             value += textInputEvent->value;
+
+            TextInputEvent dispatchEvent{value};
+            dispatch(EventType::Change, dynamic_cast<Event*>(&dispatchEvent));
         }
     } else if (event->type == EventType::Key) {
         if (mDocument->focusManager.focusedElement == this) {
@@ -248,6 +253,10 @@ bool Input::handleEvent(Event* event) {
             case KeyType::Backspace:
             {
                 value.pop_back();
+
+                TextInputEvent dispatchEvent{value};
+                dispatch(EventType::Change, dynamic_cast<Event*>(&dispatchEvent));
+
                 break;
             }
             default:
