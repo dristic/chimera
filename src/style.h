@@ -27,6 +27,7 @@ enum class StyleProp {
     Margin,
     TextAlign,
     TextDecoration,
+    FontSize,
     AlignItems,
     JustifyContent,
     FlexDirection,
@@ -41,6 +42,13 @@ enum class StyleProp {
     Position,
     Top,
     Left
+};
+    
+struct StylePropHash {
+    template <typename T>
+    std::size_t operator()(T t) const {
+        return static_cast<std::size_t>(t);
+    }
 };
 
 class LayoutProperty {
@@ -152,6 +160,7 @@ class StyleRule {
     void addValue(StyleProp property, float value);
     void addValue(StyleProp property, Position value);
     void addValue(StyleProp property, Direction value);
+    void addValue(StyleProp property, std::string value);
 
     void applyRule(Style& style);
 
@@ -200,6 +209,11 @@ class StyleRule {
         return *this;
     }
 
+    StyleRule& withFontSize(int size) {
+        addValue(StyleProp::FontSize, size);
+        return *this;
+    }
+
     StyleRule& withJustifyContent(Align align) {
         addValue(StyleProp::JustifyContent, align);
         return *this;
@@ -225,13 +239,18 @@ class StyleRule {
         return *this;
     }
 
+    StyleRule& withBackgroundImage(std::string image) {
+        addValue(StyleProp::BackgroundImage, image);
+        return *this;
+    }
+
     std::string idName;
     std::string tagName;
     std::string className;
     PseudoClass pseudoClass;
 
  private:
-    std::unordered_map<StyleProp, std::unique_ptr<StyleValueInternal>> mProperties;
+    std::unordered_map<StyleProp, std::unique_ptr<StyleValueInternal>, StylePropHash> mProperties;
 };
 
 class StyleManager {

@@ -8,9 +8,9 @@
 #include <vector>
 #include <functional>
 
-#include "src/element.h"
-
 namespace Nova {
+    
+class Element;
 
 class Animation {
  public:

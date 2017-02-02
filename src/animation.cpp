@@ -2,6 +2,8 @@
 
 #include "src/animation.h"
 
+#include "src/element.h"
+
 namespace Nova {
 
     Animation::Animation(
@@ -9,8 +11,8 @@ namespace Nova {
             std::function<void(float, Element*)> update)
         : mCurrent{0}
         , mEnd{1}
-        , mUpdate{update}
         , mElement{element}
+        , mUpdate{update}
         { }
 
     Animation::~Animation() { }
@@ -18,7 +20,7 @@ namespace Nova {
     void Animation::update(double dt) {
         if (mCurrent < mEnd) {
             mUpdate(mCurrent, mElement);
-            mCurrent += 0.01;
+            mCurrent += 0.08;
         }
     }
 

@@ -5,16 +5,17 @@
 #include <algorithm>
 
 #include "src/document.h"
+#include "src/rendering.h"
 
 namespace Nova {
 
 Element::Element(std::string name, Document& document)
-    : layout{}
-    , scissor{}
+    : scissor{}
     , scroll{}
-    , textContent{""}
     , style{}
+    , layout{}
     , tagName{name}
+    , textContent{""}
     , mEventObservers{}
     , mChildren{}
     , mPseudoClass{PseudoClass::None}
@@ -135,7 +136,9 @@ void Div::render(DrawData* data, Style* parentStyle) {
             position.x = rect.x + (rect.width / 2) - (width / 2);
         }
 
-        data->addText(position, textContent, style.fontFamily, style.fontSize, scissor, style.color);
+        auto newColor = style.color;
+        newColor.a *= style.opacity;
+        data->addText(position, textContent, style.fontFamily, style.fontSize, scissor, newColor);
 
         if (style.textDecoration == TextDecoration::Underline) {
             float textWidth = data->measureText(textContent, style.fontFamily, style.fontSize);
@@ -217,7 +220,7 @@ void Img::render(DrawData* data, Style* parentStyle) {
 
     if (mImageRef != nullptr) {
         mImageRef->render();
-        data->addImage(rect, mImageRef->textureId);
+        data->addImage(rect, mImageRef->textureId, style.opacity);
     }
 
     Element::render(data, &style);

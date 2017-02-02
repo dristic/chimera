@@ -8,7 +8,6 @@
 #include <vector>
 #include <unordered_map>
 
-#include "src/rendering.h"
 #include "src/style.h"
 #include "src/types.h"
 #include "src/layout.h"
@@ -16,6 +15,7 @@
 namespace Nova {
 
 class Document;
+class DrawData;
 
 enum class State { None, Hover };
 
@@ -41,6 +41,7 @@ class Element {
     Element* id(const std::string& id) { mId = id; return this; }
     std::string id() { return mId; }
     Element* text(const std::string& text) { textContent = text; return this; }
+    std::string text() { return textContent; }
     Element* children(std::vector<Element*> children) {
         mChildren.insert(mChildren.end(), children.begin(), children.end());
 
@@ -89,7 +90,7 @@ class Element {
     std::string textContent;
 
  protected:
-    std::unordered_map<EventType, EventCallback> mEventObservers;
+    std::unordered_map<EventType, EventCallback, EventTypeHash> mEventObservers;
     std::vector<Element*> mChildren;
     PseudoClass mPseudoClass;
     Document* mDocument;

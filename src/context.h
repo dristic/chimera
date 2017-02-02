@@ -9,28 +9,33 @@
 #include "src/document.h"
 #include "src/rendering.h"
 #include "src/types.h"
+#include "src/component/component.h"
 
 namespace Nova {
 
+    using namespace Cosmonaut;
+
 class Context {
  public:
-  Context();
-  ~Context();
+    Context();
+    ~Context();
 
-  void update(double dt);
-  void render(float dt);
-  void addInputCharacters(std::string characters);
-  void setKeyPress(KeyType key);
-  void setMousePosition(int x, int y);
-  void setScrollDirection(int direction);
-  Vec2 getMousePosition();
-  void setMouseDown();
+    void update(double dt);
+    void render(float dt);
+    void addInputCharacters(std::string characters);
+    void setKeyPress(KeyType key);
+    void setMousePosition(int x, int y);
+    void setScrollDirection(int direction);
+    Vec2 getMousePosition();
+    void setMouseDown();
 
-  AnimationController animationController;
-  Document document;
-  Renderer renderer;
-  std::function<void(DrawData*)> renderCallback;
-  std::function<std::unique_ptr<ImageRef>(std::string, int&, int&)> loadImage;
+    AnimationController animationController;
+    Document document;
+    Renderer renderer;
+    ComponentManager component;
+
+    std::function<void(DrawData*)> renderCallback;
+    std::function<std::unique_ptr<ImageRef>(std::string, int&, int&)> loadImage;
 
  private:
     int mMouseX, mMouseY, mScrollDirection;

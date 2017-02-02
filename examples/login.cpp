@@ -2,6 +2,50 @@
 
 #include "login.h"
 
+class CDiv {
+ public:
+    CDiv() { }
+
+    static CDiv Create() {
+        return {};
+    }
+
+    CDiv& id(std::string id) {
+        mId = id;
+        return *this;
+    }
+    std::string id() {
+        return mId;
+    }
+
+    CDiv& text(std::string text) {
+        mText = text;
+        return *this;
+    }
+    std::string text() {
+        return mText;
+    }
+
+ private:
+    std::string mId = "";
+    std::string mText = "";
+};
+
+Nova::Element* reconcile(CDiv& root, Nova::Element* current, Nova::Document& document) {
+    if (current) {
+        if (current->id() != root.id()) {
+            current->id(root.id());
+        }
+        if (current->text() != root.text()) {
+            current->text(root.text());
+        }
+    } else {
+        current = document.createElement<Nova::Div>()->id(root.id())->text(root.text());
+    }
+    
+    return current;
+}
+
 Nova::Element* LoginComponent::render(Nova::Document& document) {
     using namespace Nova;
     using namespace std::placeholders;
@@ -11,6 +55,7 @@ Nova::Element* LoginComponent::render(Nova::Document& document) {
         rule.withWidth(1280)
             .withHeight(720)
             .withJustifyContent(Align::Center)
+            .withColor(Color::fromRGBA(255, 255, 255, 1))
             .withPadding({150, 0, 0, 0});
     });
 
@@ -49,32 +94,38 @@ Nova::Element* LoginComponent::render(Nova::Document& document) {
             .withColor({1.0f, 1.0f, 1.0f, 1.0f});
     });
 
-    mElement =
-        document.createElement<Div>()->id("login-container")->children({
-            document.createElement<Div>()->id("login-bg")->children({
-                document.createElement<Div>()->id("title")->text(mTitle),
-                document.createElement<Button>()->id("login-button")->text("Login")
-                    ->onEvent(EventType::MouseDown,
-                        std::bind(&LoginComponent::HandleButtonClick, this, _1)),
-                document.createElement<Input>()->id("username")
-                    ->onEvent(EventType::Change,
-                        std::bind(&LoginComponent::HandleInput, this, _1))
-            })
-        });
+    // mElement =
+    //     document.createElement<Div>()->id("login-container")->children({
+    //         document.createElement<Div>()->id("login-bg")->children({
+    //             document.createElement<Div>()->id("title")->text(mTitle),
+    //             document.createElement<Button>()->id("login-button")->text("Login")
+    //                 ->onEvent(EventType::MouseDown,
+    //                     std::bind(&LoginComponent::HandleButtonClick, this, _1)),
+    //             document.createElement<Input>()->id("username")
+    //                 ->onEvent(EventType::Change,
+    //                     std::bind(&LoginComponent::HandleInput, this, _1))
+    //         })
+    //     });
+
+    mElement = reconcile(
+        CDiv::Create().id("login-container").text(mTitle),
+        mElement,
+        document
+    );
+
+    mTitle = "Cosmonaut 2";
+
+    mElement = reconcile(
+        CDiv::Create().id("login-container").text(mTitle),
+        mElement,
+        document
+    );
 
     return mElement;
 }
 
 void LoginComponent::HandleButtonClick(Nova::Event* event) {
     mTitle = "Clicked!";
-
-    if (mElement) {
-        Nova::Element* el = mElement->getElementById("title");
-
-        if (el) {
-            el->text(mTitle);
-        }
-    }
 }
 
 void LoginComponent::HandleInput(Nova::Event* event) {

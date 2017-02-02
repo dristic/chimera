@@ -7,6 +7,10 @@ set(CMAKE_CXX_STANDARD 14)
 
 set(CMAKE_BUILD_TYPE Debug)
 
+if(NOT DEFINED NOVA_BUILD_EXAMPLES)
+    set(NOVA_BUILD_EXAMPLES true)
+endif(NOT DEFINED NOVA_BUILD_EXAMPLES)
+
 ##########
 # Static Lib
 ##########
@@ -15,8 +19,8 @@ project(Nova)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/vendor/harfbuzz/src)
 
-file(GLOB LIB_SOURCES "src/*.cpp")
-file(GLOB LIB_HEADERS "src/*.h")
+file(GLOB_RECURSE LIB_SOURCES "src/*.cpp")
+file(GLOB_RECURSE LIB_HEADERS "src/*.h")
 
 # Add this file
 list(APPEND LIB_SOURCES "cmake/build_library.cmake")
@@ -60,4 +64,6 @@ add_test(NovaTests TestAll)
 ##########
 # Examples
 ##########
-include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build_examples.cmake)
+if(NOVA_BUILD_EXAMPLES)
+    include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build_examples.cmake)
+endif(NOVA_BUILD_EXAMPLES)

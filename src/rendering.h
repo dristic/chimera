@@ -130,6 +130,7 @@ class DrawData {
         const Color& color,
         const Rect& scissor);
     void addImage(const Rect& rect, unsigned int textureId);
+    void addImage(const Rect& rect, unsigned int textureId, float opacity);
     void addText(
         Rect position,
         const std::string& text,

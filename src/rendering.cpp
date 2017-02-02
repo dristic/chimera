@@ -56,8 +56,12 @@ void DrawData::addRectFilled(
     mCurIndex += 4;
 }
 
-void DrawData::addImage(const Rect& rect, unsigned int textureId) {
-    Color white{1.0f, 1.0f, 1.0f, 1.0f};
+void DrawData::addImage(const Nova::Rect &rect, unsigned int textureId) {
+    addImage(rect, textureId, 1.0f);
+}
+
+void DrawData::addImage(const Rect& rect, unsigned int textureId, float opacity) {
+    Color white{1.0f, 1.0f, 1.0f, opacity};
     addRectFilled(rect, white);
 
     commands.back().textureId = textureId;
@@ -99,7 +103,7 @@ void DrawData::addText(
         double current_y = 0;
         for (unsigned int i = 0; i < len; i++) {
             hb_codepoint_t gid   = info[i].codepoint;
-            unsigned int cluster = info[i].cluster;
+            // unsigned int cluster = info[i].cluster;
             double x_position = current_x + pos[i].x_offset / 64.;
             double y_position = current_y + pos[i].y_offset / 64.;
             x_position *= scale;
@@ -169,11 +173,13 @@ Renderer::Renderer()
 void Renderer::loadFont(std::string name, std::string location) {
     if (FT_Init_FreeType(&ft)) {
         printf("Could not init FreeType library\n");
+        return;
     }
 
     FT_Face face;
     if (FT_New_Face(ft, location.c_str(), 0, &face)) {
         printf("FreeType could not load the font\n");
+        return;
     }
 
     FT_Set_Pixel_Sizes(face, 0, 24);

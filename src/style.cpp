@@ -155,6 +155,19 @@ void StyleRule::addValue(StyleProp property, int value) {
         mProperties[property] = std::move(styleValue);
         break;
     }
+    case StyleProp::FontSize:
+    {
+        std::unique_ptr<StyleValueInternal> styleValue{
+            new StyleValue<int>(
+                value,
+                [](Style& style, int size) {
+                    style.fontSize = size;
+                })
+        };
+            
+        mProperties[property] = std::move(styleValue);
+        break;
+    }
     case StyleProp::Top:
     {
         std::unique_ptr<StyleValueInternal> styleValue{
@@ -222,6 +235,18 @@ void StyleRule::addValue(StyleProp property, Direction value) {
             value,
             [](Style& style, Direction direction) {
                 style.flexDirection = direction;
+            })
+    };
+
+    mProperties[property] = std::move(styleValue);
+}
+
+void StyleRule::addValue(StyleProp property, std::string value) {
+    std::unique_ptr<StyleValueInternal> styleValue{
+        new StyleValue<std::string>(
+            value,
+            [](Style& style, std::string value) {
+                style.backgroundImage = value;
             })
     };
 
