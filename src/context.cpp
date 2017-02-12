@@ -58,7 +58,11 @@ namespace Nova {
 
     void Context::setMouseDown() {
         MouseDownEvent event{mMouseX, mMouseY};
-        document.body->handleEvent(dynamic_cast<Event*>(&event));
+        bool bubbled = document.body->handleEvent(dynamic_cast<Event*>(&event));
+
+        if (bubbled) {
+            document.focusManager.focusedElement = nullptr;
+        }
     }
 
     void Context::render(float dt) {

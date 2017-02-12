@@ -132,6 +132,7 @@ class Input: public Element {
     void render(DrawData* data, Style* parentStyle) override;
 
     std::string value;
+    std::string placeholder;
 
  private:
     int mFrames;

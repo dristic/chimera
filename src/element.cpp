@@ -271,6 +271,7 @@ bool Input::handleEvent(Event* event) {
 
         if (rect.contains(mouseDownEvent->x, mouseDownEvent->y)) {
             mDocument->focusManager.focusElement(this);
+            return false;
         }
     }
 
@@ -299,6 +300,7 @@ void Input::render(DrawData* data, Style* parentStyle) {
 
     float padTop = (borderRect.height - 24/*px*/) / 2;
     padTop = style.padding.top == 0 ? padTop : style.padding.top;
+    bool isFocused = mDocument->focusManager.focusedElement == this;
 
     if (value != "") {
         float textWidth = data->measureText(value, style.fontFamily, 24);
@@ -314,15 +316,29 @@ void Input::render(DrawData* data, Style* parentStyle) {
         };
 
         data->addText(position, value, style.fontFamily, 24, borderRect, style.color);
+    } else if (placeholder != "" && !isFocused) {
+        float textWidth = data->measureText(value, style.fontFamily, 24);
+        float pad = textWidth > borderRect.width - 30
+            ? textWidth - borderRect.width + 30
+            : 0;
+
+        Rect position{
+            borderRect.x + 5 + style.padding.left - pad,
+            borderRect.y + padTop,
+            borderRect.width,
+            borderRect.height
+        };
+
+        data->addText(position, placeholder, style.fontFamily, 24, borderRect, Color::fromRGBA(150, 150, 150, 0.6));
     }
 
     // Draw input line
-    if (mDocument->focusManager.focusedElement == this) {
+    if (isFocused) {
         mFrames++;
         if (mFrames < 60) {
             float textWidth = data->measureText(value, style.fontFamily, 24);
             Rect inputLine{rect.x + 5 + textWidth, rect.y + 5, 2, rect.height - 10};
-            data->addRectFilled(inputLine, style.borderColor);
+            data->addRectFilled(inputLine, Color::fromRGBA(255, 255, 255, 1.0));
         } else {
             if (mFrames > 120) {
                 mFrames = 0;

@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
+#include <experimental/optional>
 
 #include "src/element.h"
 
@@ -15,51 +16,104 @@ namespace Cosmonaut {
 
 namespace Api {
 
-    class Document;
+class Document;
 
-    using ElementAttributes = std::unordered_map<std::string, std::string>;
+enum class E {
+    Img,
+    Div,
+    Text,
+    Input,
+    Button
+};
 
-    enum class E {
-        Img,
-        Div,
-        Text
-    };
+class Attribute {
+public:
+    Attribute() { }
 
-    class CElement {
-    public:
-        CElement(E type, ElementAttributes attributes)
-        : mType{type}
-        , mAttributes{attributes}
+    Attribute(std::string key, std::string value)
+        : mKey{key}
+        , mStringValue{value}
         { }
 
-        E getType();
-        std::string getAttribute(const std::string& key);
-        std::vector<CElement> getChildren();
-        CElement children(std::vector<CElement> children);
+    Attribute(std::string key, Nova::Style value)
+        : mKey{key}
+        , mStyleValue{value}
+        { }
 
-    private:
-        E mType;
-        ElementAttributes mAttributes{};
-        std::vector<CElement> mChildren{};
-    };
-
-    static inline CElement C(E type, ElementAttributes attributes) {
-        return {type, attributes};
+    std::string getKey() {
+        return mKey;
     }
+
+    std::string asString() {
+        if (mStringValue) {
+            return *mStringValue;
+        } else {
+            return "";
+        }
+    }
+
+    Nova::Style asStyle() {
+        if (mStyleValue) {
+            return *mStyleValue;
+        } else {
+            return {};
+        }
+    }
+
+private:
+    std::string mKey;
+    std::experimental::optional<std::string> mStringValue;
+    std::experimental::optional<Nova::Style> mStyleValue;
+};
+
+class CElement {
+public:
+    CElement(E type, std::vector<Attribute> attributes, std::vector<CElement> children)
+        : mType{type}
+        , mChildren{children}
+    {
+        for (auto& attribute : attributes) {
+            std::string key = attribute.getKey();
+            mAttributes[key] = attribute;
+        }
+    }
+
+    E getType();
+    std::experimental::optional<Attribute> getAttribute(const std::string& key);
+    std::vector<CElement> getChildren();
+
+private:
+    E mType;
+    std::unordered_map<std::string, Attribute> mAttributes{};
+    std::vector<CElement> mChildren{};
+};
+
+static inline CElement C(E type, std::vector<Attribute> attributes, std::vector<CElement> children) {
+    return {type, attributes, children};
+}
+
+static inline CElement C(E type, std::vector<Attribute> attributes) {
+    return {type, attributes, {}};
+}
 
 }  // namespace Api
 
-    class ComponentManager {
-    public:
-        ComponentManager(Nova::Document* document);
+class Component {
+public:
+    Component() { }
+};
 
-        void patch(Nova::Element* element, Api::CElement other);
-        void walk(Nova::Element* currentNode, Api::CElement currentElement);
-        void render(Nova::Element* root, Api::CElement element);
+class ComponentManager {
+public:
+    ComponentManager(Nova::Document* document);
 
-    private:
-        Nova::Document* mDocument;
-    };
+    void patch(Nova::Element* element, Api::CElement other);
+    void walk(Nova::Element* currentNode, Api::CElement currentElement);
+    void render(Nova::Element* root, Api::CElement element);
+
+private:
+    Nova::Document* mDocument;
+};
     
 }  // namespace Cosmonaut
 

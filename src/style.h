@@ -43,6 +43,11 @@ enum class StyleProp {
     Top,
     Left
 };
+
+enum class NumericType {
+    Percentage,
+    Pixels
+};
     
 struct StylePropHash {
     template <typename T>
@@ -96,6 +101,7 @@ class Style {
 
     // Layout
     int width = 0;
+    NumericType widthType{NumericType::Pixels};
     int height = 0;
     LayoutProperty padding;
     LayoutProperty margin;
@@ -119,6 +125,18 @@ class Style {
     Color borderColor;
     int borderWidth;
     float opacity = 1.0f;
+
+    void setWidth(std::string value) {
+        if (value[value.length() - 1] == '%') {
+            widthType = NumericType::Percentage;
+
+            width = std::stoi(value);
+        } else {
+            widthType = NumericType::Pixels;
+
+            width = std::stoi(value);
+        }
+    }
 
     Style& withPadding(LayoutProperty p) {
         padding = p;
