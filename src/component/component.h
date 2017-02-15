@@ -27,6 +27,8 @@ enum class E {
 };
 
 class Attribute {
+using EventCallback = std::function<void(Nova::Event*)>;
+
 public:
     Attribute() { }
 
@@ -38,6 +40,11 @@ public:
     Attribute(std::string key, Nova::Style value)
         : mKey{key}
         , mStyleValue{value}
+        { }
+
+    Attribute(std::string key, EventCallback value)
+        : mKey{key}
+        , mCallbackValue{value}
         { }
 
     std::string getKey() {
@@ -60,10 +67,19 @@ public:
         }
     }
 
+    EventCallback asCallback() {
+        if (mCallbackValue) {
+            return *mCallbackValue;
+        } else {
+            return nullptr;
+        }
+    }
+
 private:
     std::string mKey;
     std::experimental::optional<std::string> mStringValue;
     std::experimental::optional<Nova::Style> mStyleValue;
+    std::experimental::optional<EventCallback> mCallbackValue;
 };
 
 class CElement {

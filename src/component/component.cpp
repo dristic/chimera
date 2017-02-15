@@ -43,6 +43,11 @@ namespace Cosmonaut {
         if (style) {
             element->style = (*style).asStyle();
         }
+
+        auto clickHandler = other.getAttribute("onClick");
+        if (clickHandler) {
+            element->on(Nova::EventType::MouseDown, (*clickHandler).asCallback());
+        }
     }
 
     void ComponentManager::walk(Nova::Element *currentNode, Api::CElement currentElement) {

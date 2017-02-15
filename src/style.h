@@ -8,6 +8,7 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
+#include <experimental/optional>
 
 #include "src/types.h"
 
@@ -271,12 +272,51 @@ class StyleRule {
     std::unordered_map<StyleProp, std::unique_ptr<StyleValueInternal>, StylePropHash> mProperties;
 };
 
+class StyleAttribute {
+ public:
+    StyleAttribute(StyleProp prop, int value)
+        : mProp{prop}
+        , mIntValue{value}
+        { }
+
+    StyleAttribute(StyleProp prop, std::string value)
+        : mProp{prop}
+        , mStringValue{value}
+        { }
+
+    StyleProp getProp() {
+        return mProp;
+    }
+
+    std::string asString() {
+        if (mStringValue) {
+            return *mStringValue;
+        } else {
+            return "";
+        }
+    }
+
+    int asInt() {
+        if (mIntValue) {
+            return *mIntValue;
+        } else {
+            return -1;
+        }
+    }
+
+private:
+    StyleProp mProp;
+    std::experimental::optional<std::string> mStringValue;
+    std::experimental::optional<int> mIntValue;
+};
+
 class StyleManager {
  public:
     StyleManager();
     ~StyleManager();
 
     void addRule(StyleRule&& rule);
+    void addRule(std::string selector, std::vector<StyleAttribute> attributes);
     void addRule(std::function<void(StyleRule&)> factory);
     void applyRules(Element* root);
 

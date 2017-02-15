@@ -280,6 +280,35 @@ void StyleManager::addRule(StyleRule&& rule) {
     mRules.push_back(std::move(rule));
 }
 
+void StyleManager::addRule(std::string selector, std::vector<StyleAttribute> attributes) {
+    StyleRule rule{};
+
+    auto& type = selector.at(0);
+    if (type == '.') {
+        rule.addClass(selector.substr(1));
+    } else if (type == '#') {
+        rule.addId(selector.substr(1));
+    } else {
+        rule.addTag(selector);
+    }
+
+    for (auto& attribute : attributes) {
+        switch (attribute.getProp()) {
+            case StyleProp::Width:
+            case StyleProp::Height:
+                rule.addValue(attribute.getProp(), attribute.asInt());
+                break;
+            case StyleProp::BackgroundImage:
+                rule.addValue(attribute.getProp(), attribute.asString());
+                break;
+            default:
+                break;
+        }
+    }
+
+    addRule(std::move(rule));
+}
+
 void StyleManager::addRule(std::function<void(StyleRule&)> factory) {
     StyleRule rule;
     factory(rule);
