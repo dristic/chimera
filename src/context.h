@@ -13,7 +13,7 @@
 
 namespace Nova {
 
-    using namespace Cosmonaut;
+using namespace Cosmonaut;
 
 class Context {
  public:

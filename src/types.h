@@ -13,7 +13,8 @@ enum class EventType {
     MouseMove,
     MouseDown,
     Scroll,
-    Key
+    Key,
+    Custom
 };
     
 struct EventTypeHash {

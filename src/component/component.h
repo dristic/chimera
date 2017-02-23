@@ -12,18 +12,24 @@
 
 #define UNUSED(expr) (void)(expr)
 
+namespace Nova {
+
+class Document;
+class Context;
+
+};  // namespace Nova
+
 namespace Cosmonaut {
 
 namespace Api {
-
-class Document;
 
 enum class E {
     Img,
     Div,
     Text,
     Input,
-    Button
+    Button,
+    Component
 };
 
 class Attribute {
@@ -84,9 +90,9 @@ private:
 
 class CElement {
 public:
-    CElement(E type, std::vector<Attribute> attributes, std::vector<CElement> children)
+    CElement(E type, std::vector<Attribute> attributes, std::vector<std::shared_ptr<CElement>>& children)
         : mType{type}
-        , mChildren{children}
+        , mChildren{std::move(children)}
     {
         for (auto& attribute : attributes) {
             std::string key = attribute.getKey();
@@ -94,41 +100,64 @@ public:
         }
     }
 
+    CElement(E type, std::vector<Attribute> attributes)
+        : mType{type}
+        { }
+
     E getType();
     std::experimental::optional<Attribute> getAttribute(const std::string& key);
-    std::vector<CElement> getChildren();
+    std::vector<std::shared_ptr<CElement>> const& getChildren() const;
+    void setChildren(std::vector<std::shared_ptr<CElement>>& children);
+    virtual std::shared_ptr<Api::CElement> render(Nova::Context& context);
 
 private:
     E mType;
     std::unordered_map<std::string, Attribute> mAttributes{};
-    std::vector<CElement> mChildren{};
+    std::vector<std::shared_ptr<CElement>> mChildren;
 };
 
-static inline CElement C(E type, std::vector<Attribute> attributes, std::vector<CElement> children) {
-    return {type, attributes, children};
+static inline std::shared_ptr<CElement> C(E type, std::vector<Attribute> attributes, std::vector<std::shared_ptr<CElement>>&& children) {
+    return std::make_shared<CElement>(type, attributes, children);
 }
 
-static inline CElement C(E type, std::vector<Attribute> attributes) {
-    return {type, attributes, {}};
+static inline std::shared_ptr<CElement> C(E type, std::vector<Attribute> attributes) {
+    std::vector<std::shared_ptr<CElement>> children{};
+    return std::make_shared<CElement>(type, attributes, children);
 }
 
 }  // namespace Api
 
-class Component {
-public:
-    Component() { }
-};
-
 class ComponentManager {
 public:
-    ComponentManager(Nova::Document* document);
+    ComponentManager(Nova::Context* document);
 
-    void patch(Nova::Element* element, Api::CElement other);
-    void walk(Nova::Element* currentNode, Api::CElement currentElement);
-    void render(Nova::Element* root, Api::CElement element);
+    void patch(Nova::Element* element, Api::CElement* other);
+    void walk(Nova::Element* currentNode, Api::CElement* currentElement);
+    void render(Nova::Element* root, std::shared_ptr<Api::CElement> element);
 
 private:
-    Nova::Document* mDocument;
+    Nova::Context* mContext;
+    std::shared_ptr<Api::CElement> mTreeRoot;
+};
+
+class Component: public Api::CElement {
+public:
+    Component()
+        : Api::CElement(Api::E::Component, {})
+        { }
+
+    virtual std::shared_ptr<Api::CElement> render(Nova::Context& context) override {
+        return Api::CElement::render(context);
+    }
+
+    void invalidate() {
+        parentElement->remove(elementRef);
+        componentManager->walk(parentElement, this);
+    }
+
+    Nova::Element* parentElement;
+    Nova::Element* elementRef;
+    ComponentManager* componentManager;
 };
     
 }  // namespace Cosmonaut

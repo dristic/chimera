@@ -13,7 +13,7 @@ namespace Nova {
         : animationController{}
         , document{*this}
         , renderer{}
-        , component{&document}
+        , component{this}
         , mMouseX{0}
         , mMouseY{0}
         { }
