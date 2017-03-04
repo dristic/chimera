@@ -60,6 +60,8 @@ bool Element::handleEvent(Event* event) {
 }
 
 void Element::render(DrawData* data, Style* parentStyle) {
+    style.update(this, mDocument->animationController);
+
     float previousAlpha = data->globalAlpha;
     data->globalAlpha *= style.opacity;
 
@@ -101,6 +103,8 @@ bool Div::handleEvent(Event* event) {
 }
 
 void Div::render(DrawData* data, Style* parentStyle) {
+    style.update(this, mDocument->animationController);
+
     rect.width = style.width;
     rect.height = style.height;
 

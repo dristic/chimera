@@ -11,6 +11,7 @@
 #include <experimental/optional>
 
 #include "src/types.h"
+#include "src/animation.h"
 
 namespace Nova {
 
@@ -42,7 +43,8 @@ enum class StyleProp {
     Height,
     Position,
     Top,
-    Left
+    Left,
+    AnimationName
 };
 
 enum class NumericType {
@@ -126,6 +128,13 @@ class Style {
     Color borderColor;
     int borderWidth;
     float opacity = 1.0f;
+
+    // Fidelity
+    std::string animationName{""};
+
+    std::vector<Animation> animations{};
+
+    void update(Element* element, AnimationController& controller);
 
     void setWidth(std::string value) {
         if (value[value.length() - 1] == '%') {
@@ -260,6 +269,11 @@ class StyleRule {
 
     StyleRule& withBackgroundImage(std::string image) {
         addValue(StyleProp::BackgroundImage, image);
+        return *this;
+    }
+
+    StyleRule& withAnimationName(std::string animationName) {
+        addValue(StyleProp::AnimationName, animationName);
         return *this;
     }
 

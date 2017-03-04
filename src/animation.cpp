@@ -26,6 +26,7 @@ namespace Nova {
 
     AnimationController::AnimationController()
         : mAnimations{}
+        , mFunctions{}
         { }
 
     AnimationController::~AnimationController() { }
@@ -37,8 +38,21 @@ namespace Nova {
     }
 
     void AnimationController::addAnimation(
-            Element* element, std::function<void(float, Element*)> update) {
+            Element* element, AnimationFunction update) {
         mAnimations.push_back({element, update});
+    }
+
+    void AnimationController::addAnimation(
+            std::string name, AnimationFunction update) {
+        mFunctions[name] = update;
+    }
+
+    AnimationFunction AnimationController::getFunction(std::string name) {
+        if (mFunctions.count(name) == 1) {
+            return mFunctions.at(name);
+        }
+
+        return nullptr;
     }
 
 }  // namespace Nova

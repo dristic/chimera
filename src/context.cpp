@@ -10,8 +10,7 @@
 
 namespace Nova {
     Context::Context()
-        : animationController{}
-        , document{*this}
+        : document{*this}
         , renderer{}
         , component{this}
         , mMouseX{0}
@@ -21,7 +20,7 @@ namespace Nova {
     Context::~Context() { }
 
     void Context::update(double dt) {
-        animationController.update(dt);
+
     }
 
     void Context::addInputCharacters(std::string characters) {

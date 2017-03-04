@@ -29,7 +29,6 @@ class Context {
     Vec2 getMousePosition();
     void setMouseDown();
 
-    AnimationController animationController;
     Document document;
     Renderer renderer;
     ComponentManager component;

@@ -14,6 +14,7 @@ Document::Document(Context& context)
     : body{nullptr}
     , styleManager{}
     , focusManager{}
+    , animationController{}
     , mElements{}
     , mContext{&context}
 {

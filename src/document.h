@@ -11,6 +11,7 @@
 #include "src/element.h"
 #include "src/style.h"
 #include "src/focus.h"
+#include "src/animation.h"
 
 namespace Nova {
 
@@ -41,6 +42,7 @@ class Document {
     Element* body;
     StyleManager styleManager;
     FocusManager focusManager;
+    AnimationController animationController;
 
  private:
     std::vector<std::unique_ptr<Element>> mElements;

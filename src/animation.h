@@ -5,12 +5,16 @@
 
 #include "src/animation.h"
 
+#include <string>
 #include <vector>
+#include <unordered_map>
 #include <functional>
 
 namespace Nova {
     
 class Element;
+
+using AnimationFunction = std::function<void(float, Element*)>;
 
 class Animation {
  public:
@@ -32,11 +36,15 @@ class AnimationController {
     ~AnimationController();
 
     void update(double dt);
-    void addAnimation(
-        Element* element, std::function<void(float, Element*)> update);
+    void addAnimation(Element* element, AnimationFunction update);
+
+    void addAnimation(std::string name, AnimationFunction update);
+
+    AnimationFunction getFunction(std::string name);
 
  private:
     std::vector<Animation> mAnimations;
+    std::unordered_map<std::string, AnimationFunction> mFunctions;
 };
 
 }  // namespace Nova

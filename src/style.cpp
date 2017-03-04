@@ -8,6 +8,20 @@
 
 namespace Nova {
 
+void Style::update(Element* element, AnimationController& controller) {
+    if (animationName != "" && animations.size() == 0) {
+        auto func = controller.getFunction(animationName);
+
+        if (func) {
+            animations.push_back({element, func});
+        }
+    }
+
+    for (auto& animation : animations) {
+        animation.update(16.0f);
+    }
+}
+
 StyleRule::StyleRule()
     : tagName{}
     , pseudoClass{PseudoClass::None}
@@ -242,15 +256,35 @@ void StyleRule::addValue(StyleProp property, Direction value) {
 }
 
 void StyleRule::addValue(StyleProp property, std::string value) {
-    std::unique_ptr<StyleValueInternal> styleValue{
-        new StyleValue<std::string>(
-            value,
-            [](Style& style, std::string value) {
-                style.backgroundImage = value;
-            })
-    };
+    switch(property) {
+    case StyleProp::BackgroundImage:
+    {
+        std::unique_ptr<StyleValueInternal> styleValue{
+            new StyleValue<std::string>(
+                value,
+                [](Style& style, std::string value) {
+                    style.backgroundImage = value;
+                })
+        };
 
-    mProperties[property] = std::move(styleValue);
+        mProperties[property] = std::move(styleValue);
+        break;
+    }
+    case StyleProp::AnimationName:
+    {
+        std::unique_ptr<StyleValueInternal> styleValue{
+            new StyleValue<std::string>(
+                value,
+                [](Style& style, std::string value) {
+                    style.animationName = value;
+                })
+        };
+
+        mProperties[property] = std::move(styleValue);
+        break;
+    }
+    default: break;
+    }
 }
 
 void StyleRule::applyRule(Style& style) {
@@ -299,6 +333,9 @@ void StyleManager::addRule(std::string selector, std::vector<StyleAttribute> att
                 rule.addValue(attribute.getProp(), attribute.asInt());
                 break;
             case StyleProp::BackgroundImage:
+                rule.addValue(attribute.getProp(), attribute.asString());
+                break;
+            case StyleProp::AnimationName:
                 rule.addValue(attribute.getProp(), attribute.asString());
                 break;
             default:
