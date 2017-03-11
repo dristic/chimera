@@ -13,6 +13,7 @@ namespace Nova {
         : document{*this}
         , renderer{}
         , component{this}
+        , mAdaptor{nullptr}
         , mMouseX{0}
         , mMouseY{0}
         { }
@@ -64,11 +65,26 @@ namespace Nova {
         }
     }
 
+    void Context::useAdaptor(std::shared_ptr<Adaptor> adaptor) {
+        mAdaptor = adaptor;
+    }
+
+    std::unique_ptr<ImageRef> Context::loadImage(std::string name, int& width, int& height) {
+        return mAdaptor->loadImage(name, width, height);
+    }
+
+    unsigned int Context::loadTexture(unsigned int width, unsigned int height, unsigned char* buffer) {
+        return mAdaptor->loadTexture(width, height, buffer);
+    }
+
     void Context::render(float dt) {
         // TODO: Make this not happen every frame
         document.styleManager.applyRules(document.body);
 
         DrawData data;
+
+        data.width = document.getWidth();
+        data.height = document.getHeight();
 
         data.renderer = &renderer;
 
@@ -76,8 +92,8 @@ namespace Nova {
             document.body->render(&data, &document.globalStyle);
         }
 
-        if (renderCallback != nullptr) {
-            renderCallback(&data);
+        if (mAdaptor) {
+            mAdaptor->renderCallback(&data);
         }
     }
 }  // namespace Nova

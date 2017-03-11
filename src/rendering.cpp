@@ -4,6 +4,8 @@
 
 #include <utility>
 
+#include "src/context.h"
+
 namespace Nova {
 
 DrawData::DrawData()
@@ -170,7 +172,7 @@ Renderer::Renderer()
     : fontManager{}
     { }
 
-void Renderer::loadFont(std::string name, std::string location) {
+void Renderer::loadFont(Context& context, std::string name, std::string location) {
     if (FT_Init_FreeType(&ft)) {
         printf("Could not init FreeType library\n");
         return;
@@ -219,7 +221,7 @@ void Renderer::loadFont(std::string name, std::string location) {
             buffer[p+3] = face->glyph->bitmap.buffer[i];
         }
 
-        newFont.characters[c].textureId = loadTexture(
+        newFont.characters[c].textureId = context.loadTexture(
             newFont.characters[c].width,
             newFont.characters[c].rows,
             buffer);

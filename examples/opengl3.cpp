@@ -87,25 +87,30 @@ int main() {
 
     initSDL(gWidth, gHeight);
 
-    Nova::OpenGL3Bridge bridge{context, gWidth, gHeight};
-    bridge.initialize();
+    document.setDimensions(gWidth, gHeight);
 
-    context.renderer.loadFont("Roboto", "assets/Roboto-Regular.ttf");
-    context.renderer.loadFont("Roboto Thin", "assets/Roboto-Thin.ttf");
+    auto adaptor = std::make_shared<Nova::OpenGL3Bridge>();
+    context.useAdaptor(adaptor);
+
+    context.renderer.loadFont(context, "Roboto", "assets/Roboto-Regular.ttf");
+    context.renderer.loadFont(context, "Roboto Thin", "assets/Roboto-Thin.ttf");
 
     Nova::Div* div = document.createElement<Nova::Div>();
+    div->style.width = 1280;
+    div->style.height = 720;
     div->style.backgroundImage = "assets/bg.png";
+    // div->style.backgroundColor = Nova::Color::fromRGBA(150, 150, 150, 1.0);
 
-    Login loginPage{context, div, bridge};
+    // Login loginPage{context, div};
 
-    loginPage.onlogin = [&context, &div, &bridge]() {
-        div->getChildren()[0]->style
-            .withWidth(640)
-            .withHeight(720);
-        div->remove(div->getChildren()[2]);
+    // loginPage.onlogin = [&context, &div]() {
+    //     div->getChildren()[0]->style
+    //         .withWidth(640)
+    //         .withHeight(720);
+    //     div->remove(div->getChildren()[2]);
 
-        Browse browsePage{context, div, bridge};
-    };
+    //     Browse browsePage{context, div};
+    // };
 
     document.body->append(div);
 

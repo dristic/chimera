@@ -17,6 +17,8 @@
 
 namespace Nova {
 
+class Context;
+
 struct Vec2 {
     float x, y;
     Vec2() { x = y = 0.0f; }
@@ -112,11 +114,10 @@ class Renderer {
     Renderer();
     ~Renderer();
 
-    void loadFont(std::string name, std::string location);
+    void loadFont(Context& context, std::string name, std::string location);
 
     FT_Library ft;
     FontManager fontManager;
-    std::function<unsigned int(unsigned int, unsigned int, unsigned char*)> loadTexture;
 };
 
 class DrawData {
@@ -147,6 +148,9 @@ class DrawData {
     float globalAlpha = 1.0f;
 
     Renderer* renderer;
+
+    int width;
+    int height;
 
  private:
     unsigned int mCurIndex;

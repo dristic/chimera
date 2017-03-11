@@ -94,32 +94,32 @@ Nova::Element* LoginComponent::render(Nova::Document& document) {
             .withColor({1.0f, 1.0f, 1.0f, 1.0f});
     });
 
-    // mElement =
-    //     document.createElement<Div>()->id("login-container")->children({
-    //         document.createElement<Div>()->id("login-bg")->children({
-    //             document.createElement<Div>()->id("title")->text(mTitle),
-    //             document.createElement<Button>()->id("login-button")->text("Login")
-    //                 ->onEvent(EventType::MouseDown,
-    //                     std::bind(&LoginComponent::HandleButtonClick, this, _1)),
-    //             document.createElement<Input>()->id("username")
-    //                 ->onEvent(EventType::Change,
-    //                     std::bind(&LoginComponent::HandleInput, this, _1))
-    //         })
-    //     });
+    mElement =
+        document.createElement<Div>()->id("login-container")->children({
+            document.createElement<Div>()->id("login-bg")->children({
+                document.createElement<Div>()->id("title")->text(mTitle),
+                document.createElement<Button>()->id("login-button")->text("Login")
+                    ->onEvent(EventType::MouseDown,
+                        std::bind(&LoginComponent::HandleButtonClick, this, _1)),
+                document.createElement<Input>()->id("username")
+                    ->onEvent(EventType::Change,
+                        std::bind(&LoginComponent::HandleInput, this, _1))
+            })
+        });
 
-    mElement = reconcile(
-        CDiv::Create().id("login-container").text(mTitle),
-        mElement,
-        document
-    );
+    // mElement = reconcile(
+    //     CDiv::Create().id("login-container").text(mTitle),
+    //     mElement,
+    //     document
+    // );
 
-    mTitle = "Cosmonaut 2";
+    // mTitle = "Cosmonaut 2";
 
-    mElement = reconcile(
-        CDiv::Create().id("login-container").text(mTitle),
-        mElement,
-        document
-    );
+    // mElement = reconcile(
+    //     CDiv::Create().id("login-container").text(mTitle),
+    //     mElement,
+    //     document
+    // );
 
     return mElement;
 }
@@ -142,8 +142,7 @@ void LoginComponent::HandleInput(Nova::Event* event) {
 
 Login::Login(
     Nova::Context& context,
-    Nova::Div* root,
-    Nova::OpenGL3Bridge& bridge
+    Nova::Div* root
 ) {
     root->append(loginComponent.render(context.document));
 

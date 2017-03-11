@@ -6,5 +6,5 @@
 
 class Browse {
  public:
-    Browse(Nova::Context& context, Nova::Div* root, Nova::OpenGL3Bridge& bridge);
+    Browse(Nova::Context& context, Nova::Div* root);
 };

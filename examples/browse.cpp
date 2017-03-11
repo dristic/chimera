@@ -2,7 +2,7 @@
 
 #include "browse.h"
 
-Browse::Browse(Nova::Context& context, Nova::Div* root, Nova::OpenGL3Bridge& bridge) {
+Browse::Browse(Nova::Context& context, Nova::Div* root) {
     Nova::Document& document = context.document;
 
     /*

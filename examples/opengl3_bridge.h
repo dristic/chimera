@@ -20,6 +20,7 @@
 #include "src/context.h"
 #include "src/rendering.h"
 #include "src/types.h"
+#include "src/adaptor/adaptor.h"
 
 namespace Nova {
 
@@ -76,9 +77,9 @@ class VideoRef: public ImageRef {
     }
 };
 
-class OpenGL3Bridge {
+class OpenGL3Bridge : public Nova::Adaptor {
  public:
-    OpenGL3Bridge(Context& context, int width, int height);
+    OpenGL3Bridge();
     ~OpenGL3Bridge();
 
     void initialize();
@@ -89,15 +90,12 @@ class OpenGL3Bridge {
 
     std::unique_ptr<GifRef> loadGIF(std::string imagePath);
     std::unique_ptr<VideoRef> loadVideo(std::string videoPath);
-    std::unique_ptr<ImageRef> loadImage(std::string imagePath, int& width, int& height);
-    unsigned int loadTexture(unsigned int width, unsigned int height, unsigned char* buffer);
-    void renderCallback(DrawData* data);
+    std::unique_ptr<ImageRef> loadImage(std::string imagePath, int& width, int& height) override;
+    unsigned int loadTexture(unsigned int width, unsigned int height, unsigned char* buffer) override;
+    void renderCallback(DrawData* data) override;
 
  private:
-    Context& mContext;
     std::vector<GLuint> mTextureCache;
-    int mWidth;
-    int mHeight;
     std::thread mVideoThread;
     static std::vector<VideoRef*> mVideoRefs;
 };

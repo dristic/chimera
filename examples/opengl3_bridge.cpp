@@ -101,30 +101,17 @@ std::unique_ptr<VideoRef> OpenGL3Bridge::loadVideo(std::string videoPath) {
     return v;
 }
 
-OpenGL3Bridge::OpenGL3Bridge(Context& context, int width, int height)
-    : mContext{context}
-    , mTextureCache{}
-    , mWidth{0}
-    , mHeight{0}
+OpenGL3Bridge::OpenGL3Bridge()
+    : mTextureCache{}
     , mVideoThread{&OpenGL3Bridge::processVideo}
 {
-    // TODO: Fix this it is bad
-    mWidth = width;
-    mHeight = height;
-
     mTextureCache.reserve(200);
+
+    initialize();
 
     #ifdef _WIN32
         glewInit();
     #endif
-
-    using namespace std::placeholders;
-    context.renderCallback = std::bind(
-        &OpenGL3Bridge::renderCallback, this, _1);
-    context.loadImage = std::bind(
-        &OpenGL3Bridge::loadImage, this, _1, _2, _3);
-    context.renderer.loadTexture = std::bind(
-        &OpenGL3Bridge::loadTexture, this, _1, _2, _3);
 }
 
 OpenGL3Bridge::~OpenGL3Bridge() {
@@ -536,12 +523,12 @@ void OpenGL3Bridge::renderCallback(DrawData* data) {
     glActiveTexture(GL_TEXTURE0);
 
     // Set viewport
-    glViewport(0, 0, mWidth, mHeight);
+    glViewport(0, 0, data->width, data->height);
 
     const float ortho_projection[4][4] = {
           /*x*/        /*y*/           /*z*/  /*w*/
-        { 2.0f/mWidth, 0.0f,           0.0f,  0.0f },
-        { 0.0f,        2.0f/-mHeight,  0.0f,  0.0f },
+        { 2.0f/data->width, 0.0f,           0.0f,  0.0f },
+        { 0.0f,        2.0f/-data->height,  0.0f,  0.0f },
         { 0.0f,        0.0f,          -1.0f,  0.0f },
         {-1.0f,        1.0f,           0.0f,  1.0f }};
 
@@ -569,7 +556,7 @@ void OpenGL3Bridge::renderCallback(DrawData* data) {
 
         glScissor(
             command.scissor.x,
-            mHeight - (command.scissor.y + command.scissor.height),
+            data->height - (command.scissor.y + command.scissor.height),
             command.scissor.width,
             command.scissor.height);
 

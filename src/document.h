@@ -35,6 +35,9 @@ class Document {
         return dynamic_cast<E*>(mElements.back().get());
     }
 
+    void setDimensions(int width, int height);
+    int getWidth();
+    int getHeight();
     std::unique_ptr<ImageRef> loadImage(std::string src, int& width, int& height);
     void notifyRemoval(Element* element);
 
@@ -47,6 +50,9 @@ class Document {
  private:
     std::vector<std::unique_ptr<Element>> mElements;
     Context* mContext;
+
+    int mWidth;
+    int mHeight;
 };
 
 }  // namespace Nova

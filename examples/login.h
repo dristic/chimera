@@ -25,7 +25,7 @@ class LoginComponent {
 
 class Login {
  public:
-    Login(Nova::Context& context, Nova::Div* root, Nova::OpenGL3Bridge& bridge);
+    Login(Nova::Context& context, Nova::Div* root);
 
     LoginComponent loginComponent{"Cosmonaut"};
     std::function<void(void)> onlogin;

@@ -23,6 +23,19 @@ Document::Document(Context& context)
 
 Document::~Document() { }
 
+void Document::setDimensions(int width, int height) {
+    mWidth = width;
+    mHeight = height;
+}
+
+int Document::getWidth() {
+    return mWidth;
+}
+
+int Document::getHeight() {
+    return mHeight;
+}
+
 std::unique_ptr<ImageRef> Document::loadImage(std::string src, int& width, int& height) {
     return mContext->loadImage(src, width, height);
 }
