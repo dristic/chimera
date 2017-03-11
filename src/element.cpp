@@ -163,7 +163,7 @@ void Div::render(DrawData* data, Style* parentStyle) {
             20,
             50
         };
-        data->addRectFilled(scrollbar, Color::fromRGBA(150, 150, 150, 0.7), scrollbar);
+        //data->addRectFilled(scrollbar, Color::fromRGBA(150, 150, 150, 0.7), scrollbar);
     }
 
     float xValue = rect.x;

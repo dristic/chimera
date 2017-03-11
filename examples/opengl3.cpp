@@ -99,18 +99,9 @@ int main() {
     div->style.width = 1280;
     div->style.height = 720;
     div->style.backgroundImage = "assets/bg.png";
-    // div->style.backgroundColor = Nova::Color::fromRGBA(150, 150, 150, 1.0);
 
-    // Login loginPage{context, div};
-
-    // loginPage.onlogin = [&context, &div]() {
-    //     div->getChildren()[0]->style
-    //         .withWidth(640)
-    //         .withHeight(720);
-    //     div->remove(div->getChildren()[2]);
-
-    //     Browse browsePage{context, div};
-    // };
+    auto loginComponent = std::make_shared<LoginComponent>(gWidth, gHeight);
+    context.component.render(div, loginComponent);
 
     document.body->append(div);
 

@@ -1,32 +1,19 @@
 // Copyright 2016 Dan Ristic
 
-#include "opengl3_bridge.h"
+#include "src/component/component.h"
 
-#include <functional>
-
-#include "src/context.h"
-
-class LoginComponent {
- public:
-    LoginComponent(std::string title)
-        : mTitle{title}
+class LoginComponent : public Cosmonaut::Component {
+public:
+    LoginComponent(int width, int height)
+        : Cosmonaut::Component()
+        , mWidth{width}
+        , mHeight{height}
         { }
 
-    Nova::Element* render(Nova::Document& document);
-    void HandleButtonClick(Nova::Event* event);
-    void HandleInput(Nova::Event* event);
+    void onClick(Nova::Event* event);
+    std::shared_ptr<Cosmonaut::Api::CElement> render(Nova::Context& context) override;
 
  private:
-    std::string mTitle;
-    std::string mUsername = "foobar";
-
-    Nova::Element* mElement;
-};
-
-class Login {
- public:
-    Login(Nova::Context& context, Nova::Div* root);
-
-    LoginComponent loginComponent{"Cosmonaut"};
-    std::function<void(void)> onlogin;
+    int mWidth;
+    int mHeight;
 };
