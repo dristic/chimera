@@ -34,10 +34,18 @@ set(Opengl3_VERSION_MAJOR 1)
 set(Opengl3_VERSION_MINOR 0)
 
 # Include SDL2
-set(CMAKE_MACOSX_RPATH 1)
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/vendor/sdl2)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/vendor/sdl2/include)
-target_link_libraries(Opengl3 SDL2-static)
+# set(CMAKE_MACOSX_RPATH 1)
+# add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/vendor/sdl2)
+# include_directories(${CMAKE_CURRENT_SOURCE_DIR}/vendor/sdl2/include)
+# target_link_libraries(Opengl3 SDL2-static)
+
+# Include GLFW
+set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
+set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/vendor/glfw)
+target_link_libraries(Opengl3 glfw)
 
 # Include OpenCV
 if(WIN32)

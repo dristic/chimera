@@ -3,12 +3,8 @@
 #ifndef EXAMPLES_OPENGL3BRIDGE_H_
 #define EXAMPLES_OPENGL3BRIDGE_H_
 
-#ifdef _WIN32
-    #define GLEW_STATIC
-    #include <GL\glew.h>
-#else
-    #include <OpenGL/gl3.h>
-#endif
+#define GLFW_INCLUDE_GLCOREARB
+#include <GLFW/glfw3.h>
 
 #include <opencv2/opencv.hpp>
 
