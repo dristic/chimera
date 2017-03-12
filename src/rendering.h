@@ -151,6 +151,8 @@ class DrawData {
 
     int width;
     int height;
+    int screenWidth;
+    int screenHeight;
 
  private:
     unsigned int mCurIndex;

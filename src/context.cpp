@@ -85,6 +85,8 @@ namespace Nova {
 
         data.width = document.getWidth();
         data.height = document.getHeight();
+        data.screenWidth = document.getScreenWidth();
+        data.screenHeight = document.getScreenHeight();
 
         data.renderer = &renderer;
 

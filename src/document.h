@@ -38,6 +38,9 @@ class Document {
     void setDimensions(int width, int height);
     int getWidth();
     int getHeight();
+    void setScreenDimensions(int width, int height);
+    int getScreenWidth();
+    int getScreenHeight();
     std::unique_ptr<ImageRef> loadImage(std::string src, int& width, int& height);
     void notifyRemoval(Element* element);
 
@@ -53,6 +56,8 @@ class Document {
 
     int mWidth;
     int mHeight;
+    int mScreenWidth;
+    int mScreenHeight;
 };
 
 }  // namespace Nova

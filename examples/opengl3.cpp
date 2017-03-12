@@ -8,33 +8,13 @@
 #include "opengl3_bridge.h"
 #include "login.h"
 
-float gLastTime = 0;
-float gLastPrintTime = 0;
-int gFrames = 0;
-
 int gWidth = 1280;
 int gHeight = 720;
 
-// float getDelta() {
-//   Uint32 currentTime = SDL_GetTicks();
-//   float deltaTime = static_cast<float>(currentTime - gLastTime);
-//   gLastTime = currentTime;
-
-//   // Measure speed
-//   gFrames++;
-//   if (currentTime - gLastPrintTime >= 1000.0) {
-//     printf("%f ms/frame\n", 1000.0 / static_cast<double>(gFrames));
-//     gFrames = 0;
-//     gLastPrintTime += 1000.0;
-//   }
-
-//   // Cap frame rate
-//   if (deltaTime < (1000.0 / 60.0) && deltaTime > 0) {
-//       SDL_Delay((1000.0 / 60.0) - deltaTime);
-//   }
-
-//   return deltaTime;
-// }
+void errorCallback(int error, const char* description)
+{
+    fprintf(stderr, "Error: %s\n", description);
+}
 
 int main() {
     Nova::Context context;
@@ -42,13 +22,20 @@ int main() {
 
     printf("Starting...!\n");
 
+    glfwSetErrorCallback(errorCallback);
+
     GLFWwindow* window;
 
     /* Initialize the library */
-    if (!glfwInit())
+    if (!glfwInit()) {
         return -1;
+    }
 
     /* Create a windowed mode window and its OpenGL context */
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     glfwWindowHint(GLFW_DECORATED, GL_FALSE);
     window = glfwCreateWindow(gWidth, gHeight, "Cosmonaut", NULL, NULL);
     if (!window)
@@ -61,6 +48,10 @@ int main() {
     glfwMakeContextCurrent(window);
 
     document.setDimensions(gWidth, gHeight);
+
+    int width, height;
+    glfwGetFramebufferSize(window, &width, &height);
+    document.setScreenDimensions(width, height);
 
     auto adaptor = std::make_shared<Nova::OpenGL3Bridge>();
     context.useAdaptor(adaptor);
@@ -78,9 +69,21 @@ int main() {
 
     document.body->append(div);
 
+    double lastTime = glfwGetTime();
+    int frames = 0;
+
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
+        // Measure speed
+        double currentTime = glfwGetTime();
+        frames++;
+        if (currentTime - lastTime >= 1.0) {
+            printf("%f ms/frame\n", 1000.0/double(frames));
+            frames = 0;
+            lastTime += 1.0;
+        }
+
         double xpos, ypos;
         glfwGetCursorPos(window, &xpos, &ypos);
 
@@ -90,6 +93,10 @@ int main() {
         } else {
             context.setMousePosition(-1, -1);
         }
+
+        int width, height;
+        glfwGetFramebufferSize(window, &width, &height);
+        document.setScreenDimensions(width, height);
 
         context.update(16);
         context.render(16);

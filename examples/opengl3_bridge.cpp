@@ -207,17 +207,17 @@ void OpenGL3Bridge::createShaders() {
 
     glGetShaderiv(vertexShaderId, GL_COMPILE_STATUS, &result);
     glGetShaderiv(vertexShaderId, GL_INFO_LOG_LENGTH, &infoLogLength);
-    //std::vector<char> VertexShaderErrorMessage(infoLogLength);
-    //glGetShaderInfoLog(
-    //#    vertexShaderId, infoLogLength, NULL, &VertexShaderErrorMessage[0]);
-    //fprintf(stdout, "%s\n", &VertexShaderErrorMessage[0]);
+    std::vector<char> VertexShaderErrorMessage(infoLogLength);
+    glGetShaderInfoLog(
+        vertexShaderId, infoLogLength, NULL, &VertexShaderErrorMessage[0]);
+    fprintf(stdout, "%s\n", &VertexShaderErrorMessage[0]);
 
     glGetShaderiv(fragmentShaderId, GL_COMPILE_STATUS, &result);
     glGetShaderiv(fragmentShaderId, GL_INFO_LOG_LENGTH, &infoLogLength);
-    //std::vector<char> FragmentShaderErrorMessage(infoLogLength);;
-    //glGetShaderInfoLog(
-    //    fragmentShaderId, infoLogLength, NULL, &FragmentShaderErrorMessage[0]);
-    //fprintf(stdout, "%s\n", &FragmentShaderErrorMessage[0]);
+    std::vector<char> FragmentShaderErrorMessage(infoLogLength);;
+    glGetShaderInfoLog(
+       fragmentShaderId, infoLogLength, NULL, &FragmentShaderErrorMessage[0]);
+    fprintf(stdout, "%s\n", &FragmentShaderErrorMessage[0]);
 
     // Link the program
     fprintf(stdout, "Linking program\n");
@@ -522,8 +522,9 @@ void OpenGL3Bridge::renderCallback(DrawData* data) {
     glEnable(GL_SCISSOR_TEST);
     glActiveTexture(GL_TEXTURE0);
 
-    // Set viewport
-    glViewport(0, 0, data->width, data->height);
+    glViewport(0, 0, data->screenWidth, data->screenHeight);
+
+    float scale = data->screenWidth / data->width;
 
     const float ortho_projection[4][4] = {
           /*x*/        /*y*/           /*z*/  /*w*/
@@ -554,11 +555,13 @@ void OpenGL3Bridge::renderCallback(DrawData* data) {
 
         glBindTexture(GL_TEXTURE_2D, textureId);
 
+        int sy = data->height - (command.scissor.y + command.scissor.height);
+
         glScissor(
-            command.scissor.x,
-            data->height - (command.scissor.y + command.scissor.height),
-            command.scissor.width,
-            command.scissor.height);
+            command.scissor.x * scale,
+            sy * scale,
+            command.scissor.width * scale,
+            command.scissor.height * scale);
 
         glDrawElements(
             GL_TRIANGLES,

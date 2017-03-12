@@ -36,6 +36,19 @@ int Document::getHeight() {
     return mHeight;
 }
 
+void Document::setScreenDimensions(int width, int height) {
+    mScreenWidth = width;
+    mScreenHeight = height;
+}
+
+int Document::getScreenWidth() {
+    return mScreenWidth;
+}
+
+int Document::getScreenHeight() {
+    return mScreenHeight;
+}
+
 std::unique_ptr<ImageRef> Document::loadImage(std::string src, int& width, int& height) {
     return mContext->loadImage(src, width, height);
 }
