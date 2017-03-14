@@ -3,26 +3,118 @@
 #define GLFW_INCLUDE_GLCOREARB
 #include <GLFW/glfw3.h>
 
+#include <string>
+#include <functional>
+
 #include "src/context.h"
 
 #include "opengl3_bridge.h"
 #include "login.h"
 
-int gWidth = 1280;
-int gHeight = 720;
+using namespace std::placeholders;
 
-void errorCallback(int error, const char* description)
+// from: http://stackoverflow.com/questions/19968705/unsigned-integer-as-utf-8-value
+std::string UnicodeToUTF8(unsigned int codepoint)
 {
-    fprintf(stderr, "Error: %s\n", description);
+    std::string out;
+
+    if (codepoint <= 0x7f)
+        out.append(1, static_cast<char>(codepoint));
+    else if (codepoint <= 0x7ff)
+    {
+        out.append(1, static_cast<char>(0xc0 | ((codepoint >> 6) & 0x1f)));
+        out.append(1, static_cast<char>(0x80 | (codepoint & 0x3f)));
+    }
+    else if (codepoint <= 0xffff)
+    {
+        out.append(1, static_cast<char>(0xe0 | ((codepoint >> 12) & 0x0f)));
+        out.append(1, static_cast<char>(0x80 | ((codepoint >> 6) & 0x3f)));
+        out.append(1, static_cast<char>(0x80 | (codepoint & 0x3f)));
+    }
+    else
+    {
+        out.append(1, static_cast<char>(0xf0 | ((codepoint >> 18) & 0x07)));
+        out.append(1, static_cast<char>(0x80 | ((codepoint >> 12) & 0x3f)));
+        out.append(1, static_cast<char>(0x80 | ((codepoint >> 6) & 0x3f)));
+        out.append(1, static_cast<char>(0x80 | (codepoint & 0x3f)));
+    }
+    return out;
 }
 
+class GLFWapplication {
+ public:
+    static void initialize(GLFWwindow* window, Nova::Context* context) {
+        mContext = context;
+
+        glfwSetErrorCallback(errorCallback);
+        glfwSetScrollCallback(window, scrollCallback);
+        glfwSetMouseButtonCallback(window, mouseButtonCallback);
+        glfwSetCursorPosCallback(window, cursorPositionCallback);
+        glfwSetCharCallback(window, characterCallback);
+        glfwSetKeyCallback(window, keyCallback);
+    }
+
+    static void errorCallback(int error, const char* description) {
+        fprintf(stderr, "Error: %s\n", description);
+    }
+
+    static void scrollCallback(GLFWwindow* window, double xOffset, double yOffset) {
+        int direction = 0;
+
+        if (yOffset > 0) {
+            direction = 1;
+        } else if (yOffset < 0) {
+            direction = -1;
+        }
+
+        mContext->setScrollDirection(direction);
+    }
+
+    static void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
+        if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
+            mContext->setMouseDown();
+        }
+    }
+
+    static void cursorPositionCallback(GLFWwindow* window, double x, double y) {
+        int focused = glfwGetWindowAttrib(window, GLFW_FOCUSED);
+        if (focused) {
+            mContext->setMousePosition(x, y);
+        } else {
+            mContext->setMousePosition(-1, -1);
+        }
+    }
+
+    static void characterCallback(GLFWwindow* window, unsigned int codepoint) {
+        std::string text = UnicodeToUTF8(codepoint);
+
+        mContext->addInputCharacters(text);
+    }
+
+    static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+        if (key == GLFW_KEY_BACKSPACE && action == GLFW_PRESS) {
+            mContext->setKeyPress(Nova::KeyType::Backspace);
+        }
+    }
+
+ private:
+    GLFWapplication() { }
+    GLFWapplication(GLFWapplication const&);
+    void operator=(GLFWapplication const&);
+
+    static Nova::Context* mContext;
+};
+
+Nova::Context* GLFWapplication::mContext{nullptr};
+
 int main() {
+    const int WIDTH = 1280;
+    const int HEIGHT = 720;
+
     Nova::Context context;
     Nova::Document& document = context.document;
 
     printf("Starting...!\n");
-
-    glfwSetErrorCallback(errorCallback);
 
     GLFWwindow* window;
 
@@ -37,21 +129,19 @@ int main() {
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     glfwWindowHint(GLFW_DECORATED, GL_FALSE);
-    window = glfwCreateWindow(gWidth, gHeight, "Cosmonaut", NULL, NULL);
+    window = glfwCreateWindow(WIDTH, HEIGHT, "Cosmonaut", NULL, NULL);
     if (!window)
     {
         glfwTerminate();
         return -1;
     }
 
+    GLFWapplication::initialize(window, &context);
+
     /* Make the window's context current */
     glfwMakeContextCurrent(window);
 
-    document.setDimensions(gWidth, gHeight);
-
-    int width, height;
-    glfwGetFramebufferSize(window, &width, &height);
-    document.setScreenDimensions(width, height);
+    document.setDimensions(WIDTH, HEIGHT);
 
     auto adaptor = std::make_shared<Nova::OpenGL3Bridge>();
     context.useAdaptor(adaptor);
@@ -59,15 +149,8 @@ int main() {
     context.renderer.loadFont(context, "Roboto", "assets/Roboto-Regular.ttf");
     context.renderer.loadFont(context, "Roboto Thin", "assets/Roboto-Thin.ttf");
 
-    Nova::Div* div = document.createElement<Nova::Div>();
-    div->style.width = 1280;
-    div->style.height = 720;
-    div->style.backgroundImage = "assets/bg.png";
-
-    auto loginComponent = std::make_shared<LoginComponent>(gWidth, gHeight);
-    context.component.render(div, loginComponent);
-
-    document.body->append(div);
+    auto loginComponent = std::make_shared<LoginComponent>();
+    context.component.render(document.body, loginComponent);
 
     double lastTime = glfwGetTime();
     int frames = 0;
@@ -82,16 +165,6 @@ int main() {
             printf("%f ms/frame\n", 1000.0/double(frames));
             frames = 0;
             lastTime += 1.0;
-        }
-
-        double xpos, ypos;
-        glfwGetCursorPos(window, &xpos, &ypos);
-
-        int focused = glfwGetWindowAttrib(window, GLFW_FOCUSED);
-        if (focused) {
-            context.setMousePosition(xpos, ypos);
-        } else {
-            context.setMousePosition(-1, -1);
         }
 
         int width, height;
@@ -109,48 +182,6 @@ int main() {
     }
 
     glfwTerminate();
-
-    //     // SDL_Cursor* cursor;
-    //     // cursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_HAND);
-    //     // SDL_SetCursor(cursor);
-
-    //     // Update screen
-    //     SDL_GL_SwapWindow(gWindow);
-
-    //     while (SDL_PollEvent(&event) != 0) {
-    //         switch (event.type) {
-    //             case SDL_MOUSEWHEEL:
-    //                 if (event.wheel.y > 0) {
-    //                     context.setScrollDirection(1);
-    //                 } else if (event.wheel.y < 0) {
-    //                     context.setScrollDirection(-1);
-    //                 }
-    //                 break;
-    //             case SDL_MOUSEBUTTONDOWN:
-    //                 if (event.button.button == SDL_BUTTON_LEFT) {
-    //                     context.setMouseDown();
-    //                 }
-    //                 break;
-    //             case SDL_TEXTINPUT:
-    //                 context.addInputCharacters(event.text.text);
-    //                 break;
-    //             case SDL_KEYDOWN:
-    //                 switch (event.key.keysym.sym) {
-    //                     case SDLK_BACKSPACE:
-    //                         context.setKeyPress(Nova::KeyType::Backspace);
-    //                         break;
-    //                     default:
-    //                         break;
-    //                 }
-    //                 break;
-    //             case SDL_QUIT:
-    //                 quit = true;
-    //                 break;
-    //         }
-    //     }
-    // } while (!quit);
-
-    // videoThread.join();
 
     return 0;
 }

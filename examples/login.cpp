@@ -18,12 +18,38 @@ std::shared_ptr<Cosmonaut::Api::CElement> LoginComponent::render(Nova::Context &
 
     Nova::Document& document = context.document;
 
+    int width = document.getWidth();
+    int height = document.getHeight();
+
+    document.styleManager.addRule("#background", {
+        {Nova::StyleProp::Width, width},
+        {Nova::StyleProp::Height, height},
+        {Nova::StyleProp::BackgroundImage, "assets/bg.png"},
+        {Nova::StyleProp::AnimationName, "fade-in"}
+    });
+
+    document.styleManager.addRule([this, width, height](StyleRule& rule) {
+        rule.addId("root-container");
+        rule.withWidth(width)
+            .withHeight(height)
+            .withAnimationName("slide-in");
+    });
+
     document.styleManager.addRule([this](StyleRule& rule) {
-        rule.addId("login-container");
-        rule.withWidth(mWidth / 1.5)
-            .withHeight(mHeight / 1.5)
+        rule.addId("splash");
+        rule.withWidth(960)
+            .withHeight(720)
             .withJustifyContent(Align::Center)
             .withFlexDirection(Direction::Column)
+            .withAnimationName("slide-in");
+    });
+
+    document.styleManager.addRule([this](StyleRule& rule) {
+        rule.addId("login-container");
+        rule.withWidth(320)
+            .withHeight(720)
+            .withFlexDirection(Direction::Column)
+            .withJustifyContent(Align::Center)
             .withMargin({200, 0, 0, 0})
             .withAnimationName("slide-in");
     });
@@ -58,6 +84,12 @@ std::shared_ptr<Cosmonaut::Api::CElement> LoginComponent::render(Nova::Context &
     });
 
     document.styleManager.addRule([](StyleRule& rule) {
+        rule.addId("login-button");
+        rule.addPseudoClass(Nova::PseudoClass::Hover);
+        rule.withBackgroundColor(Color::fromRGBA(42, 75, 111, 1.0f));
+    });
+
+    document.styleManager.addRule([](StyleRule& rule) {
         rule.addId("username");
         rule.withBackgroundColor(Color::fromRGBA(150, 150, 150, 0.3))
             .withWidth(200)
@@ -67,17 +99,22 @@ std::shared_ptr<Cosmonaut::Api::CElement> LoginComponent::render(Nova::Context &
             .withAnimationName("fade-in");
     });
 
-    return C(E::Div, {{"id", "login-container"}}, {
-            C(E::Img, {{"id", "logo"}, {"src", "assets/outerspace.png"}}),
-            C(E::Div, {{"id", "title"}}, {
-                C(E::Text, {{"textContent", "Cosmonaut"}})
-            }),
-            C(E::Input, {{"id", "username"}, {"placeholder", "Username"}}),
-            C(E::Button, {
-                {"id", "login-button"},
-                {"onClick", std::bind(&LoginComponent::onClick, this, _1)}
-            }, {
-                C(E::Text, {{"textContent", "Login"}})
+    return C(E::Div, {{"id", "background"}}, {
+            C(E::Div, {{"id", "root-container"}}, {
+                C(E::Img, {{"id", "splash"}, {"src", "assets/splash.png"}}),
+                C(E::Div, {{"id", "login-container"}}, {
+                    C(E::Img, {{"id", "logo"}, {"src", "assets/outerspace.png"}}),
+                    C(E::Div, {{"id", "title"}}, {
+                        C(E::Text, {{"textContent", "Sign In"}})
+                    }),
+                    C(E::Input, {{"id", "username"}, {"placeholder", "Username"}}),
+                    C(E::Button, {
+                        {"id", "login-button"},
+                        {"onClick", std::bind(&LoginComponent::onClick, this, _1)}
+                    }, {
+                        C(E::Text, {{"textContent", "Login"}})
+                    })
+                })
             })
         });
 }
