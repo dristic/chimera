@@ -1,5 +1,0 @@
-[requires]
-freetype/2.6.3@lasote/stable
-
-[generators]
-cmake

@@ -91,12 +91,13 @@ endif(OPENGL_FOUND)
 ##########
 # Install Deps
 ##########
-include(cmake/install_deps.cmake)
+find_package(Freetype REQUIRED)
+include_directories(${FREETYPE_INCLUDE_DIRS})
 
 # Linkage
 target_link_libraries(Opengl3 Nova)
 target_link_libraries(Opengl3 harfbuzz)
-target_link_libraries(Opengl3 ${CONAN_LIBS})
+target_link_libraries(Opengl3 ${FREETYPE_LIBRARIES})
 
 # Copy assets to build directory
 file(COPY examples/assets DESTINATION ${CMAKE_BINARY_DIR})

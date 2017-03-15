@@ -53,11 +53,12 @@ add_executable(TestAll ${TEST_SOURCES})
 target_link_libraries(TestAll gtest gtest_main)
 
 # Extra linking for the project.
-include(cmake/install_deps.cmake)
+find_package(Freetype REQUIRED)
+include_directories(${FREETYPE_INCLUDE_DIRS})
 
 target_link_libraries(TestAll Nova)
 target_link_libraries(TestAll harfbuzz)
-target_link_libraries(TestAll ${CONAN_LIBS_FREETYPE})
+target_link_libraries(TestAll ${FREETYPE_LIBRARIES})
 
 add_test(NovaTests TestAll)
 
