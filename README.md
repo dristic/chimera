@@ -21,8 +21,6 @@ Getting Started
 
 To get started you have to build the project using CMake so make sure that is available on your system. The project requires Freetype and Harfbuzz to be compiled with the project. The following steps will be for building the example but if you just want to build the library you can skip to the next section.
 
-The project currently uses [Conan.io](https://conan.io/) to install Freetype. Install this on your system in order to build the project.
-
 You will also have to make and install the following dependencies using `brew install freetype harfbuzz` or other means:
 - Freetype 2
 - Harfbuzz
@@ -43,7 +41,7 @@ cmake .. -DNOVA_BUILD_EXAMPLES=true
 make
 ```
 
-This should install the dependencies using conan, build GLFW and dependencies with the project, and output the example binary. You can then run the output using `./bin/OpenGL3`.
+This should install the dependencies using conan, build GLFW and dependencies with the project, and output the example binary. You can then run the output using `./OpenGL3`.
 
 Building the Library
 ====================
