@@ -23,10 +23,9 @@ To get started you have to build the project using CMake so make sure that is av
 
 The project currently uses [Conan.io](https://conan.io/) to install Freetype. Install this on your system in order to build the project.
 
-You will also have to make and install the following dependencies using `brew` or other means:
+You will also have to make and install the following dependencies using `brew install freetype harfbuz` or other means:
 - Freetype 2
 - Harfbuzz
-- OpenCV
 
 After cloning the project you will have to initialize the submodules in order to build GLFW with the example:
 ```

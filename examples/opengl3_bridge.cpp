@@ -22,88 +22,88 @@ GLuint gUniformLocationTex;
 
 GLuint gVboHandle, gElementsHandle, gVaoHandle;
 
-std::mutex mVideoMutex{};
-std::vector<VideoRef*> OpenGL3Bridge::mVideoRefs = {};
+// std::mutex mVideoMutex{};
+// std::vector<VideoRef*> OpenGL3Bridge::mVideoRefs = {};
 
-void OpenGL3Bridge::processVideo() {
-    for (;;) {
-        std::lock_guard<std::mutex> guard(mVideoMutex);
+// void OpenGL3Bridge::processVideo() {
+//     for (;;) {
+//         std::lock_guard<std::mutex> guard(mVideoMutex);
 
-        for (auto& video : mVideoRefs) {
-            if (video != nullptr) {
-                video->cap->read(video->frame);
+//         for (auto& video : mVideoRefs) {
+//             if (video != nullptr) {
+//                 video->cap->read(video->frame);
 
-                if (video->frame.empty()) {
-                    video->cap->set(CV_CAP_PROP_POS_AVI_RATIO, 0);
-                }
-            }
-        }
+//                 if (video->frame.empty()) {
+//                     video->cap->set(CV_CAP_PROP_POS_AVI_RATIO, 0);
+//                 }
+//             }
+//         }
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(30));
+//         std::this_thread::sleep_for(std::chrono::milliseconds(30));
 
-        if (gQuitting) {
-            printf("Video decoding thread breaking...\n");
-            break;
-        }
-    }
-}
+//         if (gQuitting) {
+//             printf("Video decoding thread breaking...\n");
+//             break;
+//         }
+//     }
+// }
 
-std::unique_ptr<VideoRef> OpenGL3Bridge::loadVideo(std::string videoPath) {
-    cv::Mat frame;
-    auto cap = std::make_unique<cv::VideoCapture>();
+// std::unique_ptr<VideoRef> OpenGL3Bridge::loadVideo(std::string videoPath) {
+//     cv::Mat frame;
+//     auto cap = std::make_unique<cv::VideoCapture>();
     
-    cap->open(videoPath);
-    if (!cap->isOpened()) {
-        printf("Unable to open video!\n");
-        return nullptr;
-    }
+//     cap->open(videoPath);
+//     if (!cap->isOpened()) {
+//         printf("Unable to open video!\n");
+//         return nullptr;
+//     }
 
-    cap->read(frame);
-    if (frame.empty()) {
-        printf("Unable to read frame!\n");
-        return nullptr;
-    }
+//     cap->read(frame);
+//     if (frame.empty()) {
+//         printf("Unable to read frame!\n");
+//         return nullptr;
+//     }
 
-    GLint lastTextureBinding;
-    glGetIntegerv(GL_TEXTURE_BINDING_2D, &lastTextureBinding);
-    GLint lastTexture;
-    glGetIntegerv(GL_ACTIVE_TEXTURE, &lastTexture);
+//     GLint lastTextureBinding;
+//     glGetIntegerv(GL_TEXTURE_BINDING_2D, &lastTextureBinding);
+//     GLint lastTexture;
+//     glGetIntegerv(GL_ACTIVE_TEXTURE, &lastTexture);
 
-    // Create one OpenGL texture
-    GLuint videoTexID;
-    glGenTextures(1, &videoTexID);
+//     // Create one OpenGL texture
+//     GLuint videoTexID;
+//     glGenTextures(1, &videoTexID);
 
-    glBindTexture(GL_TEXTURE_2D, videoTexID);
+//     glBindTexture(GL_TEXTURE_2D, videoTexID);
 
-    // Give the image to OpenGL
-    cv::Size frameSize = frame.size();
-    glTexImage2D(
-        GL_TEXTURE_2D,
-        0,
-        GL_RGBA,
-        frameSize.width,
-        frameSize.height,
-        0,
-        GL_BGR,
-        GL_UNSIGNED_BYTE,
-        frame.data);
+//     // Give the image to OpenGL
+//     cv::Size frameSize = frame.size();
+//     glTexImage2D(
+//         GL_TEXTURE_2D,
+//         0,
+//         GL_RGBA,
+//         frameSize.width,
+//         frameSize.height,
+//         0,
+//         GL_BGR,
+//         GL_UNSIGNED_BYTE,
+//         frame.data);
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+//     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+//     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
-    glActiveTexture(lastTexture);
-    glBindTexture(GL_TEXTURE_2D, lastTextureBinding);
+//     glActiveTexture(lastTexture);
+//     glBindTexture(GL_TEXTURE_2D, lastTextureBinding);
 
-    auto v = std::make_unique<VideoRef>(frameSize.width, frameSize.height, videoTexID, std::move(cap));
+//     auto v = std::make_unique<VideoRef>(frameSize.width, frameSize.height, videoTexID, std::move(cap));
 
-    mVideoRefs.push_back(v.get());
+//     mVideoRefs.push_back(v.get());
 
-    return v;
-}
+//     return v;
+// }
 
 OpenGL3Bridge::OpenGL3Bridge()
     : mTextureCache{}
-    , mVideoThread{&OpenGL3Bridge::processVideo}
+    // , mVideoThread{&OpenGL3Bridge::processVideo}
 {
     mTextureCache.reserve(200);
 
@@ -116,7 +116,7 @@ OpenGL3Bridge::OpenGL3Bridge()
 
 OpenGL3Bridge::~OpenGL3Bridge() {
     gQuitting = true;
-    OpenGL3Bridge::mVideoThread.join();
+    // OpenGL3Bridge::mVideoThread.join();
 }
 
 void OpenGL3Bridge::initialize() {
@@ -461,11 +461,12 @@ unsigned int OpenGL3Bridge::loadTexture(
 std::unique_ptr<ImageRef> OpenGL3Bridge::loadImage(std::string imagePath, int& width, int& height) {
     if (imagePath.compare(imagePath.size() - 3, 3, "gif") == 0) {
         return loadGIF(imagePath);
-    } else if (imagePath.compare(imagePath.size() - 3, 3, "mov") == 0) {
-        return loadVideo(imagePath);
-    } else if (imagePath.compare(imagePath.size() - 3, 3, "mp4") == 0) {
-        return loadVideo(imagePath);
     }
+    //  else if (imagePath.compare(imagePath.size() - 3, 3, "mov") == 0) {
+    //     return loadVideo(imagePath);
+    // } else if (imagePath.compare(imagePath.size() - 3, 3, "mp4") == 0) {
+    //     return loadVideo(imagePath);
+    // }
 
     std::vector<unsigned char> image;  // The raw pixels
     unsigned w, h;
