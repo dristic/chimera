@@ -18,9 +18,6 @@
 [submodule "vendor/glew"]
 	path = vendor/glew
 	url = https://github.com/nigels-com/glew.git
-[submodule "vendor/opencv"]
-	path = vendor/opencv
-	url = https://github.com/opencv/opencv.git
 [submodule "vendor/sdl2"]
 	path = vendor/sdl2
 	url = https://github.com/spurious/SDL-mirror.git

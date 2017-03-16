@@ -28,11 +28,10 @@ std::shared_ptr<Cosmonaut::Api::CElement> LoginComponent::render(Nova::Context &
         {Nova::StyleProp::AnimationName, "fade-in"}
     });
 
-    document.styleManager.addRule([this, width, height](StyleRule& rule) {
-        rule.addId("root-container");
-        rule.withWidth(width)
-            .withHeight(height)
-            .withAnimationName("slide-in");
+    document.styleManager.addRule("#root-container", {
+        {Nova::StyleProp::Width, width},
+        {Nova::StyleProp::Height, height},
+        {Nova::StyleProp::AnimationName, "slide-in"}
     });
 
     document.styleManager.addRule([this](StyleRule& rule) {
