@@ -7,6 +7,12 @@
 
 namespace Nova {
 
+enum class CursorType {
+    Arrow,
+    Hand,
+    IBeam
+};
+
 enum class EventType {
     Input,
     Change,

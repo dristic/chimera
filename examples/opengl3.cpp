@@ -152,6 +152,10 @@ int main() {
     auto loginComponent = std::make_shared<LoginComponent>();
     context.component.render(document.body, loginComponent);
 
+    GLFWcursor* arrowCursor = glfwCreateStandardCursor(GLFW_ARROW_CURSOR);
+    GLFWcursor* handCursor = glfwCreateStandardCursor(GLFW_HAND_CURSOR);
+    GLFWcursor* ibeamCursor = glfwCreateStandardCursor(GLFW_IBEAM_CURSOR);
+
     double lastTime = glfwGetTime();
     int frames = 0;
 
@@ -174,12 +178,33 @@ int main() {
         context.update(16);
         context.render(16);
 
+        Nova::CursorType cursor = document.getCursorType();
+        switch(cursor) {
+        case Nova::CursorType::Arrow:
+        {
+            glfwSetCursor(window, arrowCursor);
+            break;
+        }
+        case Nova::CursorType::Hand:
+        {
+            glfwSetCursor(window, handCursor);
+            break;
+        }
+        case Nova::CursorType::IBeam:
+        {
+            glfwSetCursor(window, ibeamCursor);
+            break;
+        }
+        }
+
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
 
         /* Poll for and process events */
         glfwPollEvents();
     }
+
+    glfwDestroyCursor(ibeamCursor);
 
     glfwTerminate();
 

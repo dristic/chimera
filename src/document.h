@@ -43,6 +43,8 @@ class Document {
     int getScreenHeight();
     std::unique_ptr<ImageRef> loadImage(std::string src, int& width, int& height);
     void notifyRemoval(Element* element);
+    void setCursorType(CursorType type);
+    CursorType getCursorType();
 
     Style globalStyle;
     Element* body;
@@ -58,6 +60,8 @@ class Document {
     int mHeight;
     int mScreenWidth;
     int mScreenHeight;
+
+    CursorType mCursorType;
 };
 
 }  // namespace Nova

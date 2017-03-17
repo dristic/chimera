@@ -17,6 +17,7 @@ Document::Document(Context& context)
     , animationController{}
     , mElements{}
     , mContext{&context}
+    , mCursorType{CursorType::Arrow}
 {
     body = createElement<Div>();
 }
@@ -73,6 +74,14 @@ void Document::notifyRemoval(Element* element) {
                 }),
             mElements.end());
     }
+}
+
+void Document::setCursorType(CursorType type) {
+    mCursorType = type;
+}
+
+CursorType Document::getCursorType() {
+    return mCursorType;
 }
 
 }  // namespace Nova

@@ -277,6 +277,11 @@ bool Input::handleEvent(Event* event) {
             mDocument->focusManager.focusElement(this);
             return false;
         }
+    } else if (event->type == EventType::MouseMove) {
+        MouseMoveEvent* mouseMoveEvent = dynamic_cast<MouseMoveEvent*>(event);
+        if (rect.contains(mouseMoveEvent->x, mouseMoveEvent->y)) {
+            mDocument->setCursorType(CursorType::IBeam);
+        }
     }
 
     return true;
@@ -339,12 +344,12 @@ void Input::render(DrawData* data, Style* parentStyle) {
     // Draw input line
     if (isFocused) {
         mFrames++;
-        if (mFrames < 60) {
+        if (mFrames < 30) {
             float textWidth = data->measureText(value, style.fontFamily, 24);
-            Rect inputLine{rect.x + 5 + textWidth, rect.y + 5, 2, rect.height - 10};
-            data->addRectFilled(inputLine, Color::fromRGBA(255, 255, 255, 1.0));
+            Rect inputLine{rect.x + 5 + textWidth, rect.y + 5, 1, rect.height - 10};
+            data->addRectFilled(inputLine, style.color);
         } else {
-            if (mFrames > 120) {
+            if (mFrames > 60) {
                 mFrames = 0;
             }
         }
@@ -362,6 +367,7 @@ bool Button::handleEvent(Event* event) {
         MouseMoveEvent* mouseMoveEvent = dynamic_cast<MouseMoveEvent*>(event);
         if (rect.contains(mouseMoveEvent->x, mouseMoveEvent->y)) {
             mPseudoClass = PseudoClass::Hover;
+            mDocument->setCursorType(CursorType::Hand);
         } else {
             mPseudoClass = PseudoClass::None;
         }

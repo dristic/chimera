@@ -35,6 +35,8 @@ namespace Nova {
     }
 
     void Context::setMousePosition(int x, int y) {
+        document.setCursorType(CursorType::Arrow);
+
         if (x != mMouseX || y != mMouseY) {
             MouseMoveEvent event{x, y};
             document.body->handleEvent(dynamic_cast<Event*>(&event));
