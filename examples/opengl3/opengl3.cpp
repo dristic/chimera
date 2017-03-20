@@ -3,10 +3,11 @@
 #include <string>
 #include <functional>
 
-#include "src/context.h"
+#include "Cosmonaut/Cosmonaut.h"
 
 #include "src/adaptor/opengl3.h"
 #include "app/login.h"
+#include "app/loading.h"
 
 #ifdef _WIN32
     #include <Windows.h>
@@ -165,8 +166,8 @@ int main() {
     context.renderer.loadFont(context, "Roboto", "assets/Roboto-Regular.ttf");
     context.renderer.loadFont(context, "Roboto Thin", "assets/Roboto-Thin.ttf");
 
-    auto loginComponent = std::make_shared<LoginComponent>();
-    context.component.render(document.body, loginComponent);
+    auto loadingComponent = std::make_shared<LoadingComponent>();
+    context.component.render(document.body, loadingComponent);
 
     GLFWcursor* arrowCursor = glfwCreateStandardCursor(GLFW_ARROW_CURSOR);
     GLFWcursor* handCursor = glfwCreateStandardCursor(GLFW_HAND_CURSOR);

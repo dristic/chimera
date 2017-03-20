@@ -9,6 +9,7 @@ set(
     OPENGL3_EXAMPLE_SOURCES
     "examples/app/login.cpp"
     "examples/app/login.h"
+    "examples/app/loading.h"
 
     "examples/opengl3/opengl3.cpp"
 
@@ -38,6 +39,7 @@ include_directories(./)
 include_directories(vendor)
 include_directories(vendor/libnsgif/include)
 include_directories(examples)
+include_directories(include)
 
 # The version number
 set(Opengl3_VERSION_MAJOR 1)
