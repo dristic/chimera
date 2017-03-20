@@ -13,11 +13,11 @@ namespace Cosmonaut {
             return mType;
         }
 
-        std::experimental::optional<Attribute> CElement::getAttribute(const std::string& key) {
+        Attribute* CElement::getAttribute(const std::string& key) {
             if (mAttributes.count(key) == 1) {
-                return mAttributes.at(key);
+                return &mAttributes.at(key);
             } else {
-                return {};
+                return nullptr;
             }
         }
 

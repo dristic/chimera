@@ -20,7 +20,7 @@ namespace Nova {
     void Animation::update(double dt) {
         if (mCurrent < mEnd) {
             mUpdate(mCurrent, mElement);
-            mCurrent += 0.08;
+            mCurrent += 0.08f;
         }
     }
 

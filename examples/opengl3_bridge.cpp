@@ -4,6 +4,7 @@
 #include <stddef.h>
 #include <cstdlib>
 #include <sys/stat.h>
+#include <algorithm>
 
 #include "lodepng/lodepng.h"
 extern "C" {
@@ -105,13 +106,13 @@ OpenGL3Bridge::OpenGL3Bridge()
     : mTextureCache{}
     // , mVideoThread{&OpenGL3Bridge::processVideo}
 {
+#ifdef _WIN32
+    glewInit();
+#endif
+
     mTextureCache.reserve(200);
 
     initialize();
-
-    #ifdef _WIN32
-        glewInit();
-    #endif
 }
 
 OpenGL3Bridge::~OpenGL3Bridge() {
@@ -208,16 +209,22 @@ void OpenGL3Bridge::createShaders() {
     glGetShaderiv(vertexShaderId, GL_COMPILE_STATUS, &result);
     glGetShaderiv(vertexShaderId, GL_INFO_LOG_LENGTH, &infoLogLength);
     std::vector<char> VertexShaderErrorMessage(infoLogLength);
-    glGetShaderInfoLog(
-        vertexShaderId, infoLogLength, NULL, &VertexShaderErrorMessage[0]);
-    fprintf(stdout, "%s\n", &VertexShaderErrorMessage[0]);
+
+    if (infoLogLength > 0) {
+        glGetShaderInfoLog(
+            vertexShaderId, infoLogLength, NULL, &VertexShaderErrorMessage[0]);
+        fprintf(stdout, "%s\n", &VertexShaderErrorMessage[0]);
+    }
 
     glGetShaderiv(fragmentShaderId, GL_COMPILE_STATUS, &result);
     glGetShaderiv(fragmentShaderId, GL_INFO_LOG_LENGTH, &infoLogLength);
-    std::vector<char> FragmentShaderErrorMessage(infoLogLength);;
-    glGetShaderInfoLog(
-       fragmentShaderId, infoLogLength, NULL, &FragmentShaderErrorMessage[0]);
-    fprintf(stdout, "%s\n", &FragmentShaderErrorMessage[0]);
+    std::vector<char> FragmentShaderErrorMessage(infoLogLength);
+
+    if (infoLogLength > 0) {
+        glGetShaderInfoLog(
+           fragmentShaderId, infoLogLength, NULL, &FragmentShaderErrorMessage[0]);
+        fprintf(stdout, "%s\n", &FragmentShaderErrorMessage[0]);
+    }
 
     // Link the program
     fprintf(stdout, "Linking program\n");

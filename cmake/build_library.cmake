@@ -7,9 +7,8 @@ set(CMAKE_CXX_STANDARD 14)
 
 set(CMAKE_BUILD_TYPE Debug)
 
-if(NOT DEFINED NOVA_BUILD_EXAMPLES)
-    set(NOVA_BUILD_EXAMPLES true)
-endif(NOT DEFINED NOVA_BUILD_EXAMPLES)
+# Options
+option(NOVA_BUILD_EXAMPLES "Build the examples folder" OFF)
 
 ##########
 # Static Lib
@@ -17,15 +16,62 @@ endif(NOT DEFINED NOVA_BUILD_EXAMPLES)
 project(Nova)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/vendor/harfbuzz/src)
 
-file(GLOB_RECURSE LIB_SOURCES "src/*.cpp")
-file(GLOB_RECURSE LIB_HEADERS "src/*.h")
+set(
+    LIB_SOURCES
+    "src/animation.cpp"
+    "src/animation.h"
+    "src/context.cpp"
+    "src/context.h"
+    "src/document.cpp"
+    "src/document.h"
+    "src/element.cpp"
+    "src/element.h"
+    "src/focus.cpp"
+    "src/focus.h"
+    "src/layout.cpp"
+    "src/layout.h"
+    "src/rendering.cpp"
+    "src/rendering.h"
+    "src/style.cpp"
+    "src/style.h"
+
+    "src/component/component.cpp"
+    "src/component/component.h"
+
+    "src/adaptor/adaptor.h"
+    "src/adaptor/opengl3.cpp"
+    "src/adaptor/opengl3.h"
+)
 
 # Add this file
 list(APPEND LIB_SOURCES "cmake/build_library.cmake")
 
-add_library(Nova STATIC ${LIB_SOURCES} ${LIB_HEADERS})
+# find freetype
+find_package(FREETYPE REQUIRED)
+
+find_path(HARFBUZZ_INCLUDE_DIR harfbuzz/hb.h harfbuzz/hb-ft.h)
+
+if(NOT HARFBUZZ_INCLUDE_DIR)
+  message(FATAL_ERROR "The harfbuzz include file could not be found. Check to ensure that it is properly installed.")
+endif()
+
+find_library(HARFBUZZ_LIBRARY harfbuzz)
+
+if(HARFBUZZ_LIBRARY MATCHES NOTFOUND)
+  message(FATAL_ERROR "The harfbuzz library could not be found. Check to ensure that it is properly installed.")
+endif()
+
+include_directories(${FREETYPE_INCLUDE_DIRS})
+include_directories(${HARFBUZZ_INCLUDE_DIR})
+
+add_library(Nova STATIC ${LIB_SOURCES})
+
+foreach(source IN LISTS LIB_SOURCES)
+    get_filename_component(source_path "${source}" PATH)
+    string(REPLACE "/" "\\" source_path_msvc "${source_path}")
+    source_group("${source_path_msvc}" FILES "${source}")
+endforeach()
 
 ##########
 # Tools
@@ -33,7 +79,7 @@ add_library(Nova STATIC ${LIB_SOURCES} ${LIB_HEADERS})
 file(GLOB LINT_SOURCES "src/*.cpp" "src/*.h" "test/*.cpp" "examples/*.cpp")
 file(GLOB LINT_SCRIPT "tools/cpplint.py")
 
-add_custom_target(lint
+add_custom_target(Lint
     COMMAND
     "python" ${LINT_SCRIPT} ${LINT_SOURCES}
     WORKING_DIRECTORY ./)
@@ -52,13 +98,10 @@ add_executable(TestAll ${TEST_SOURCES})
 # Standard linking to gtest stuff.
 target_link_libraries(TestAll gtest gtest_main)
 
-# Extra linking for the project.
-find_package(Freetype REQUIRED)
-include_directories(${FREETYPE_INCLUDE_DIRS})
-
 target_link_libraries(TestAll Nova)
-target_link_libraries(TestAll harfbuzz)
+
 target_link_libraries(TestAll ${FREETYPE_LIBRARIES})
+target_link_libraries(TestAll ${HARFBUZZ_LIBRARY})
 
 add_test(NovaTests TestAll)
 
@@ -67,4 +110,6 @@ add_test(NovaTests TestAll)
 ##########
 if(NOVA_BUILD_EXAMPLES)
     include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build_examples.cmake)
+
+    target_link_libraries(Opengl3 Nova)
 endif(NOVA_BUILD_EXAMPLES)

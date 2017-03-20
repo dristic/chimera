@@ -6,7 +6,6 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
-#include <experimental/optional>
 
 #include "src/element.h"
 
@@ -32,6 +31,12 @@ enum class E {
     Component
 };
 
+enum class AttributeType {
+    String,
+    Style,
+    EventCallback
+};
+
 class Attribute {
 using EventCallback = std::function<void(Nova::Event*)>;
 
@@ -41,16 +46,20 @@ public:
     Attribute(std::string key, std::string value)
         : mKey{key}
         , mStringValue{value}
+        , mType{AttributeType::String}
         { }
 
     Attribute(std::string key, Nova::Style value)
         : mKey{key}
-        , mStyleValue{value}
-        { }
+        , mType{AttributeType::Style}
+    {
+        mStyleValue = value;
+    }
 
     Attribute(std::string key, EventCallback value)
         : mKey{key}
         , mCallbackValue{value}
+        , mType{AttributeType::EventCallback}
         { }
 
     std::string getKey() {
@@ -58,24 +67,24 @@ public:
     }
 
     std::string asString() {
-        if (mStringValue) {
-            return *mStringValue;
+        if (mType == AttributeType::String) {
+            return mStringValue;
         } else {
             return "";
         }
     }
 
     Nova::Style asStyle() {
-        if (mStyleValue) {
-            return *mStyleValue;
+        if (mType == AttributeType::Style) {
+            return mStyleValue;
         } else {
             return {};
         }
     }
 
     EventCallback asCallback() {
-        if (mCallbackValue) {
-            return *mCallbackValue;
+        if (mType == AttributeType::EventCallback) {
+            return mCallbackValue;
         } else {
             return nullptr;
         }
@@ -83,9 +92,11 @@ public:
 
 private:
     std::string mKey;
-    std::experimental::optional<std::string> mStringValue;
-    std::experimental::optional<Nova::Style> mStyleValue;
-    std::experimental::optional<EventCallback> mCallbackValue;
+    AttributeType mType;
+
+    std::string mStringValue;
+    Nova::Style mStyleValue;
+    EventCallback mCallbackValue;
 };
 
 class CElement {
@@ -105,7 +116,7 @@ public:
         { }
 
     E getType();
-    std::experimental::optional<Attribute> getAttribute(const std::string& key);
+    Attribute* getAttribute(const std::string& key);
     std::vector<std::shared_ptr<CElement>> const& getChildren() const;
     void setChildren(std::vector<std::shared_ptr<CElement>>& children);
     virtual std::shared_ptr<Api::CElement> render(Nova::Context& context);

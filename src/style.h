@@ -8,7 +8,6 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
-#include <experimental/optional>
 
 #include "src/types.h"
 #include "src/animation.h"
@@ -286,16 +285,23 @@ class StyleRule {
     std::unordered_map<StyleProp, std::unique_ptr<StyleValueInternal>, StylePropHash> mProperties;
 };
 
+enum class StyleAttributeType {
+    Int,
+    String
+};
+
 class StyleAttribute {
  public:
     StyleAttribute(StyleProp prop, int value)
         : mProp{prop}
         , mIntValue{value}
+        , mType{StyleAttributeType::Int}
         { }
 
     StyleAttribute(StyleProp prop, std::string value)
         : mProp{prop}
         , mStringValue{value}
+        , mType{StyleAttributeType::String}
         { }
 
     StyleProp getProp() {
@@ -303,16 +309,16 @@ class StyleAttribute {
     }
 
     std::string asString() {
-        if (mStringValue) {
-            return *mStringValue;
+        if (mType == StyleAttributeType::String) {
+            return mStringValue;
         } else {
             return "";
         }
     }
 
     int asInt() {
-        if (mIntValue) {
-            return *mIntValue;
+        if (mType == StyleAttributeType::Int) {
+            return mIntValue;
         } else {
             return -1;
         }
@@ -320,8 +326,10 @@ class StyleAttribute {
 
 private:
     StyleProp mProp;
-    std::experimental::optional<std::string> mStringValue;
-    std::experimental::optional<int> mIntValue;
+    StyleAttributeType mType;
+    
+    std::string mStringValue;
+    int mIntValue;
 };
 
 class StyleManager {

@@ -1,8 +1,5 @@
 // Copyright 2016 Dan Ristic
 
-#define GLFW_INCLUDE_GLCOREARB
-#include <GLFW/glfw3.h>
-
 #include <string>
 #include <functional>
 
@@ -10,6 +7,8 @@
 
 #include "opengl3_bridge.h"
 #include "login.h"
+
+#include <Windows.h>
 
 using namespace std::placeholders;
 
@@ -107,7 +106,11 @@ class GLFWapplication {
 
 Nova::Context* GLFWapplication::mContext{nullptr};
 
+#ifdef _WIN32
+int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
+#else
 int main() {
+#endif
     const int WIDTH = 1280;
     const int HEIGHT = 720;
 
@@ -115,6 +118,10 @@ int main() {
     Nova::Document& document = context.document;
 
     printf("Starting...!\n");
+
+#ifdef _WIN32
+    glewInit();
+#endif
 
     GLFWwindow* window;
 
@@ -135,6 +142,13 @@ int main() {
         glfwTerminate();
         return -1;
     }
+
+    GLFWmonitor* primary = glfwGetPrimaryMonitor();
+    const GLFWvidmode* mode = glfwGetVideoMode(primary);
+
+    int centerX = (mode->width - WIDTH) / 2;
+    int centerY = (mode->height - HEIGHT) / 2;
+    glfwSetWindowPos(window, centerX, centerY);
 
     GLFWapplication::initialize(window, &context);
 
