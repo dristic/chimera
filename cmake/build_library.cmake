@@ -3,12 +3,15 @@
 # Setup
 ###########
 cmake_minimum_required(VERSION 3.1 FATAL_ERROR)
+
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/modules/")
+
 set(CMAKE_CXX_STANDARD 14)
 
 set(CMAKE_BUILD_TYPE Debug)
 
 # Options
-option(NOVA_BUILD_EXAMPLES "Build the examples folder" OFF)
+option(COSMONAUT_BUILD_EXAMPLES "Build the examples folder" OFF)
 
 ##########
 # Static Lib
@@ -40,27 +43,14 @@ set(
     "src/component/component.h"
 
     "src/adaptor/adaptor.h"
-    "src/adaptor/opengl3.cpp"
-    "src/adaptor/opengl3.h"
 )
 
 # Add this file
 list(APPEND LIB_SOURCES "cmake/build_library.cmake")
 
 # find freetype
-find_package(FREETYPE REQUIRED)
-
-find_path(HARFBUZZ_INCLUDE_DIR harfbuzz/hb.h harfbuzz/hb-ft.h)
-
-if(NOT HARFBUZZ_INCLUDE_DIR)
-  message(FATAL_ERROR "The harfbuzz include file could not be found. Check to ensure that it is properly installed.")
-endif()
-
-find_library(HARFBUZZ_LIBRARY harfbuzz)
-
-if(HARFBUZZ_LIBRARY MATCHES NOTFOUND)
-  message(FATAL_ERROR "The harfbuzz library could not be found. Check to ensure that it is properly installed.")
-endif()
+find_package(Freetype REQUIRED)
+find_package(HarfBuzz REQUIRED)
 
 include_directories(${FREETYPE_INCLUDE_DIRS})
 include_directories(${HARFBUZZ_INCLUDE_DIR})
@@ -108,8 +98,6 @@ add_test(NovaTests TestAll)
 ##########
 # Examples
 ##########
-if(NOVA_BUILD_EXAMPLES)
+if(COSMONAUT_BUILD_EXAMPLES)
     include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build_examples.cmake)
-
-    target_link_libraries(Opengl3 Nova)
-endif(NOVA_BUILD_EXAMPLES)
+endif(COSMONAUT_BUILD_EXAMPLES)

@@ -5,10 +5,12 @@
 
 #include "src/context.h"
 
-#include "opengl3_bridge.h"
-#include "login.h"
+#include "src/adaptor/opengl3.h"
+#include "app/login.h"
 
-#include <Windows.h>
+#ifdef _WIN32
+    #include <Windows.h>
+#endif
 
 using namespace std::placeholders;
 
