@@ -173,6 +173,8 @@ int main() {
     double lastTime = glfwGetTime();
     int frames = 0;
 
+    glfwSwapInterval(1);
+
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
