@@ -4,9 +4,35 @@
 
 #include "app/login.h"
 #include "app/loading.h"
+#include "src/adaptor/dx9.h"
 
 #include <Windows.h>
 #include <windowsx.h>
+#include <d3d9.h>
+
+// include the Direct3D Library file
+#pragma comment (lib, "d3d9.lib")
+
+// define the screen resolution
+#define SCREEN_WIDTH 1280
+#define SCREEN_HEIGHT 720
+
+// global declarations
+LPDIRECT3D9 d3d;    // the pointer to our Direct3D interface
+LPDIRECT3DDEVICE9 d3ddev;    // the pointer to the device class
+LPDIRECT3DVERTEXBUFFER9 v_buffer = NULL;    // the pointer to the vertex buffer
+
+void initD3D(HWND hWnd);    // sets up and initializes Direct3D
+void render_frame(void);    // renders a single frame
+void cleanD3D(void);    // closes Direct3D and releases memory
+void init_graphics(void);    // 3D declarations
+
+struct CUSTOMVERTEX {
+    FLOAT X, Y, Z, RHW;
+    DWORD COLOR;
+    FLOAT U, V;
+};
+#define CUSTOMFVF (D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX1)
 
 // the WindowProc function prototype
 LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
@@ -34,21 +60,20 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
     wc.lpfnWndProc = WindowProc;
     wc.hInstance = hInstance;
     wc.hCursor = LoadCursor(NULL, IDC_ARROW);
-    wc.hbrBackground = (HBRUSH)COLOR_WINDOW;
-    wc.lpszClassName = TEXT("WindowClass1");
+    wc.lpszClassName = TEXT("Cosmonaut");
 
     // register the window class
     RegisterClassEx(&wc);
 
     // create the window and use the result as the handle
     hWnd = CreateWindowEx(NULL,
-        TEXT("WindowClass1"),    // name of the window class
-        TEXT("Our First Windowed Program"),   // title of the window
+        TEXT("Cosmonaut"),    // name of the window class
+        TEXT("CosmonautDX9 Example"),   // title of the window
         WS_OVERLAPPEDWINDOW,    // window style
         300,    // x-position of the window
         300,    // y-position of the window
-        500,    // width of the window
-        400,    // height of the window
+        SCREEN_WIDTH,    // width of the window
+        SCREEN_HEIGHT,    // height of the window
         NULL,    // we have no parent window, NULL
         NULL,    // we aren't using menus, NULL
         hInstance,    // application handle
@@ -56,6 +81,20 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 
                   // display the window on the screen
     ShowWindow(hWnd, nCmdShow);
+
+    initD3D(hWnd);
+
+    document.setDimensions(WIDTH, HEIGHT);
+
+    auto adaptor = std::make_shared<Cosmonaut::DX9Adaptor>();
+    adaptor->device = d3ddev;
+    context.useAdaptor(adaptor);
+
+    context.renderer.loadFont(context, "Roboto", "assets/Roboto-Regular.ttf");
+    context.renderer.loadFont(context, "Roboto Thin", "assets/Roboto-Thin.ttf");
+
+    auto loadingComponent = std::make_shared<LoadingComponent>();
+    context.component.render(document.body, loadingComponent);
 
     // enter the main loop:
 
@@ -79,13 +118,90 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
         if (msg.message == WM_QUIT)
             break;
 
-        // Run game code here
-        // ...
-        // ...
+        // clear the window to a deep blue
+        d3ddev->Clear(0, NULL, D3DCLEAR_TARGET, D3DCOLOR_XRGB(0, 0, 0), 1.0f, 0);
+
+        d3ddev->BeginScene();    // begins the 3D scene
+
+        d3ddev->SetFVF(CUSTOMFVF);
+
+        context.update(16);
+        context.render(16);
+
+        // select the vertex buffer to display
+        d3ddev->SetStreamSource(0, v_buffer, 0, sizeof(CUSTOMVERTEX));
+
+        // copy the vertex buffer to the back buffer
+        d3ddev->DrawPrimitive(D3DPT_TRIANGLELIST, 0, 1);
+
+        d3ddev->EndScene();    // ends the 3D scene
+
+        d3ddev->Present(NULL, NULL, NULL, NULL);    // displays the created frame
     }
+
+    cleanD3D();
 
     // return this part of the WM_QUIT message to Windows
     return msg.wParam;
+}
+
+// this function initializes and prepares Direct3D for use
+void initD3D(HWND hWnd)
+{
+    d3d = Direct3DCreate9(D3D_SDK_VERSION);    // create the Direct3D interface
+
+    D3DPRESENT_PARAMETERS d3dpp;    // create a struct to hold various device information
+
+    ZeroMemory(&d3dpp, sizeof(d3dpp));    // clear out the struct for use
+    d3dpp.Windowed = TRUE;    // program windowed, not fullscreen
+    d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;    // discard old frames
+    d3dpp.hDeviceWindow = hWnd;    // set the window to be used by Direct3D
+    d3dpp.BackBufferFormat = D3DFMT_X8R8G8B8;    // set the back buffer format to 32-bit
+    d3dpp.BackBufferWidth = SCREEN_WIDTH;    // set the width of the buffer
+    d3dpp.BackBufferHeight = SCREEN_HEIGHT;    // set the height of the buffer
+
+    // create a device class using this information and information from the d3dpp stuct
+    d3d->CreateDevice(
+        D3DADAPTER_DEFAULT,
+        D3DDEVTYPE_HAL,
+        hWnd,
+        D3DCREATE_SOFTWARE_VERTEXPROCESSING,
+        &d3dpp,
+        &d3ddev);
+
+    init_graphics();
+}
+
+void init_graphics()
+{
+    // create three vertices using the CUSTOMVERTEX struct built earlier
+    CUSTOMVERTEX vertices[] =
+    {
+        { 320.0f, 50.0f, 0.5f, 1.0f, D3DCOLOR_XRGB(0, 0, 255), 1.0f, 1.0f },
+        { 520.0f, 400.0f, 0.5f, 1.0f, D3DCOLOR_XRGB(0, 255, 0), 0.0f, 1.0f },
+        { 120.0f, 400.0f, 0.5f, 1.0f, D3DCOLOR_XRGB(255, 0, 0), 0.0f, 0.0f },
+    };
+
+    // create the vertex and store the pointer into v_buffer, which is created globally
+    d3ddev->CreateVertexBuffer(3 * sizeof(CUSTOMVERTEX),
+        0,
+        CUSTOMFVF,
+        D3DPOOL_MANAGED,
+        &v_buffer,
+        NULL);
+
+    VOID* pVoid;    // the void pointer
+
+    v_buffer->Lock(0, 0, (void**)&pVoid, 0);    // lock the vertex buffer
+    memcpy(pVoid, vertices, sizeof(vertices));    // copy the vertices to the locked buffer
+    v_buffer->Unlock();    // unlock the vertex buffer
+}
+
+// this is the function that cleans up Direct3D and COM
+void cleanD3D(void)
+{
+    d3ddev->Release();    // close and release the 3D device
+    d3d->Release();    // close and release Direct3D
 }
 
 LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)

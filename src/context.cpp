@@ -13,10 +13,12 @@ namespace Nova {
         : document{*this}
         , renderer{}
         , component{this}
-        , mAdaptor{nullptr}
+        , mAdaptor{}
         , mMouseX{0}
         , mMouseY{0}
-        { }
+    {
+        mAdaptor = std::make_shared<Adaptor>();
+    }
 
     Context::~Context() { }
 
