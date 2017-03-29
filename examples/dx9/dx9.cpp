@@ -20,19 +20,9 @@
 // global declarations
 LPDIRECT3D9 d3d;    // the pointer to our Direct3D interface
 LPDIRECT3DDEVICE9 d3ddev;    // the pointer to the device class
-LPDIRECT3DVERTEXBUFFER9 v_buffer = NULL;    // the pointer to the vertex buffer
 
 void initD3D(HWND hWnd);    // sets up and initializes Direct3D
-void render_frame(void);    // renders a single frame
 void cleanD3D(void);    // closes Direct3D and releases memory
-void init_graphics(void);    // 3D declarations
-
-struct CUSTOMVERTEX {
-    FLOAT X, Y, Z, RHW;
-    DWORD COLOR;
-    FLOAT U, V;
-};
-#define CUSTOMFVF (D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX1)
 
 // the WindowProc function prototype
 LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
@@ -85,9 +75,9 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
     initD3D(hWnd);
 
     document.setDimensions(WIDTH, HEIGHT);
+    document.setScreenDimensions(WIDTH, HEIGHT);
 
-    auto adaptor = std::make_shared<Cosmonaut::DX9Adaptor>();
-    adaptor->device = d3ddev;
+    auto adaptor = std::make_shared<Cosmonaut::DX9Adaptor>(d3ddev);
     context.useAdaptor(adaptor);
 
     context.renderer.loadFont(context, "Roboto", "assets/Roboto-Regular.ttf");
@@ -118,21 +108,13 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
         if (msg.message == WM_QUIT)
             break;
 
-        // clear the window to a deep blue
+        // clear the window to a black
         d3ddev->Clear(0, NULL, D3DCLEAR_TARGET, D3DCOLOR_XRGB(0, 0, 0), 1.0f, 0);
 
         d3ddev->BeginScene();    // begins the 3D scene
 
-        d3ddev->SetFVF(CUSTOMFVF);
-
         context.update(16);
         context.render(16);
-
-        // select the vertex buffer to display
-        d3ddev->SetStreamSource(0, v_buffer, 0, sizeof(CUSTOMVERTEX));
-
-        // copy the vertex buffer to the back buffer
-        d3ddev->DrawPrimitive(D3DPT_TRIANGLELIST, 0, 1);
 
         d3ddev->EndScene();    // ends the 3D scene
 
@@ -168,33 +150,6 @@ void initD3D(HWND hWnd)
         D3DCREATE_SOFTWARE_VERTEXPROCESSING,
         &d3dpp,
         &d3ddev);
-
-    init_graphics();
-}
-
-void init_graphics()
-{
-    // create three vertices using the CUSTOMVERTEX struct built earlier
-    CUSTOMVERTEX vertices[] =
-    {
-        { 320.0f, 50.0f, 0.5f, 1.0f, D3DCOLOR_XRGB(0, 0, 255), 1.0f, 1.0f },
-        { 520.0f, 400.0f, 0.5f, 1.0f, D3DCOLOR_XRGB(0, 255, 0), 0.0f, 1.0f },
-        { 120.0f, 400.0f, 0.5f, 1.0f, D3DCOLOR_XRGB(255, 0, 0), 0.0f, 0.0f },
-    };
-
-    // create the vertex and store the pointer into v_buffer, which is created globally
-    d3ddev->CreateVertexBuffer(3 * sizeof(CUSTOMVERTEX),
-        0,
-        CUSTOMFVF,
-        D3DPOOL_MANAGED,
-        &v_buffer,
-        NULL);
-
-    VOID* pVoid;    // the void pointer
-
-    v_buffer->Lock(0, 0, (void**)&pVoid, 0);    // lock the vertex buffer
-    memcpy(pVoid, vertices, sizeof(vertices));    // copy the vertices to the locked buffer
-    v_buffer->Unlock();    // unlock the vertex buffer
 }
 
 // this is the function that cleans up Direct3D and COM
