@@ -42,7 +42,9 @@ std::unique_ptr<Nova::ImageRef> DX9Adaptor::loadImage(std::string imagePath, int
 }
 
 unsigned int DX9Adaptor::loadTexture(unsigned int width, unsigned int height, unsigned char* buffer) {
-    textures.push_back({});
+    if (textures.size() <= textureId) {
+        textures.resize(textures.size() + 100);
+    }
 
     auto result = device->CreateTexture(
         width,
