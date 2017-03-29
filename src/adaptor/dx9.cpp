@@ -7,6 +7,10 @@ DX9Adaptor::DX9Adaptor() {
 
 }
 
+std::unique_ptr<Nova::ImageRef> DX9Adaptor::loadImage(std::string imagePath, int& width, int& height) {
+    return std::make_unique<Nova::ImageRef>(width, height, 0);
+}
+
 unsigned int DX9Adaptor::loadTexture(unsigned int width, unsigned int height, unsigned char* buffer) {
     textures.push_back({});
 
@@ -14,9 +18,9 @@ unsigned int DX9Adaptor::loadTexture(unsigned int width, unsigned int height, un
         width,
         height,
         1,
-        0,
+        D3DUSAGE_DYNAMIC,
         D3DFMT_A8R8G8B8,
-        D3DPOOL_MANAGED,
+        D3DPOOL_DEFAULT,
         &textures[textureId],
         nullptr);
 
@@ -66,8 +70,10 @@ void DX9Adaptor::renderCallback(Nova::DrawData* data) {
     device->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
     device->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
     device->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
+    device->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
+    device->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
 
-    if (textureId > 0) device->SetTexture(0, textures[textures.size() - 1]);
+    if (textureId > 15) device->SetTexture(0, textures[textures.size() - 13]);
 }
 
 }  // namespace Cosmonaut

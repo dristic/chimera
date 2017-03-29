@@ -23,7 +23,6 @@ LPDIRECT3DDEVICE9 d3ddev;    // the pointer to the device class
 LPDIRECT3DVERTEXBUFFER9 v_buffer = NULL;    // the pointer to the vertex buffer
 
 void initD3D(HWND hWnd);    // sets up and initializes Direct3D
-void render_frame(void);    // renders a single frame
 void cleanD3D(void);    // closes Direct3D and releases memory
 void init_graphics(void);    // 3D declarations
 
@@ -118,7 +117,7 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
         if (msg.message == WM_QUIT)
             break;
 
-        // clear the window to a deep blue
+        // clear the window to a black
         d3ddev->Clear(0, NULL, D3DCLEAR_TARGET, D3DCOLOR_XRGB(0, 0, 0), 1.0f, 0);
 
         d3ddev->BeginScene();    // begins the 3D scene
