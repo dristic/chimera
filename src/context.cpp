@@ -23,7 +23,7 @@ namespace Nova {
     Context::~Context() { }
 
     void Context::update(double dt) {
-
+        component.update(dt);
     }
 
     void Context::addInputCharacters(std::string characters) {

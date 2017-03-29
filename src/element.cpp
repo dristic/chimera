@@ -128,6 +128,16 @@ void Div::render(DrawData* data, Style* parentStyle) {
     }
 
     if (textContent != "") {
+        float width = data->measureText(textContent, style.fontFamily, style.fontSize);
+
+        if (rect.width < width) {
+            rect.width = width;
+        }
+
+        if (rect.height < style.fontSize) {
+            rect.height = style.fontSize;
+        }
+
         Rect position{
             rect.x + style.padding.left,
             rect.y + style.padding.top,
@@ -136,7 +146,6 @@ void Div::render(DrawData* data, Style* parentStyle) {
         };
 
         if (style.textAlign == Align::Center) {
-            float width = data->measureText(textContent, style.fontFamily, style.fontSize);
             position.x = rect.x + (rect.width / 2) - (width / 2);
         }
 

@@ -565,11 +565,11 @@ void OpenGL3Bridge::renderCallback(DrawData* data) {
 
         int sy = data->height - (command.scissor.y + command.scissor.height);
 
-        glScissor(
-            command.scissor.x * scale,
-            sy * scale,
-            command.scissor.width * scale,
-            command.scissor.height * scale);
+        // glScissor(
+        //     command.scissor.x * scale,
+        //     sy * scale,
+        //     command.scissor.width * scale,
+        //     command.scissor.height * scale);
 
         glDrawElements(
             GL_TRIANGLES,

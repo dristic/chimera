@@ -37,8 +37,17 @@ namespace Cosmonaut {
     }  // namespace Api
 
     ComponentManager::ComponentManager(Nova::Context* context)
-    : mContext{context}
-    { }
+        : mContext{context}
+        { }
+
+    void ComponentManager::update(double dt) {
+        size_t length = tasks.size();
+        for (int i = 0; i < length; i++) {
+            tasks[i]();
+        }
+
+        tasks.erase(tasks.begin(), tasks.begin() + (length - 1));
+    }
 
     void ComponentManager::patch(Nova::Element *element, Api::CElement* other) {
         auto id = other->getAttribute("id");
@@ -126,6 +135,11 @@ namespace Cosmonaut {
                 component->parentElement = currentNode;
                 component->elementRef = element;
                 component->componentManager = this;
+
+                if (!component->mounted) {
+                    component->componentDidMount();
+                    component->mounted = true;
+                }
 
                 break;
             }

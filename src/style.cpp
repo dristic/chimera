@@ -330,6 +330,7 @@ void StyleManager::addRule(std::string selector, std::vector<StyleAttribute> att
         switch (attribute.getProp()) {
             case StyleProp::Width:
             case StyleProp::Height:
+            case StyleProp::FontSize:
                 rule.addValue(attribute.getProp(), attribute.asInt());
                 break;
             case StyleProp::BackgroundImage:
@@ -337,6 +338,21 @@ void StyleManager::addRule(std::string selector, std::vector<StyleAttribute> att
                 break;
             case StyleProp::AnimationName:
                 rule.addValue(attribute.getProp(), attribute.asString());
+                break;
+            case StyleProp::FlexDirection:
+                rule.addValue(attribute.getProp(), attribute.asDirection());
+                break;
+            case StyleProp::TextAlign:
+            case StyleProp::JustifyContent:
+                rule.addValue(attribute.getProp(), attribute.asAlign());
+                break;
+            case StyleProp::Color:
+            case StyleProp::BackgroundColor:
+                rule.addValue(attribute.getProp(), attribute.asColor());
+                break;
+            case StyleProp::Margin:
+            case StyleProp::Padding:
+                rule.addValue(attribute.getProp(), attribute.asLayoutProperty());
                 break;
             default:
                 break;

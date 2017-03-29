@@ -142,9 +142,12 @@ class ComponentManager {
 public:
     ComponentManager(Nova::Context* document);
 
+    void update(double dt);
     void patch(Nova::Element* element, Api::CElement* other);
     void walk(Nova::Element* currentNode, Api::CElement* currentElement);
     void render(Nova::Element* root, std::shared_ptr<Api::CElement> element);
+
+    std::vector<std::function<void(void)>> tasks;
 
 private:
     Nova::Context* mContext;
@@ -157,6 +160,7 @@ public:
         : Api::CElement(Api::E::Component, {})
         { }
 
+    virtual void componentDidMount() { }
     virtual std::shared_ptr<Api::CElement> render(Nova::Context& context) override {
         return Api::CElement::render(context);
     }
@@ -169,6 +173,7 @@ public:
     Nova::Element* parentElement;
     Nova::Element* elementRef;
     ComponentManager* componentManager;
+    bool mounted{false};
 };
     
 }  // namespace Cosmonaut

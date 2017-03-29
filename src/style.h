@@ -65,6 +65,15 @@ class LayoutProperty {
     float right;
     float bottom;
 
+    LayoutProperty() { }
+
+    LayoutProperty(float _t, float _l, float _r, float _b)
+        : top{_t}
+        , left{_l}
+        , right{_r}
+        , bottom{_b}
+        { }
+
     void set(float value) {
         top = left = right = bottom = value;
     }
@@ -119,7 +128,7 @@ class Style {
     int fontSize = 24;
     Align textAlign = Align::Left;
     TextDecoration textDecoration = TextDecoration::None;
-    Color color;
+    Color color{Color::fromRGBA(0, 0, 0, 1)};
 
     // Visual
     std::string backgroundImage = "";
@@ -287,7 +296,11 @@ class StyleRule {
 
 enum class StyleAttributeType {
     Int,
-    String
+    String,
+    Direction,
+    Align,
+    Color,
+    LayoutProperty
 };
 
 class StyleAttribute {
@@ -302,6 +315,30 @@ class StyleAttribute {
         : mProp{prop}
         , mStringValue{value}
         , mType{StyleAttributeType::String}
+        { }
+
+    StyleAttribute(StyleProp prop, Direction value)
+        : mProp{prop}
+        , mDirectionValue{value}
+        , mType{StyleAttributeType::Direction}
+        { }
+
+    StyleAttribute(StyleProp prop, Align value)
+        : mProp{prop}
+        , mAlignValue{value}
+        , mType{StyleAttributeType::Align}
+        { }
+
+    StyleAttribute(StyleProp prop, Color value)
+        : mProp{prop}
+        , mColorValue{value}
+        , mType{StyleAttributeType::Color}
+        { }
+
+    StyleAttribute(StyleProp prop, LayoutProperty value)
+        : mProp{prop}
+        , mLayoutPropertyValue{value}
+        , mType{StyleAttributeType::LayoutProperty}
         { }
 
     StyleProp getProp() {
@@ -324,12 +361,32 @@ class StyleAttribute {
         }
     }
 
+    Direction asDirection() {
+        return mDirectionValue;
+    }
+
+    Align asAlign() {
+        return mAlignValue;
+    }
+
+    Color asColor() {
+        return mColorValue;
+    }
+
+    LayoutProperty asLayoutProperty() {
+        return mLayoutPropertyValue;
+    }
+
 private:
     StyleProp mProp;
     StyleAttributeType mType;
     
     std::string mStringValue;
     int mIntValue;
+    Direction mDirectionValue{Direction::Row};
+    Align mAlignValue{Align::Left};
+    Color mColorValue{};
+    LayoutProperty mLayoutPropertyValue{0, 0, 0, 0};
 };
 
 class StyleManager {
