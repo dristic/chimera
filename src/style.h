@@ -114,8 +114,8 @@ class Style {
     int width = 0;
     NumericType widthType{NumericType::Pixels};
     int height = 0;
-    LayoutProperty padding;
-    LayoutProperty margin;
+    LayoutProperty padding{0, 0, 0, 0};
+    LayoutProperty margin{0, 0, 0, 0};
     Align alignItems = Align::Top;
     Align justifyContent = Align::Left;
     Direction flexDirection = Direction::Row;
