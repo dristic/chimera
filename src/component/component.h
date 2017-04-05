@@ -138,13 +138,29 @@ static inline std::shared_ptr<CElement> C(E type, std::vector<Attribute> attribu
 
 }  // namespace Api
 
+enum class PatchMode {
+    Create,
+    Delete,
+    Diff
+};
+
+class Component;
+
 class ComponentManager {
 public:
     ComponentManager(Nova::Context* document);
 
     void update(double dt);
-    void patch(Nova::Element* element, Api::CElement* other);
-    void walk(Nova::Element* currentNode, Api::CElement* currentElement);
+    void patch(
+        PatchMode mode,
+        Api::CElement* currentNode,
+        Api::CElement* newNode,
+        Nova::Element* element);
+    void walk(
+        Api::CElement* currentNode,
+        Api::CElement* newNode,
+        Nova::Element* elementRoot);
+    void invalidate(Component* node);
     void render(Nova::Element* root, std::shared_ptr<Api::CElement> element);
 
     std::vector<std::function<void(void)>> tasks;
@@ -166,8 +182,7 @@ public:
     }
 
     void invalidate() {
-        parentElement->remove(elementRef);
-        componentManager->walk(parentElement, this);
+        componentManager->invalidate(this);
     }
 
     Nova::Element* parentElement;
