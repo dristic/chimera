@@ -155,6 +155,11 @@ namespace Cosmonaut {
                 if (newId != oldId) {
                     element->id(newId);
                 }
+
+                auto style = newNode->getAttribute("style");
+                if (style) {
+                    element->style.animationName = (*style).asStyle().animationName;
+                }
             }
         }
     }

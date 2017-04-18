@@ -173,6 +173,13 @@ int main() {
             element->style.opacity = -1 * time * (time - 2);
         });
 
+    document.animationController.addAnimation("slide-out",
+        [](float time, Nova::Element* element) {
+            float pos = -50 * time * (time-2);
+            element->style.margin.top = pos;
+            element->style.opacity = 1 - (-1 * time * (time - 2));
+        });
+
     document.styleManager.addRule("#background", {
         {Nova::StyleProp::Width, WIDTH},
         {Nova::StyleProp::Height, HEIGHT},

@@ -9,14 +9,25 @@
 namespace Nova {
 
 void Style::update(Element* element, AnimationController& controller) {
+    // Check for changed animation
+    auto result = std::find_if(animations.begin(), animations.end(), [this](Animation& anim) {
+        return anim.name != animationName;
+    });
+
+    if (result != animations.end()) {
+        animations.erase(result);
+    }
+
+    // Check for new animation
     if (animationName != "" && animations.size() == 0) {
         auto func = controller.getFunction(animationName);
 
         if (func) {
-            animations.push_back({element, func});
+            animations.push_back({animationName, element, func});
         }
     }
 
+    // Now update
     for (auto& animation : animations) {
         animation.update(16.0f);
     }
