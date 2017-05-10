@@ -8,11 +8,13 @@
 #include <thread>
 #include <chrono>
 #include <atomic>
+#include <functional>
 
 class LoadingComponent : public Cosmonaut::Component {
 public:
-    LoadingComponent()
+    LoadingComponent(std::function<void(void)> onLoaded)
         : Cosmonaut::Component()
+        , mOnLoaded{onLoaded}
         { }
 
     void componentDidMount() override {
@@ -45,6 +47,7 @@ public:
             if (diff > std::chrono::seconds(3)) {
                 loaded = true;
                 invalidate();
+                mOnLoaded();
             }
         }
     }
@@ -105,6 +108,7 @@ public:
     int loadedPercentage{0};
     bool loaded{false};
     std::chrono::time_point<std::chrono::system_clock> lastTime;
+    std::function<void(void)> mOnLoaded;
 };
 
 #endif  // EXAMPLES_APP_LOADING_H_

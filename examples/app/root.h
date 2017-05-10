@@ -49,14 +49,18 @@ public:
             });
         }
 
+        printf("Loaded %s\n", loaded ? "true" : "false");
+
         return C(E::Div, {{"id", "background"}}, {
-                    std::make_shared<LoadingComponent>()
+                    std::make_shared<LoadingComponent>([this]() {
+                        loaded = true;
+                        invalidate();
+                    })
                 });
     }
 
-    int loadedPercentage{0};
+private:
     bool loaded{false};
-    std::chrono::time_point<std::chrono::system_clock> lastTime;
 };
 
 #endif  // EXAMPLES_APP_ROOT_H_

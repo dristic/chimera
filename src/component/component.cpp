@@ -138,8 +138,10 @@ namespace Cosmonaut {
             if (newElement) {
                 element->append(newElement);
 
-                for (auto& child : newNode->getChildren()) {
-                    patch(PatchMode::Create, nullptr, child.get(), newElement);
+                if (newNode->getType() != Api::E::Component) {
+                    for (auto& child : newNode->getChildren()) {
+                        patch(PatchMode::Create, nullptr, child.get(), newElement);
+                    }
                 }
             }
         } else if (mode == PatchMode::Diff) {
