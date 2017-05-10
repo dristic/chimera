@@ -18,10 +18,12 @@ using AnimationFunction = std::function<void(float, Element*)>;
 
 class Animation {
  public:
-    Animation(Element* element, std::function<void(float, Element*)> update);
+    Animation(std::string _name, Element* element, std::function<void(float, Element*)> update);
     ~Animation();
 
     void update(double dt);
+
+    std::string name;
 
  private:
     float mCurrent;

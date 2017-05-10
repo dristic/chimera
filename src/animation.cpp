@@ -7,9 +7,11 @@
 namespace Nova {
 
     Animation::Animation(
+            std::string _name,
             Element* element,
             std::function<void(float, Element*)> update)
-        : mCurrent{0}
+        : name{_name}
+        , mCurrent{0}
         , mEnd{1}
         , mElement{element}
         , mUpdate{update}
@@ -39,7 +41,7 @@ namespace Nova {
 
     void AnimationController::addAnimation(
             Element* element, AnimationFunction update) {
-        mAnimations.push_back({element, update});
+        mAnimations.push_back({"", element, update});
     }
 
     void AnimationController::addAnimation(

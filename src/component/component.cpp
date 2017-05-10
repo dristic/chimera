@@ -37,110 +37,180 @@ namespace Cosmonaut {
     }  // namespace Api
 
     ComponentManager::ComponentManager(Nova::Context* context)
-    : mContext{context}
-    { }
+        : mContext{context}
+        { }
 
-    void ComponentManager::patch(Nova::Element *element, Api::CElement* other) {
-        auto id = other->getAttribute("id");
-        if (id) {
-            if (element->id() != (*id).asString()) {
-                element->id((*id).asString());
+    void ComponentManager::update(double dt) {
+        size_t length = tasks.size();
+        for (int i = 0; i < length; i++) {
+            tasks[i]();
+        }
+
+        tasks.erase(tasks.begin(), tasks.begin() + (length - 1));
+    }
+
+    void ComponentManager::patch(
+        PatchMode mode,
+        Api::CElement* currentNode,
+        Api::CElement* newNode,
+        Nova::Element* element
+    ) {
+        Nova::Document& document = mContext->document;
+
+        if (mode == PatchMode::Create) {
+            Nova::Element* newElement{};
+
+            switch(newNode->getType()) {
+                case Api::E::Div:
+                {
+                    newElement = document.createElement<Nova::Div>();
+                    break;
+                }
+                case Api::E::Img:
+                {
+                    newElement = document.createElement<Nova::Img>();
+                    auto src = newNode->getAttribute("src");
+                    if (src) {
+                        static_cast<Nova::Img*>(newElement)->src((*src).asString());
+                    }
+                    break;
+                }
+                case Api::E::Text:
+                {
+                    std::string content = (*newNode->getAttribute("textContent")).asString();
+                    element->textContent = content;
+                    break;
+                }
+                case Api::E::Input:
+                {
+                    newElement = document.createElement<Nova::Input>();
+                    auto placeholder = newNode->getAttribute("placeholder");
+                    if (placeholder) {
+                        static_cast<Nova::Input*>(newElement)->placeholder = (*placeholder).asString();
+                    }
+                    break;
+                }
+                case Api::E::Button:
+                {
+                    newElement = document.createElement<Nova::Button>();
+                    break;
+                }
+                case Api::E::Component:
+                {
+                    newElement = document.createElement<Nova::Div>();
+                    auto subtree = newNode->render(*mContext);
+
+                    std::vector<std::shared_ptr<Api::CElement>> children{};
+                    children.push_back(subtree);
+                    newNode->setChildren(children);
+
+                    patch(PatchMode::Create, nullptr, subtree.get(), newElement);
+
+                    auto component = dynamic_cast<Component*>(newNode);
+                    component->parentElement = element;
+                    component->elementRef = newElement;
+                    component->componentManager = this;
+
+                    if (!component->mounted) {
+                        component->componentDidMount();
+                        component->mounted = true;
+                    }
+
+                    break;
+                }
             }
-        }
 
-        auto style = other->getAttribute("style");
-        if (style) {
-            element->style = (*style).asStyle();
-        }
+            auto id = newNode->getAttribute("id");
+            if (id) {
+                newElement->id((*id).asString());
+            }
 
-        auto clickHandler = other->getAttribute("onClick");
-        if (clickHandler) {
-            element->on(Nova::EventType::MouseDown, (*clickHandler).asCallback());
+            auto style = newNode->getAttribute("style");
+            if (style) {
+                newElement->style = (*style).asStyle();
+            }
+
+            auto clickHandler = newNode->getAttribute("onClick");
+            if (clickHandler) {
+                newElement->on(Nova::EventType::MouseDown, (*clickHandler).asCallback());
+            }
+
+            if (newElement) {
+                element->append(newElement);
+
+                for (auto& child : newNode->getChildren()) {
+                    patch(PatchMode::Create, nullptr, child.get(), newElement);
+                }
+            }
+        } else if (mode == PatchMode::Diff) {
+            if (newNode->getType() == Api::E::Text) {
+                auto newContent = (*newNode->getAttribute("textContent")).asString();
+                auto oldContent = (*currentNode->getAttribute("textContent")).asString();
+                if (newContent != oldContent) {
+                    element->textContent = newContent;
+                }
+            } else {
+                auto newId = (*newNode->getAttribute("id")).asString();
+                auto oldId = (*currentNode->getAttribute("id")).asString();
+                if (newId != oldId) {
+                    element->id(newId);
+                }
+
+                auto style = newNode->getAttribute("style");
+                if (style) {
+                    element->style.animationName = (*style).asStyle().animationName;
+                }
+            }
         }
     }
 
-    void ComponentManager::walk(Nova::Element *currentNode, Api::CElement* currentElement) {
-        Nova::Element* newElement{};
+    void ComponentManager::walk(
+        Api::CElement* currentNode,
+        Api::CElement* newNode,
+        Nova::Element *rootElement
+    ) {
         Nova::Document& document = mContext->document;
 
-        switch (currentElement->getType()) {
-            case Api::E::Div:
-            {
-                auto element = document.createElement<Nova::Div>();
-                patch(element, currentElement);
-                currentNode->append(element);
-                newElement = static_cast<Nova::Element*>(element);
+        if (newNode) {
+            if (!currentNode) {
+                patch(PatchMode::Create, currentNode, newNode, rootElement);
+            } else {
+                patch(PatchMode::Diff, currentNode, newNode, rootElement);
 
-                break;
+                auto currentChildren = currentNode->getChildren();
+                for(size_t i = 0; i < currentChildren.size(); i++) {
+                    auto currentChild = currentChildren[i];
+                    auto newChild = newNode->getChildren()[i];
+
+                    if (newChild->getType() == Api::E::Text) {
+                        patch(PatchMode::Diff, currentChild.get(), newChild.get(), rootElement);
+                    } else {
+                        auto childElement = rootElement->getChildren()[i];
+                        walk(currentChild.get(), newChild.get(), childElement);
+                    }
+                }
             }
-            case Api::E::Img:
-            {
-                auto element = document.createElement<Nova::Img>();
-                patch(element, currentElement);
-                auto src = currentElement->getAttribute("src");
-                element->src((*src).asString());
-                currentNode->append(element);
-                newElement = static_cast<Nova::Element*>(element);
-
-                break;
-            }
-            case Api::E::Text:
-            {
-                std::string content = (*currentElement->getAttribute("textContent")).asString();
-                currentNode->textContent = content;
-                break;
-            }
-            case Api::E::Input:
-            {
-                auto element = document.createElement<Nova::Input>();
-                patch(element, currentElement);
-                auto placeholder = currentElement->getAttribute("placeholder");
-                element->placeholder = ((*placeholder).asString());
-                currentNode->append(element);
-                newElement = static_cast<Nova::Element*>(element);
-
-                break;
-            }
-            case Api::E::Button:
-            {
-                auto element = document.createElement<Nova::Button>();
-                patch(element, currentElement);
-                currentNode->append(element);
-                newElement = static_cast<Nova::Element*>(element);
-
-                break;
-            }
-            case Api::E::Component:
-            {
-                auto element = document.createElement<Nova::Div>();
-                auto subtree = currentElement->render(*mContext);
-
-                std::vector<std::shared_ptr<Api::CElement>> children{};
-                children.push_back(subtree);
-                currentElement->setChildren(children);
-
-                walk(element, subtree.get());
-                currentNode->append(element);
-
-                auto component = dynamic_cast<Component*>(currentElement);
-                component->parentElement = currentNode;
-                component->elementRef = element;
-                component->componentManager = this;
-
-                break;
+        } else {
+            if (currentNode) {
+                // delete
+            } else {
+                // ?
             }
         }
+    }
 
-        if (newElement) {
-            for (auto& child : currentElement->getChildren()) {
-                walk(newElement, child.get());
-            }
-        }
+    void ComponentManager::invalidate(Component* node) {
+        auto subtree = node->render(*mContext);
+
+        // Assumme there is only one child
+        auto currentSubtree = node->getChildren()[0];
+        walk(currentSubtree.get(), subtree.get(), node->elementRef->getChildren()[0]);
     }
 
     void ComponentManager::render(Nova::Element *root, std::shared_ptr<Api::CElement> element) {
         mTreeRoot = element;
-        walk(root, mTreeRoot.get());
+
+        walk(nullptr, mTreeRoot.get(), root);
     }
     
 }  // namespace Cosmonaut

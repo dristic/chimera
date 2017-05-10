@@ -166,8 +166,34 @@ int main() {
     context.renderer.loadFont(context, "Roboto", "assets/Roboto-Regular.ttf");
     context.renderer.loadFont(context, "Roboto Thin", "assets/Roboto-Thin.ttf");
 
+    document.animationController.addAnimation("slide-in",
+        [](float time, Nova::Element* element) {
+            float pos = -50 * time * (time-2);
+            element->style.margin.top = 50 - pos;
+            element->style.opacity = -1 * time * (time - 2);
+        });
+
+    document.animationController.addAnimation("slide-out",
+        [](float time, Nova::Element* element) {
+            float pos = -50 * time * (time-2);
+            element->style.margin.top = pos;
+            element->style.opacity = 1 - (-1 * time * (time - 2));
+        });
+
+    document.styleManager.addRule("#background", {
+        {Nova::StyleProp::Width, WIDTH},
+        {Nova::StyleProp::Height, HEIGHT},
+        {Nova::StyleProp::BackgroundImage, "assets/bg.png"},
+        {Nova::StyleProp::AnimationName, "fade-in"}
+    });
+
+    auto background = document.createElement<Nova::Div>();
+    background->id("background");
+
     auto loadingComponent = std::make_shared<LoadingComponent>();
-    context.component.render(document.body, loadingComponent);
+    context.component.render(background, loadingComponent);
+
+    document.body->append(background);
 
     GLFWcursor* arrowCursor = glfwCreateStandardCursor(GLFW_ARROW_CURSOR);
     GLFWcursor* handCursor = glfwCreateStandardCursor(GLFW_HAND_CURSOR);
@@ -229,4 +255,3 @@ int main() {
 
     return 0;
 }
-

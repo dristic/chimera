@@ -16,6 +16,50 @@ Non Goals:
 
 Specifically, the API mimics the one provided from web browsers such as Chromium. The goal is to provide an easy way to create a highly polished user interface that targets a much smaller memory footprint than the one that Chromium provides. Also, by backing on C++, it makes it easier to create a well memory managed UI that performs for high fidelity interfaces.
 
+Example
+=======
+
+Cosmonaut is a component-based framework. To show UI on the screen a tree of several components is built and then given over to the framework's renderer. The framework takes care of translating a well defined component tree into a list of commands to be given to a back-end GPU.
+
+```cpp
+#include "Cosmonaut/Cosmonaut.h"
+
+class MyComponent : public Cosmonaut::Component {
+public:
+    MyComponent()
+        : Cosmonaut::Component()
+        { }
+
+    std::shared_ptr<Cosmonaut::Api::CElement> render(Nova::Context& context) override {
+        using namespace Nova;
+        using namespace Cosmonaut::Api;
+
+        Nova::Document& document = context.document;
+
+        document.styleManager.addRule("#my-text", {
+            {StyleProp::Width, 100},
+            {StyleProp::Height, 100},
+            {StyleProp::Color, Color::fromRGBA(255, 0, 0, 1)}
+        });
+
+        return C(E::Div, {{"id", "my-container"}}, {
+                    C(E::Div, {{"id", "my-text"}}, {
+                        C(E::Text, {{"textContent", mMyText}})
+                    })
+                });
+    }
+
+    std::string mMyText{"Hello World!"};
+};
+```
+
+To render this component to the screen we give it to our current context:
+
+```cpp
+auto myComponent = std::make_shared<MyComponent>();
+context.component.render(document.body, myComponent);
+```
+
 Getting Started
 ===============
 

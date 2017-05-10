@@ -9,14 +9,25 @@
 namespace Nova {
 
 void Style::update(Element* element, AnimationController& controller) {
+    // Check for changed animation
+    auto result = std::find_if(animations.begin(), animations.end(), [this](Animation& anim) {
+        return anim.name != animationName;
+    });
+
+    if (result != animations.end()) {
+        animations.erase(result);
+    }
+
+    // Check for new animation
     if (animationName != "" && animations.size() == 0) {
         auto func = controller.getFunction(animationName);
 
         if (func) {
-            animations.push_back({element, func});
+            animations.push_back({animationName, element, func});
         }
     }
 
+    // Now update
     for (auto& animation : animations) {
         animation.update(16.0f);
     }
@@ -330,6 +341,7 @@ void StyleManager::addRule(std::string selector, std::vector<StyleAttribute> att
         switch (attribute.getProp()) {
             case StyleProp::Width:
             case StyleProp::Height:
+            case StyleProp::FontSize:
                 rule.addValue(attribute.getProp(), attribute.asInt());
                 break;
             case StyleProp::BackgroundImage:
@@ -337,6 +349,21 @@ void StyleManager::addRule(std::string selector, std::vector<StyleAttribute> att
                 break;
             case StyleProp::AnimationName:
                 rule.addValue(attribute.getProp(), attribute.asString());
+                break;
+            case StyleProp::FlexDirection:
+                rule.addValue(attribute.getProp(), attribute.asDirection());
+                break;
+            case StyleProp::TextAlign:
+            case StyleProp::JustifyContent:
+                rule.addValue(attribute.getProp(), attribute.asAlign());
+                break;
+            case StyleProp::Color:
+            case StyleProp::BackgroundColor:
+                rule.addValue(attribute.getProp(), attribute.asColor());
+                break;
+            case StyleProp::Margin:
+            case StyleProp::Padding:
+                rule.addValue(attribute.getProp(), attribute.asLayoutProperty());
                 break;
             default:
                 break;

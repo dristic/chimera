@@ -2,14 +2,52 @@
 
 #include "Cosmonaut/Cosmonaut.h"
 
+#include <thread>
+#include <chrono>
+#include <atomic>
+
 class LoadingComponent : public Cosmonaut::Component {
 public:
     LoadingComponent()
         : Cosmonaut::Component()
         { }
 
-    void onClick(Nova::Event* event) {
-        printf("::: ON CLICK\n");
+    void componentDidMount() override {
+        lastTime = std::chrono::system_clock::now();
+
+        componentManager->tasks.push_back(
+            std::bind(&LoadingComponent::update, this)
+        );
+    }
+
+    void update() {
+        if (loadedPercentage < 100) {
+            auto now = std::chrono::system_clock::now();
+            std::chrono::duration<double> diff = now - lastTime;
+
+            if (diff > std::chrono::milliseconds(50)) {
+                loadedPercentage++;
+                invalidate();
+
+                lastTime = now;
+            }
+
+            componentManager->tasks.push_back(
+                std::bind(&LoadingComponent::update, this)
+            );
+        } else if (!loaded) {
+            auto now = std::chrono::system_clock::now();
+            std::chrono::duration<double> diff = now - lastTime;
+
+            if (diff > std::chrono::seconds(3)) {
+                loaded = true;
+                invalidate();
+            }
+        }
+    }
+
+    std::string getLoadingPercent() {
+        return std::to_string(loadedPercentage) + "%";
     }
 
     std::shared_ptr<Cosmonaut::Api::CElement> render(Nova::Context& context) override {
@@ -22,100 +60,46 @@ public:
         int width = document.getWidth();
         int height = document.getHeight();
 
-        document.styleManager.addRule("#background", {
-            {Nova::StyleProp::Width, width},
-            {Nova::StyleProp::Height, height},
-            {Nova::StyleProp::BackgroundImage, "assets/bg.png"},
-            {Nova::StyleProp::AnimationName, "fade-in"}
-        });
-
-        document.styleManager.addRule("#root-container", {
-            {Nova::StyleProp::Width, width},
-            {Nova::StyleProp::Height, height},
-            {Nova::StyleProp::AnimationName, "slide-in"}
-        });
-
-        document.styleManager.addRule([this](StyleRule& rule) {
-            rule.addId("splash");
-            rule.withWidth(960)
-                .withHeight(720)
-                .withJustifyContent(Align::Center)
-                .withFlexDirection(Direction::Column)
-                .withAnimationName("slide-in");
-        });
-
-        document.styleManager.addRule([this](StyleRule& rule) {
-            rule.addId("login-container");
-            rule.withWidth(320)
-                .withHeight(720)
-                .withFlexDirection(Direction::Column)
-                .withJustifyContent(Align::Center)
-                .withMargin({200, 0, 0, 0})
-                .withAnimationName("slide-in");
-        });
-
-        document.styleManager.addRule([](StyleRule& rule) {
-            rule.addId("title");
-            rule.withWidth(256)
-                .withHeight(40)
-                .withColor(Color::fromRGBA(255, 255, 255, 1))
-                .withTextAlign(Align::Center)
-                .withFontSize(32)
-                .withMargin({10, 0, 0, 0})
-                .withAnimationName("fade-in");
-        });
-
-        document.styleManager.addRule([](StyleRule& rule) {
-            rule.addId("logo");
-            rule.withWidth(128)
-                .withHeight(128)
-                .withAnimationName("fade-in");
-        });
-
-        document.styleManager.addRule([](StyleRule& rule) {
-            rule.addId("login-button");
-            rule.withBackgroundColor(Color::fromRGBA(11, 37, 63, 1.0f))
-                .withWidth(200)
-                .withHeight(40)
-                .withPadding({5, 0, 0, 0})
-                .withColor({1.0f, 1.0f, 1.0f, 1.0f})
-                .withTextAlign(Nova::Align::Center)
-                .withAnimationName("fade-in");
-        });
-
-        document.styleManager.addRule([](StyleRule& rule) {
-            rule.addId("login-button");
-            rule.addPseudoClass(Nova::PseudoClass::Hover);
-            rule.withBackgroundColor(Color::fromRGBA(42, 75, 111, 1.0f));
-        });
-
-        document.styleManager.addRule([](StyleRule& rule) {
-            rule.addId("username");
-            rule.withBackgroundColor(Color::fromRGBA(150, 150, 150, 0.3))
-                .withWidth(200)
-                .withHeight(40)
-                .withMargin({75, 0, 0, 15})
-                .withColor({1.0f, 1.0f, 1.0f, 1.0f})
-                .withAnimationName("fade-in");
-        });
-
-        return C(E::Div, {{"id", "background"}}, {
-                C(E::Div, {{"id", "root-container"}}, {
-                    C(E::Img, {{"id", "splash"}, {"src", "assets/splash.png"}}),
-                    C(E::Div, {{"id", "login-container"}}, {
-                        C(E::Img, {{"id", "logo"}, {"src", "assets/outerspace.png"}}),
-                        C(E::Div, {{"id", "title"}}, {
-                            C(E::Text, {{"textContent", "Sign In"}})
-                        }),
-                        C(E::Input, {{"id", "username"}, {"placeholder", "Username"}}),
-                        C(E::Button, {
-                            {"id", "login-button"},
-                            {"onClick", std::bind(&LoadingComponent::onClick, this, _1)}
-                        }, {
-                            C(E::Text, {{"textContent", "Login"}})
-                        })
-                    })
-                })
+        if (!mounted) {
+            document.styleManager.addRule("#loading-container", {
+                {StyleProp::Width, width},
+                {StyleProp::Height, 100},
+                {StyleProp::Margin, LayoutProperty(300, 0, 0, 0)},
+                {StyleProp::FlexDirection, Direction::Column},
+                {StyleProp::JustifyContent, Align::Center}
             });
+
+            document.styleManager.addRule("#loading-text", {
+                {StyleProp::Width, 300},
+                {StyleProp::Height, 20},
+                {StyleProp::Margin, LayoutProperty(10, 0, 0, 0)},
+                {StyleProp::TextAlign, Align::Center},
+                {StyleProp::Color, Color::fromRGBA(255, 255, 255, 1)}
+            });
+
+            document.styleManager.addRule("#loading-percent", {
+                {StyleProp::Width, 300},
+                {StyleProp::Height, 32},
+                {StyleProp::FontSize, 32},
+                {StyleProp::TextAlign, Align::Center},
+                {StyleProp::Color, Color::fromRGBA(255, 255, 255, 1)}
+            });
+        }
+
+        Style textStyle{};
+        textStyle.animationName = loaded ? "slide-out" : "slide-in";
+
+        return C(E::Div, {{"id", "loading-container"}}, {
+                    C(E::Div, {{"id", "loading-percent"}, {"style", textStyle}}, {
+                        C(E::Text, {{"textContent", getLoadingPercent()}})
+                    }),
+                    C(E::Div, {{"id", "loading-text"}, {"style", textStyle}}, {
+                        C(E::Text, {{"textContent", "Loading..."}})
+                    })
+                });
     }
+
+    int loadedPercentage{0};
+    bool loaded{false};
+    std::chrono::time_point<std::chrono::system_clock> lastTime;
 };
