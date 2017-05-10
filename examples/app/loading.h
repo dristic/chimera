@@ -1,4 +1,7 @@
-// Copyright 2016 Dan Ristic
+// Copyright 2017 Dan Ristic
+
+#ifndef EXAMPLES_APP_LOADING_H_
+#define EXAMPLES_APP_LOADING_H_
 
 #include "Cosmonaut/Cosmonaut.h"
 
@@ -103,3 +106,5 @@ public:
     bool loaded{false};
     std::chrono::time_point<std::chrono::system_clock> lastTime;
 };
+
+#endif  // EXAMPLES_APP_LOADING_H_
