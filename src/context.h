@@ -10,12 +10,9 @@
 #include "src/document.h"
 #include "src/rendering.h"
 #include "src/types.h"
-#include "src/component/component.h"
 #include "src/adaptor/adaptor.h"
 
-namespace Nova {
-
-using namespace Cosmonaut;
+namespace Cosmonaut {
 
 class Context {
  public:
@@ -36,13 +33,12 @@ class Context {
 
     Document document;
     Renderer renderer;
-    ComponentManager component;
 
  private:
     int mMouseX, mMouseY, mScrollDirection;
     std::shared_ptr<Adaptor> mAdaptor;
 };
 
-}  // namespace Nova
+}  // namespace Cosmonaut
 
 #endif  // SRC_CONTEXT_H_

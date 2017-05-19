@@ -8,7 +8,7 @@
 
 #include "src/context.h"
 
-namespace Nova {
+namespace Cosmonaut {
 
 Document::Document(Context& context)
     : body{nullptr}
@@ -84,4 +84,4 @@ CursorType Document::getCursorType() {
     return mCursorType;
 }
 
-}  // namespace Nova
+}  // namespace Cosmonaut

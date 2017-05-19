@@ -9,7 +9,7 @@ DX9Adaptor::DX9Adaptor(LPDIRECT3DDEVICE9 _device)
     : device{ _device }
     { }
 
-std::unique_ptr<Nova::ImageRef> DX9Adaptor::loadImage(std::string imagePath, int& width, int& height) {
+std::unique_ptr<Cosmonaut::ImageRef> DX9Adaptor::loadImage(std::string imagePath, int& width, int& height) {
     std::vector<unsigned char> image;  // The raw pixels
     unsigned w, h;
     unsigned error = lodepng::decode(image, w, h, imagePath.c_str());
@@ -38,7 +38,7 @@ std::unique_ptr<Nova::ImageRef> DX9Adaptor::loadImage(std::string imagePath, int
 
     auto textureID = loadTexture(width, height, reinterpret_cast<unsigned char*>(image.data()));
 
-    return std::make_unique<Nova::ImageRef>(width, height, textureID);
+    return std::make_unique<Cosmonaut::ImageRef>(width, height, textureID);
 }
 
 unsigned int DX9Adaptor::loadTexture(unsigned int width, unsigned int height, unsigned char* buffer) {
@@ -87,7 +87,7 @@ unsigned int DX9Adaptor::loadTexture(unsigned int width, unsigned int height, un
     return returnId;
 }
 
-void DX9Adaptor::renderCallback(Nova::DrawData* data) {
+void DX9Adaptor::renderCallback(Cosmonaut::DrawData* data) {
     device->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
     device->SetRenderState(D3DRS_LIGHTING, false);
     device->SetRenderState(D3DRS_ZENABLE, false);

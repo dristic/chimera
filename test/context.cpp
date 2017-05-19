@@ -18,7 +18,7 @@ class ContextTest : public ::testing::Test {
 
     virtual void TearDown() { }
 
-    Nova::Context context;
+    Cosmonaut::Context context;
 };
 
 TEST_F(ContextTest, SetsMousePositionCorrectly) {
@@ -27,7 +27,7 @@ TEST_F(ContextTest, SetsMousePositionCorrectly) {
 
     context.setMousePosition(x, y);
 
-    Nova::Vec2 position = context.getMousePosition();
+    Cosmonaut::Vec2 position = context.getMousePosition();
 
     EXPECT_EQ(x, position.x);
     EXPECT_EQ(y, position.y);

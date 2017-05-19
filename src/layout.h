@@ -1,4 +1,4 @@
-// Copyright 2016 Dan Ristic
+// Copyright 2017 Dan Ristic
 
 #ifndef SRC_LAYOUT_H_
 #define SRC_LAYOUT_H_
@@ -6,7 +6,7 @@
 #include "src/style.h"
 #include "src/types.h"
 
-namespace Nova {
+namespace Cosmonaut {
 
 class Layout {
  public:
@@ -17,6 +17,6 @@ class Layout {
     Rect rect;
 };
 
-}  // namespace Nova
+}  // namespace Cosmonaut
 
 #endif  // SRC_LAYOUT_H_

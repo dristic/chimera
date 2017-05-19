@@ -1,11 +1,11 @@
-// Copyright 2016 Dan Ristic
+// Copyright 2017 Dan Ristic
 
 #ifndef SRC_TYPES_H_
 #define SRC_TYPES_H_
 
 #include <string>
 
-namespace Nova {
+namespace Cosmonaut {
 
 enum class CursorType {
     Arrow,
@@ -164,6 +164,6 @@ struct Rect {
     }
 };
 
-}  // namespace Nova
+}  // namespace Cosmonaut
 
 #endif  // SRC_TYPES_H_

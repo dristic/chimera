@@ -10,7 +10,7 @@
 #include <unordered_map>
 #include <functional>
 
-namespace Nova {
+namespace Cosmonaut {
     
 class Element;
 
@@ -49,6 +49,6 @@ class AnimationController {
     std::unordered_map<std::string, AnimationFunction> mFunctions;
 };
 
-}  // namespace Nova
+}  // namespace Cosmonaut
 
 #endif  // SRC_ANIMATION_H_

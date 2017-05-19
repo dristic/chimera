@@ -44,7 +44,7 @@ std::string UnicodeToUTF8(unsigned int codepoint)
 
 class GLFWapplication {
  public:
-    static void initialize(GLFWwindow* window, Nova::Context* context) {
+    static void initialize(GLFWwindow* window, Cosmonaut::Context* context) {
         mContext = context;
 
         glfwSetErrorCallback(errorCallback);
@@ -94,7 +94,7 @@ class GLFWapplication {
 
     static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
         if (key == GLFW_KEY_BACKSPACE && action == GLFW_PRESS) {
-            mContext->setKeyPress(Nova::KeyType::Backspace);
+            mContext->setKeyPress(Cosmonaut::KeyType::Backspace);
         }
     }
 
@@ -103,10 +103,10 @@ class GLFWapplication {
     GLFWapplication(GLFWapplication const&);
     void operator=(GLFWapplication const&);
 
-    static Nova::Context* mContext;
+    static Cosmonaut::Context* mContext;
 };
 
-Nova::Context* GLFWapplication::mContext{nullptr};
+Cosmonaut::Context* GLFWapplication::mContext{nullptr};
 
 #ifdef _WIN32
 int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
@@ -116,8 +116,8 @@ int main() {
     const int WIDTH = 1280;
     const int HEIGHT = 720;
 
-    Nova::Context context;
-    Nova::Document& document = context.document;
+    Cosmonaut::Context context;
+    Cosmonaut::Document& document = context.document;
 
     printf("Starting...!\n");
 
@@ -159,14 +159,13 @@ int main() {
 
     document.setDimensions(WIDTH, HEIGHT);
 
-    auto adaptor = std::make_shared<Nova::OpenGL3Bridge>();
+    auto adaptor = std::make_shared<Cosmonaut::OpenGL3Bridge>();
     context.useAdaptor(adaptor);
 
     context.renderer.loadFont(context, "Roboto", "assets/Roboto-Regular.ttf");
     context.renderer.loadFont(context, "Roboto Thin", "assets/Roboto-Thin.ttf");
 
-    auto rootComponent = std::make_shared<RootComponent>();
-    context.component.render(document.body, rootComponent);
+    document.body->append(document.createElement<AppElement>());
 
     GLFWcursor* arrowCursor = glfwCreateStandardCursor(GLFW_ARROW_CURSOR);
     GLFWcursor* handCursor = glfwCreateStandardCursor(GLFW_HAND_CURSOR);
@@ -196,19 +195,19 @@ int main() {
         context.update(16);
         context.render(16);
 
-        Nova::CursorType cursor = document.getCursorType();
+        Cosmonaut::CursorType cursor = document.getCursorType();
         switch(cursor) {
-        case Nova::CursorType::Arrow:
+        case Cosmonaut::CursorType::Arrow:
         {
             glfwSetCursor(window, arrowCursor);
             break;
         }
-        case Nova::CursorType::Hand:
+        case Cosmonaut::CursorType::Hand:
         {
             glfwSetCursor(window, handCursor);
             break;
         }
-        case Nova::CursorType::IBeam:
+        case Cosmonaut::CursorType::IBeam:
         {
             glfwSetCursor(window, ibeamCursor);
             break;

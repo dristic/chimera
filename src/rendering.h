@@ -1,4 +1,4 @@
-// Copyright 2016 Dan Ristic
+// Copyright 2017 Dan Ristic
 
 #ifndef SRC_RENDERING_H_
 #define SRC_RENDERING_H_
@@ -15,7 +15,7 @@
 
 #include "src/types.h"
 
-namespace Nova {
+namespace Cosmonaut {
 
 class Context;
 
@@ -158,6 +158,6 @@ class DrawData {
     unsigned int mCurIndex;
 };
 
-}  // namespace Nova
+}  // namespace Cosmonaut
 
 #endif  // SRC_RENDERING_H_

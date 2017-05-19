@@ -1,8 +1,8 @@
-// Copyright 2016 Dan Ristic
+// Copyright 2017 Dan Ristic
 
 #include "src/layout.h"
 
-namespace Nova {
+namespace Cosmonaut {
 
 Layout::Layout()
     : rect{}
@@ -12,4 +12,4 @@ void Layout::layout(Style& style) {
     
 }
 
-}  // namespace Nova
+}  // namespace Cosmonaut

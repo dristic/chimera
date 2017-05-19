@@ -20,7 +20,7 @@
 #include "src/types.h"
 #include "src/adaptor/adaptor.h"
 
-namespace Nova {
+namespace Cosmonaut {
 
 class GifRef: public ImageRef {
  public:
@@ -75,7 +75,7 @@ class GifRef: public ImageRef {
 //     }
 // };
 
-class OpenGL3Bridge : public Nova::Adaptor {
+class OpenGL3Bridge : public Cosmonaut::Adaptor {
  public:
     OpenGL3Bridge();
     ~OpenGL3Bridge();
@@ -98,6 +98,6 @@ class OpenGL3Bridge : public Nova::Adaptor {
     // static std::vector<VideoRef*> mVideoRefs;
 };
 
-}  // namespace Nova
+}  // namespace Cosmonaut
 
 #endif  // EXAMPLES_OPENGL3BRIDGE_H_

@@ -11,7 +11,7 @@ extern "C" {
     #include "libnsgif.h"
 }
 
-namespace Nova {
+namespace Cosmonaut {
 
 std::atomic<bool> gQuitting;
 
@@ -581,4 +581,4 @@ void OpenGL3Bridge::renderCallback(DrawData* data) {
     }
 }
 
-}  // namespace Nova
+}  // namespace Cosmonaut

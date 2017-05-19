@@ -13,7 +13,7 @@
 #include "src/focus.h"
 #include "src/animation.h"
 
-namespace Nova {
+namespace Cosmonaut {
 
 class Context;
 
@@ -64,6 +64,6 @@ class Document {
     CursorType mCursorType;
 };
 
-}  // namespace Nova
+}  // namespace Cosmonaut
 
 #endif  // SRC_DOCUMENT_H_

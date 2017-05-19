@@ -1,8 +1,8 @@
-// Copyright 2016 Dan Ristic
+// Copyright 2017 Dan Ristic
 
 #include "src/focus.h"
 
-namespace Nova {
+namespace Cosmonaut {
 
 FocusManager::FocusManager()
     : focusedElement{}
@@ -14,4 +14,4 @@ void FocusManager::focusElement(Element* element) {
     focusedElement = element;
 }
 
-}  // namespace Nova
+}  // namespace Cosmonaut

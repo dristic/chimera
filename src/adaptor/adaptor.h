@@ -8,7 +8,7 @@
 
 #include "src/rendering.h"
 
-namespace Nova {
+namespace Cosmonaut {
 
 class Adaptor {
  public:
@@ -23,6 +23,6 @@ class Adaptor {
     }
 };
 
-}  // namespace Nova
+}  // namespace Cosmonaut
 
 #endif  // SRC_ADAPTOR_ADAPTOR

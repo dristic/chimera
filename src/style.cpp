@@ -1,4 +1,4 @@
-// Copyright 2016 Dan Ristic
+// Copyright 2017 Dan Ristic
 
 #include <algorithm>
 #include <stack>
@@ -6,7 +6,7 @@
 #include "src/style.h"
 #include "src/element.h"
 
-namespace Nova {
+namespace Cosmonaut {
 
 void Style::update(Element* element, AnimationController& controller) {
     // Check for changed animation
@@ -400,4 +400,4 @@ void StyleManager::applyRules(Element* root) {
     }
 }
 
-}  // namespace Nova
+}  // namespace Cosmonaut

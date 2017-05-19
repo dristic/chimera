@@ -1,4 +1,4 @@
-// Copyright 2016 Dan Ristic
+// Copyright 2017 Dan Ristic
 
 #include "src/rendering.h"
 
@@ -6,7 +6,7 @@
 
 #include "src/context.h"
 
-namespace Nova {
+namespace Cosmonaut {
 
 DrawData::DrawData()
     : vertices{}
@@ -58,7 +58,7 @@ void DrawData::addRectFilled(
     mCurIndex += 4;
 }
 
-void DrawData::addImage(const Nova::Rect &rect, unsigned int textureId) {
+void DrawData::addImage(const Cosmonaut::Rect &rect, unsigned int textureId) {
     addImage(rect, textureId, 1.0f);
 }
 
@@ -190,6 +190,8 @@ void Renderer::loadFont(Context& context, std::string name, std::string location
 
     newFont.face = face;
 
+    auto index = FT_Get_Char_Index(face, 0x00002022);
+
     for (int c = 32; c < 128; c++) {
         if (FT_Load_Char(face, c, FT_LOAD_RENDER)) {
             printf("FreeType failed to load glyph %i\n", c);
@@ -238,4 +240,4 @@ Renderer::~Renderer() {
     FT_Done_FreeType(ft);
 }
 
-}  // namespace Nova
+}  // namespace Cosmonaut

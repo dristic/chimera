@@ -3,60 +3,53 @@
 #ifndef EXAMPLES_APP_ROOT_H_
 #define EXAMPLES_APP_ROOT_H_
 
-#include "Cosmonaut/Cosmonaut.h"
+#include <Cosmonaut/Cosmonaut.h>
 
-#include "app/loading.h"
-
-class RootComponent : public Cosmonaut::Component {
+class AppElement : public Cosmonaut::Element {
 public:
-    RootComponent()
-        : Cosmonaut::Component()
-        { }
-
-    void componentDidMount() override {
+    AppElement(Cosmonaut::Document& document)
+        : Cosmonaut::Element("app-element", document)
+    {
+        addStyles(document);
+        createTree(document);
     }
 
-    std::shared_ptr<Cosmonaut::Api::CElement> render(Nova::Context& context) override {
-        using namespace Nova;
-        using namespace Cosmonaut::Api;
-        using namespace std::placeholders;
-
-        Nova::Document& document = context.document;
-
+    void addStyles(Cosmonaut::Document& document)
+    {
         int width = document.getWidth();
         int height = document.getHeight();
 
-        if (!mounted) {
-            document.animationController.addAnimation("slide-in",
-                [](float time, Nova::Element* element) {
-                    float pos = -50 * time * (time-2);
-                    element->style.margin.top = 50 - pos;
-                    element->style.opacity = -1 * time * (time - 2);
-                });
-
-            document.animationController.addAnimation("slide-out",
-                [](float time, Nova::Element* element) {
-                    float pos = -50 * time * (time-2);
-                    element->style.margin.top = pos;
-                    element->style.opacity = 1 - (-1 * time * (time - 2));
-                });
-
-            document.styleManager.addRule("#background", {
-                {Nova::StyleProp::Width, width},
-                {Nova::StyleProp::Height, height},
-                {Nova::StyleProp::BackgroundImage, "assets/bg.png"},
-                {Nova::StyleProp::AnimationName, "fade-in"}
+        document.animationController.addAnimation("slide-in",
+            [](float time, Cosmonaut::Element* element) {
+                float pos = -50 * time * (time-2);
+                element->style.margin.top = 50 - pos;
+                element->style.opacity = -1 * time * (time - 2);
             });
-        }
 
-        printf("Loaded %s\n", loaded ? "true" : "false");
+        document.animationController.addAnimation("slide-out",
+            [](float time, Cosmonaut::Element* element) {
+                float pos = 200 * time * (time-2);
+                element->style.margin.top = pos;
+                element->style.opacity = 1 - (-1 * time * (time - 2));
+            });
 
-        return C(E::Div, {{"id", "background"}}, {
-                    std::make_shared<LoadingComponent>([this]() {
-                        loaded = true;
-                        invalidate();
-                    })
-                });
+        document.animationController.addAnimation("fade-in",
+            [](float time, Cosmonaut::Element* element) {
+                element->style.opacity = -1 * time * (time - 2);
+            });
+
+        document.styleManager.addRule("#background", {
+            {Cosmonaut::StyleProp::Width, width},
+            {Cosmonaut::StyleProp::Height, height},
+            {Cosmonaut::StyleProp::BackgroundImage, "assets/bg.png"},
+            {Cosmonaut::StyleProp::AnimationName, "fade-in"}
+        });
+    }
+
+    void createTree(Cosmonaut::Document& document)
+    {
+        // {{"id", "background"}}
+        append(document.createElement<Cosmonaut::Div>());
     }
 
 private:

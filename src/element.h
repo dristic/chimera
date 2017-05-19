@@ -1,4 +1,4 @@
-// Copyright 2016 Dan Ristic
+// Copyright 2017 Dan Ristic
 
 #ifndef SRC_ELEMENT_H_
 #define SRC_ELEMENT_H_
@@ -12,7 +12,7 @@
 #include "src/types.h"
 #include "src/layout.h"
 
-namespace Nova {
+namespace Cosmonaut {
 
 class Document;
 class DrawData;
@@ -30,6 +30,7 @@ class Element {
     void append(Element* element);
     void remove(Element* element);
     const std::vector<Element*>& getChildren() const;
+    virtual void connectedCallback() { }
 
     void on(EventType type, EventCallback func);
     void dispatch(EventType type, Event* event);
@@ -147,6 +148,6 @@ class Button: public Element {
     void render(DrawData* data, Style* parentStyle) override;
 };
 
-}  // namespace Nova
+}  // namespace Cosmonaut
 
 #endif  // SRC_ELEMENT_H_

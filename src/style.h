@@ -1,4 +1,4 @@
-// Copyright 2016 Dan Ristic
+// Copyright 2017 Dan Ristic
 
 #ifndef SRC_STYLE_H_
 #define SRC_STYLE_H_
@@ -12,7 +12,7 @@
 #include "src/types.h"
 #include "src/animation.h"
 
-namespace Nova {
+namespace Cosmonaut {
 
 class Style;
 class Element;
@@ -135,7 +135,7 @@ class Style {
     Color backgroundColor;
     Color borderColor;
     int borderWidth;
-    float opacity = 1.0f;
+    float opacity{1.0f};
 
     // Fidelity
     std::string animationName{""};
@@ -403,6 +403,6 @@ class StyleManager {
     std::vector<StyleRule> mRules;
 };
 
-}  // namespace Nova
+}  // namespace Cosmonaut
 
 #endif  // SRC_STYLE_H_

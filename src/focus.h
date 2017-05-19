@@ -1,11 +1,11 @@
-// Copyright 2016 Dan Ristic
+// Copyright 2017 Dan Ristic
 
 #ifndef SRC_FOCUS_H_
 #define SRC_FOCUS_H_
 
 #include "src/element.h"
 
-namespace Nova {
+namespace Cosmonaut {
 
 class FocusManager {
  public:
@@ -17,6 +17,6 @@ class FocusManager {
     Element* focusedElement;
 };
 
-}  // namespace Nova
+}  // namespace Cosmonaut
 
 #endif  // SRC_FOCUS_H_

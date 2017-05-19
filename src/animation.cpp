@@ -4,7 +4,7 @@
 
 #include "src/element.h"
 
-namespace Nova {
+namespace Cosmonaut {
 
     Animation::Animation(
             std::string _name,
@@ -57,4 +57,4 @@ namespace Nova {
         return nullptr;
     }
 
-}  // namespace Nova
+}  // namespace Cosmonaut

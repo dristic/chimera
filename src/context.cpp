@@ -8,11 +8,10 @@
 #include "src/document.h"
 #include "src/rendering.h"
 
-namespace Nova {
+namespace Cosmonaut {
     Context::Context()
         : document{*this}
         , renderer{}
-        , component{this}
         , mAdaptor{}
         , mMouseX{0}
         , mMouseY{0}
@@ -23,7 +22,6 @@ namespace Nova {
     Context::~Context() { }
 
     void Context::update(double dt) {
-        component.update(dt);
     }
 
     void Context::addInputCharacters(std::string characters) {
@@ -102,4 +100,4 @@ namespace Nova {
             mAdaptor->renderCallback(&data);
         }
     }
-}  // namespace Nova
+}  // namespace Cosmonaut

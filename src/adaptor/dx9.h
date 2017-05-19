@@ -22,13 +22,13 @@ struct CUSTOMVERTEX {
 
 namespace Cosmonaut {
 
-class DX9Adaptor : public Nova::Adaptor {
+class DX9Adaptor : public Cosmonaut::Adaptor {
 public:
     DX9Adaptor(LPDIRECT3DDEVICE9 _device);
 
-    std::unique_ptr<Nova::ImageRef> loadImage(std::string imagePath, int& width, int& height) override;
+    std::unique_ptr<Cosmonaut::ImageRef> loadImage(std::string imagePath, int& width, int& height) override;
     unsigned int loadTexture(unsigned int width, unsigned int height, unsigned char* buffer) override;
-    void renderCallback(Nova::DrawData* data) override;
+    void renderCallback(Cosmonaut::DrawData* data) override;
 
     LPDIRECT3DDEVICE9 device;
 
