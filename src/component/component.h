@@ -83,46 +83,46 @@ private:
     EventCallback mCallbackValue;
 };
 
-// class CElement {
-// public:
-//     CElement(E type, std::vector<Attribute> attributes, std::vector<std::shared_ptr<CElement>>& children)
-//         : mType{type}
-//         , mChildren{std::move(children)}
-//     {
-//         for (auto& attribute : attributes) {
-//             std::string key = attribute.getKey();
-//             mAttributes[key] = attribute;
-//         }
-//     }
+template<class E>
+class VirtualElement {
+public:
+    VirtualElement(std::vector<Attribute> _attributes)
+    {
+        for (auto& attribute : _attributes) {
+            std::string key = attribute.getKey();
+            attributes[key] = attribute;
+        }
+    }
 
-//     CElement(E type, std::vector<Attribute> attributes)
-//         : mType{type}
-//         { }
+    Element* create(Document& document)
+    {
+        auto element = document.createElement<E>();
 
-//     E getType();
-//     Attribute* getAttribute(const std::string& key);
-//     std::vector<std::shared_ptr<CElement>> const& getChildren() const;
-//     void setChildren(std::vector<std::shared_ptr<CElement>>& children);
-//     virtual std::shared_ptr<Api::CElement> render(Cosmonaut::Context& context);
+        if (attributes.count("id") == 1)
+        {
+            auto id = attributes.at("id");
+            element->id = id.asString();
+        }
 
-// private:
-//     E mType;
-//     std::unordered_map<std::string, Attribute> mAttributes{};
-//     std::vector<std::shared_ptr<CElement>> mChildren;
-// };
+        return element;
+    }
 
-// template<class E>
-// static inline Element* Create<E>(std::vector<Attribute> attributes, std::vector<Element*> children)
-// {
-// }
+    std::unordered_map<std::string, Attribute> attributes{};
+};
+
+template<class E>
+static inline VirtualElement<E> VElement(std::vector<Attribute> attributes)
+{
+    return {attributes};
+}
+
+template<class E>
+static inline Element* CreateTree(Document& document, VirtualElement<E> element)
+{
+    return element.create(document);
+}
 
 }  // namespace Api
-
-// enum class PatchMode {
-//     Create,
-//     Delete,
-//     Diff
-// };
 
 // class Component;
 

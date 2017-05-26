@@ -39,10 +39,6 @@ class Element {
     virtual void render(DrawData* data, Style* parentStyle);
 
     // Declarative methods
-    Element* id(const std::string& id) { mId = id; return this; }
-    std::string id() { return mId; }
-    Element* text(const std::string& text) { textContent = text; return this; }
-    std::string text() { return textContent; }
     Element* children(std::vector<Element*> children) {
         mChildren.insert(mChildren.end(), children.begin(), children.end());
 
@@ -66,7 +62,7 @@ class Element {
             stack.pop();
 
             if (el) {
-                if (el->id() == query) {
+                if (el->id == query) {
                     found = el;
                     break;
                 }
@@ -90,14 +86,14 @@ class Element {
     std::string className;
     std::string textContent;
 
+    std::string id;
+
  protected:
     std::unordered_map<EventType, EventCallback, EventTypeHash> mEventObservers;
     std::vector<Element*> mChildren;
     PseudoClass mPseudoClass;
     Document* mDocument;
     std::unique_ptr<ImageRef> mBackgroundImage;
-
-    std::string mId;
 };
 
 class Div: public Element {

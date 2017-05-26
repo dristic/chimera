@@ -48,8 +48,13 @@ public:
 
     void createTree(Cosmonaut::Document& document)
     {
-        // {{"id", "background"}}
-        append(document.createElement<Cosmonaut::Div>());
+        append(Cosmonaut::Api::CreateTree(document,
+            Cosmonaut::Api::VElement<Cosmonaut::Div>({{"id", "background"}})
+        ));
+
+        /*
+            {{"id", "background"}}
+        */
     }
 
 private:

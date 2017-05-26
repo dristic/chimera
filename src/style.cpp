@@ -310,7 +310,7 @@ bool StyleRule::matches(Element* element) {
         element->className.find(className);
 
     bool matches = element->mPseudoClass == pseudoClass
-        && (element->mId == idName || element->tagName == tagName || classFound != std::string::npos);
+        && (element->id == idName || element->tagName == tagName || classFound != std::string::npos);
     
     return matches;
 }
