@@ -7,11 +7,10 @@
 #include <vector>
 #include <unordered_map>
 
+#include "src/core.h"
 #include "src/element.h"
 
-#define UNUSED(expr) (void)(expr)
-
-namespace Cosmonaut {
+namespace Chimera {
 
 namespace Api {
 
@@ -22,7 +21,7 @@ enum class AttributeType {
 };
 
 class Attribute {
-using EventCallback = std::function<void(Cosmonaut::Event*)>;
+using EventCallback = std::function<void(Chimera::Event*)>;
 
 public:
     Attribute() { }
@@ -33,7 +32,7 @@ public:
         , mType{AttributeType::String}
         { }
 
-    Attribute(std::string key, Cosmonaut::Style value)
+    Attribute(std::string key, Chimera::Style value)
         : mKey{key}
         , mType{AttributeType::Style}
     {
@@ -58,7 +57,7 @@ public:
         }
     }
 
-    Cosmonaut::Style asStyle() {
+    Chimera::Style asStyle() {
         if (mType == AttributeType::Style) {
             return mStyleValue;
         } else {
@@ -79,7 +78,7 @@ private:
     AttributeType mType;
 
     std::string mStringValue;
-    Cosmonaut::Style mStyleValue;
+    Chimera::Style mStyleValue;
     EventCallback mCallbackValue;
 };
 
@@ -128,28 +127,28 @@ static inline Element* CreateTree(Document& document, VirtualElement<E> element)
 
 // class ComponentManager {
 // public:
-//     ComponentManager(Cosmonaut::Context* document);
+//     ComponentManager(Chimera::Context* document);
 
 //     void update(double dt);
 //     void patch(
 //         PatchMode mode,
 //         Api::CElement* currentNode,
 //         Api::CElement* newNode,
-//         Cosmonaut::Element* element);
+//         Chimera::Element* element);
 //     void walk(
 //         Api::CElement* currentNode,
 //         Api::CElement* newNode,
-//         Cosmonaut::Element* elementRoot);
+//         Chimera::Element* elementRoot);
 //     void invalidate(Component* node);
-//     void render(Cosmonaut::Element* root, std::shared_ptr<Api::CElement> element);
+//     void render(Chimera::Element* root, std::shared_ptr<Api::CElement> element);
 
 //     std::vector<std::function<void(void)>> tasks;
 
 // private:
-//     Cosmonaut::Context* mContext;
+//     Chimera::Context* mContext;
 //     std::shared_ptr<Api::CElement> mTreeRoot;
 // };
     
-}  // namespace Cosmonaut
+}  // namespace Chimera
 
 #endif  // SRC_COMPONENT_H_

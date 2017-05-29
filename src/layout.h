@@ -6,7 +6,7 @@
 #include "src/style.h"
 #include "src/types.h"
 
-namespace Cosmonaut {
+namespace Chimera {
 
 class Layout {
  public:
@@ -17,6 +17,6 @@ class Layout {
     Rect rect;
 };
 
-}  // namespace Cosmonaut
+}  // namespace Chimera
 
 #endif  // SRC_LAYOUT_H_

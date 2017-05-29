@@ -13,7 +13,7 @@
 #include "src/focus.h"
 #include "src/animation.h"
 
-namespace Cosmonaut {
+namespace Chimera {
 
 class Context;
 
@@ -64,6 +64,6 @@ class Document {
     CursorType mCursorType;
 };
 
-}  // namespace Cosmonaut
+}  // namespace Chimera
 
 #endif  // SRC_DOCUMENT_H_

@@ -5,7 +5,7 @@
 
 #include <string>
 
-namespace Cosmonaut {
+namespace Chimera {
 
 enum class CursorType {
     Arrow,
@@ -164,6 +164,6 @@ struct Rect {
     }
 };
 
-}  // namespace Cosmonaut
+}  // namespace Chimera
 
 #endif  // SRC_TYPES_H_

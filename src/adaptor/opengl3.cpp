@@ -11,7 +11,7 @@ extern "C" {
     #include "libnsgif.h"
 }
 
-namespace Cosmonaut {
+namespace Chimera {
 
 std::atomic<bool> gQuitting;
 
@@ -581,4 +581,4 @@ void OpenGL3Bridge::renderCallback(DrawData* data) {
     }
 }
 
-}  // namespace Cosmonaut
+}  // namespace Chimera

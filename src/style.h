@@ -12,7 +12,7 @@
 #include "src/types.h"
 #include "src/animation.h"
 
-namespace Cosmonaut {
+namespace Chimera {
 
 class Style;
 class Element;
@@ -403,6 +403,6 @@ class StyleManager {
     std::vector<StyleRule> mRules;
 };
 
-}  // namespace Cosmonaut
+}  // namespace Chimera
 
 #endif  // SRC_STYLE_H_

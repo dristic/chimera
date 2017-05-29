@@ -1,10 +1,10 @@
-// Copyright 2016 Dan Ristic
+// Copyright 2017 Dan Ristic
 
 #include "src/animation.h"
 
 #include "src/element.h"
 
-namespace Cosmonaut {
+namespace Chimera {
 
     Animation::Animation(
             std::string _name,
@@ -57,4 +57,4 @@ namespace Cosmonaut {
         return nullptr;
     }
 
-}  // namespace Cosmonaut
+}  // namespace Chimera

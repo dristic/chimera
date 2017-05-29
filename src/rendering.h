@@ -15,7 +15,7 @@
 
 #include "src/types.h"
 
-namespace Cosmonaut {
+namespace Chimera {
 
 class Context;
 
@@ -158,6 +158,6 @@ class DrawData {
     unsigned int mCurIndex;
 };
 
-}  // namespace Cosmonaut
+}  // namespace Chimera
 
 #endif  // SRC_RENDERING_H_

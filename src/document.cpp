@@ -8,7 +8,7 @@
 
 #include "src/context.h"
 
-namespace Cosmonaut {
+namespace Chimera {
 
 Document::Document(Context& context)
     : body{nullptr}
@@ -84,4 +84,4 @@ CursorType Document::getCursorType() {
     return mCursorType;
 }
 
-}  // namespace Cosmonaut
+}  // namespace Chimera

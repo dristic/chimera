@@ -2,7 +2,7 @@
 
 #include "src/focus.h"
 
-namespace Cosmonaut {
+namespace Chimera {
 
 FocusManager::FocusManager()
     : focusedElement{}
@@ -14,4 +14,4 @@ void FocusManager::focusElement(Element* element) {
     focusedElement = element;
 }
 
-}  // namespace Cosmonaut
+}  // namespace Chimera

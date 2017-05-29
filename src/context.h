@@ -1,4 +1,4 @@
-// Copyright 2016 Dan Ristic
+// Copyright 2017 Dan Ristic
 
 #ifndef SRC_CONTEXT_H_
 #define SRC_CONTEXT_H_
@@ -12,7 +12,7 @@
 #include "src/types.h"
 #include "src/adaptor/adaptor.h"
 
-namespace Cosmonaut {
+namespace Chimera {
 
 class Context {
  public:
@@ -39,6 +39,6 @@ class Context {
     std::shared_ptr<Adaptor> mAdaptor;
 };
 
-}  // namespace Cosmonaut
+}  // namespace Chimera
 
 #endif  // SRC_CONTEXT_H_

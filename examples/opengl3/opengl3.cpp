@@ -1,9 +1,9 @@
-// Copyright 2016 Dan Ristic
+// Copyright 2017 Dan Ristic
 
 #include <string>
 #include <functional>
 
-#include "Cosmonaut/Cosmonaut.h"
+#include "Chimera/Chimera.h"
 
 #include "src/adaptor/opengl3.h"
 #include "app/root.h"
@@ -44,7 +44,7 @@ std::string UnicodeToUTF8(unsigned int codepoint)
 
 class GLFWapplication {
  public:
-    static void initialize(GLFWwindow* window, Cosmonaut::Context* context) {
+    static void initialize(GLFWwindow* window, Chimera::Context* context) {
         mContext = context;
 
         glfwSetErrorCallback(errorCallback);
@@ -94,7 +94,7 @@ class GLFWapplication {
 
     static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
         if (key == GLFW_KEY_BACKSPACE && action == GLFW_PRESS) {
-            mContext->setKeyPress(Cosmonaut::KeyType::Backspace);
+            mContext->setKeyPress(Chimera::KeyType::Backspace);
         }
     }
 
@@ -103,10 +103,10 @@ class GLFWapplication {
     GLFWapplication(GLFWapplication const&);
     void operator=(GLFWapplication const&);
 
-    static Cosmonaut::Context* mContext;
+    static Chimera::Context* mContext;
 };
 
-Cosmonaut::Context* GLFWapplication::mContext{nullptr};
+Chimera::Context* GLFWapplication::mContext{nullptr};
 
 #ifdef _WIN32
 int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
@@ -116,8 +116,8 @@ int main() {
     const int WIDTH = 1280;
     const int HEIGHT = 720;
 
-    Cosmonaut::Context context;
-    Cosmonaut::Document& document = context.document;
+    Chimera::Context context;
+    Chimera::Document& document = context.document;
 
     printf("Starting...!\n");
 
@@ -138,7 +138,7 @@ int main() {
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     glfwWindowHint(GLFW_DECORATED, GL_FALSE);
-    window = glfwCreateWindow(WIDTH, HEIGHT, "Cosmonaut", NULL, NULL);
+    window = glfwCreateWindow(WIDTH, HEIGHT, "Chimera", NULL, NULL);
     if (!window)
     {
         glfwTerminate();
@@ -159,7 +159,7 @@ int main() {
 
     document.setDimensions(WIDTH, HEIGHT);
 
-    auto adaptor = std::make_shared<Cosmonaut::OpenGL3Bridge>();
+    auto adaptor = std::make_shared<Chimera::OpenGL3Bridge>();
     context.useAdaptor(adaptor);
 
     context.renderer.loadFont(context, "Roboto", "assets/Roboto-Regular.ttf");
@@ -195,19 +195,19 @@ int main() {
         context.update(16);
         context.render(16);
 
-        Cosmonaut::CursorType cursor = document.getCursorType();
+        Chimera::CursorType cursor = document.getCursorType();
         switch(cursor) {
-        case Cosmonaut::CursorType::Arrow:
+        case Chimera::CursorType::Arrow:
         {
             glfwSetCursor(window, arrowCursor);
             break;
         }
-        case Cosmonaut::CursorType::Hand:
+        case Chimera::CursorType::Hand:
         {
             glfwSetCursor(window, handCursor);
             break;
         }
-        case Cosmonaut::CursorType::IBeam:
+        case Chimera::CursorType::IBeam:
         {
             glfwSetCursor(window, ibeamCursor);
             break;

@@ -8,7 +8,7 @@
 
 #include "src/rendering.h"
 
-namespace Cosmonaut {
+namespace Chimera {
 
 class Adaptor {
  public:
@@ -23,6 +23,6 @@ class Adaptor {
     }
 };
 
-}  // namespace Cosmonaut
+}  // namespace Chimera
 
 #endif  // SRC_ADAPTOR_ADAPTOR

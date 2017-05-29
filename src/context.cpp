@@ -1,4 +1,4 @@
-// Copyright 2016 Dan Ristic
+// Copyright 2017 Dan Ristic
 
 #include "src/context.h"
 
@@ -8,7 +8,7 @@
 #include "src/document.h"
 #include "src/rendering.h"
 
-namespace Cosmonaut {
+namespace Chimera {
     Context::Context()
         : document{*this}
         , renderer{}
@@ -100,4 +100,4 @@ namespace Cosmonaut {
             mAdaptor->renderCallback(&data);
         }
     }
-}  // namespace Cosmonaut
+}  // namespace Chimera

@@ -6,7 +6,7 @@
 #include "src/rendering.h"
 #include "src/context.h"
 
-namespace NovaTest {
+namespace ChimeraTest {
 
 class ContextTest : public ::testing::Test {
  protected:
@@ -18,7 +18,7 @@ class ContextTest : public ::testing::Test {
 
     virtual void TearDown() { }
 
-    Cosmonaut::Context context;
+    Chimera::Context context;
 };
 
 TEST_F(ContextTest, SetsMousePositionCorrectly) {
@@ -27,10 +27,10 @@ TEST_F(ContextTest, SetsMousePositionCorrectly) {
 
     context.setMousePosition(x, y);
 
-    Cosmonaut::Vec2 position = context.getMousePosition();
+    Chimera::Vec2 position = context.getMousePosition();
 
     EXPECT_EQ(x, position.x);
     EXPECT_EQ(y, position.y);
 }
 
-}  // namespace NovaTest
+}  // namespace ChimeraTest

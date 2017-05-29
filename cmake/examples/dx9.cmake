@@ -2,7 +2,7 @@
 ##########
 # Project Configuration
 ##########
-project(CosmonautDX9)
+project(ChimeraDX9)
 
 # Glob all source files
 set(

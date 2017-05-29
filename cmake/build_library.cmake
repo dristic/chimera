@@ -11,12 +11,12 @@ set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_BUILD_TYPE Debug)
 
 # Options
-option(COSMONAUT_BUILD_EXAMPLES "Build the examples folder" OFF)
+option(CHIMERA_BUILD_EXAMPLES "Build the examples folder" OFF)
 
 ##########
 # Static Lib
 ##########
-project(Nova)
+project(Chimera)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
@@ -55,7 +55,7 @@ find_package(HarfBuzz REQUIRED)
 include_directories(${FREETYPE_INCLUDE_DIRS})
 include_directories(${HARFBUZZ_INCLUDE_DIR})
 
-add_library(Nova STATIC ${LIB_SOURCES})
+add_library(Chimera STATIC ${LIB_SOURCES})
 
 foreach(source IN LISTS LIB_SOURCES)
     get_filename_component(source_path "${source}" PATH)
@@ -88,16 +88,16 @@ add_executable(TestAll ${TEST_SOURCES})
 # Standard linking to gtest stuff.
 target_link_libraries(TestAll gtest gtest_main)
 
-target_link_libraries(TestAll Nova)
+target_link_libraries(TestAll Chimera)
 
 target_link_libraries(TestAll ${FREETYPE_LIBRARIES})
 target_link_libraries(TestAll ${HARFBUZZ_LIBRARY})
 
-add_test(NovaTests TestAll)
+add_test(ChimeraTest TestAll)
 
 ##########
 # Examples
 ##########
-if(COSMONAUT_BUILD_EXAMPLES)
+if(CHIMERA_BUILD_EXAMPLES)
     include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build_examples.cmake)
-endif(COSMONAUT_BUILD_EXAMPLES)
+endif(CHIMERA_BUILD_EXAMPLES)

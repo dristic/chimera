@@ -1,4 +1,4 @@
-// Copyright 2016 Dan Ristic
+// Copyright 2017 Dan Ristic
 
 #ifndef SRC_ANIMATION_H_
 #define SRC_ANIMATION_H_
@@ -10,7 +10,7 @@
 #include <unordered_map>
 #include <functional>
 
-namespace Cosmonaut {
+namespace Chimera {
     
 class Element;
 
@@ -49,6 +49,6 @@ class AnimationController {
     std::unordered_map<std::string, AnimationFunction> mFunctions;
 };
 
-}  // namespace Cosmonaut
+}  // namespace Chimera
 
 #endif  // SRC_ANIMATION_H_

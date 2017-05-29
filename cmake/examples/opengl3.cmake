@@ -2,7 +2,7 @@
 ##########
 # Project Configuration
 ##########
-project(Opengl3)
+project(ChimeraOpengl3)
 
 # Glob all source files
 set(
@@ -21,13 +21,13 @@ set(
 list(APPEND OPENGL3_EXAMPLE_SOURCES "cmake/build_examples.cmake")
 list(APPEND OPENGL3_EXAMPLE_SOURCES "cmake/examples/opengl3.cmake")
 
-add_executable(Opengl3 ${OPENGL3_EXAMPLE_SOURCES})
+add_executable(ChimeraOpengl3 ${OPENGL3_EXAMPLE_SOURCES})
 
 # Add png loading
-target_sources(Opengl3 PRIVATE "vendor/lodepng/lodepng.cpp")
+target_sources(ChimeraOpengl3 PRIVATE "vendor/lodepng/lodepng.cpp")
 
 # Add gif loading
-target_sources(Opengl3 PRIVATE "vendor/libnsgif/src/libnsgif.c")
+target_sources(ChimeraOpengl3 PRIVATE "vendor/libnsgif/src/libnsgif.c")
 
 foreach(source IN LISTS OPENGL3_EXAMPLE_SOURCES)
     get_filename_component(source_path "${source}" PATH)
@@ -53,17 +53,17 @@ set(GLFW_INSTALL OFF CACHE BOOL "" FORCE)
 
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/vendor/glfw)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/vendor/glfw/include)
-target_link_libraries(Opengl3 glfw)
+target_link_libraries(ChimeraOpengl3 glfw)
 
 # Include OpenGL
 find_package(OpenGL REQUIRED)
 include_directories(${OPENGL_INCLUDE_DIRS})
-target_link_libraries(Opengl3 ${OPENGL_LIBRARY})
+target_link_libraries(ChimeraOpengl3 ${OPENGL_LIBRARY})
 
 if(WIN32)
     find_package(GLEW REQUIRED)
     include_directories(${GLEW_INCLUDE_DIRS})
-    target_link_libraries(Opengl3 ${GLEW_LIBRARIES})
+    target_link_libraries(ChimeraOpengl3 ${GLEW_LIBRARIES})
     include_directories(${CMAKE_CURRENT_SOURCE_DIR}/vendor/GL/include)
 endif(WIN32)
 
@@ -71,12 +71,12 @@ endif(WIN32)
 # Install Deps
 ##########
 include_directories(${FREETYPE_INCLUDE_DIRS})
-target_link_libraries(Opengl3 ${FREETYPE_LIBRARIES})
+target_link_libraries(ChimeraOpengl3 ${FREETYPE_LIBRARIES})
 
 include_directories(${HARFBUZZ_INCLUDE_DIR})
-target_link_libraries(Opengl3 ${HARFBUZZ_LIBRARY})
+target_link_libraries(ChimeraOpengl3 ${HARFBUZZ_LIBRARY})
 
-target_link_libraries(Opengl3 Nova)
+target_link_libraries(ChimeraOpengl3 Chimera)
 
 # Copy assets to build directory
 file(COPY examples/assets DESTINATION ${CMAKE_BINARY_DIR})

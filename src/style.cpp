@@ -6,7 +6,7 @@
 #include "src/style.h"
 #include "src/element.h"
 
-namespace Cosmonaut {
+namespace Chimera {
 
 void Style::update(Element* element, AnimationController& controller) {
     // Check for changed animation
@@ -400,4 +400,4 @@ void StyleManager::applyRules(Element* root) {
     }
 }
 
-}  // namespace Cosmonaut
+}  // namespace Chimera

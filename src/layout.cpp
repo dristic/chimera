@@ -2,7 +2,7 @@
 
 #include "src/layout.h"
 
-namespace Cosmonaut {
+namespace Chimera {
 
 Layout::Layout()
     : rect{}
@@ -12,4 +12,4 @@ void Layout::layout(Style& style) {
     
 }
 
-}  // namespace Cosmonaut
+}  // namespace Chimera

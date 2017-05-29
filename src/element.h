@@ -12,7 +12,7 @@
 #include "src/types.h"
 #include "src/layout.h"
 
-namespace Cosmonaut {
+namespace Chimera {
 
 class Document;
 class DrawData;
@@ -144,6 +144,6 @@ class Button: public Element {
     void render(DrawData* data, Style* parentStyle) override;
 };
 
-}  // namespace Cosmonaut
+}  // namespace Chimera
 
 #endif  // SRC_ELEMENT_H_

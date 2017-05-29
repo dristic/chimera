@@ -6,7 +6,7 @@
 
 #include "src/context.h"
 
-namespace Cosmonaut {
+namespace Chimera {
 
 DrawData::DrawData()
     : vertices{}
@@ -58,7 +58,7 @@ void DrawData::addRectFilled(
     mCurIndex += 4;
 }
 
-void DrawData::addImage(const Cosmonaut::Rect &rect, unsigned int textureId) {
+void DrawData::addImage(const Chimera::Rect &rect, unsigned int textureId) {
     addImage(rect, textureId, 1.0f);
 }
 
@@ -240,4 +240,4 @@ Renderer::~Renderer() {
     FT_Done_FreeType(ft);
 }
 
-}  // namespace Cosmonaut
+}  // namespace Chimera

@@ -7,7 +7,7 @@
 #include "src/document.h"
 #include "src/rendering.h"
 
-namespace Cosmonaut {
+namespace Chimera {
 
 Element::Element(std::string name, Document& document)
     : scissor{}
@@ -431,4 +431,4 @@ void Button::render(DrawData* data, Style* parentStyle) {
     }
 }
 
-}  // namespace Cosmonaut
+}  // namespace Chimera

@@ -5,7 +5,7 @@
 
 #include "src/element.h"
 
-namespace Cosmonaut {
+namespace Chimera {
 
 class FocusManager {
  public:
@@ -17,6 +17,6 @@ class FocusManager {
     Element* focusedElement;
 };
 
-}  // namespace Cosmonaut
+}  // namespace Chimera
 
 #endif  // SRC_FOCUS_H_
