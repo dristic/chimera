@@ -42,7 +42,12 @@ public:
             {Chimera::StyleProp::Width, width},
             {Chimera::StyleProp::Height, height},
             {Chimera::StyleProp::BackgroundImage, "assets/bg.png"},
-            {Chimera::StyleProp::AnimationName, "fade-in"},
+            {Chimera::StyleProp::AnimationName, "fade-in"}
+        });
+
+        document.styleManager.addRule("#title", {
+            {Chimera::StyleProp::Width, 300},
+            {Chimera::StyleProp::Height, 300},
             {Chimera::StyleProp::Color, Chimera::Color::fromRGBA(255, 255, 255, 1)}
         });
     }
@@ -50,7 +55,9 @@ public:
     void createTree(Chimera::Document& document)
     {
         append(Chimera::Virtual::CreateTree(document,
-            Chimera::Virtual::VElement<Chimera::Div>({{"id", "background"}}, "Hello World")
+            Chimera::Virtual::VElement<Chimera::Div>({{"id", "background"}}, {
+                Chimera::Virtual::VElement<Chimera::Div>({{"id", "title"}}, "Hello World!")
+            })
         ));
     }
 

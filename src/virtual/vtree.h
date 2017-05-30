@@ -105,13 +105,23 @@ public:
 
         element->textContent = textContent;
 
-        printf("[VElement] %s %s\n", element->tagName.c_str(), element->textContent.c_str());
+        DEBUG(
+            printf("[VElement] %s %s\n",
+                element->tagName.c_str(),
+                element->textContent.c_str());
+        )
+
+        for (auto& child : children)
+        {
+            element->append(child.create(document));
+        }
 
         return element;
     }
 
-    std::unordered_map<std::string, Attribute> attributes{};
     std::string textContent;
+    std::vector<VirtualElement<E>> children{};
+    std::unordered_map<std::string, Attribute> attributes{};
 };
 
 template<class E>
@@ -127,6 +137,16 @@ static inline VirtualElement<E> VElement(
 {
     VirtualElement<E> element{attributes};
     element.textContent = textContent;
+    return element;
+}
+
+template<class E>
+static inline VirtualElement<E> VElement(
+    std::vector<Attribute> attributes,
+    std::vector<VirtualElement<E>> children)
+{
+    VirtualElement<E> element{attributes};
+    element.children = children;
     return element;
 }
 

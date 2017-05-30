@@ -69,7 +69,7 @@ endforeach()
 file(GLOB LINT_SOURCES "src/*.cpp" "src/*.h" "test/*.cpp" "examples/*.cpp")
 file(GLOB LINT_SCRIPT "tools/cpplint.py")
 
-add_custom_target(Lint
+add_custom_target(lint
     COMMAND
     "python" ${LINT_SCRIPT} ${LINT_SOURCES}
     WORKING_DIRECTORY ./)
