@@ -120,7 +120,7 @@ public:
     }
 
     std::string textContent;
-    std::vector<VirtualElement<E>> children{};
+    std::vector<VirtualElement> children{};
     std::unordered_map<std::string, Attribute> attributes{};
 };
 
@@ -143,7 +143,7 @@ static inline VirtualElement<E> VElement(
 template<class E>
 static inline VirtualElement<E> VElement(
     std::vector<Attribute> attributes,
-    std::vector<VirtualElement<E>> children)
+    std::vector<VirtualElement> children)
 {
     VirtualElement<E> element{attributes};
     element.children = children;
