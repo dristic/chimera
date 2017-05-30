@@ -39,8 +39,8 @@ set(
     "src/style.cpp"
     "src/style.h"
 
-    "src/component/component.cpp"
-    "src/component/component.h"
+    "src/virtual/vtree.cpp"
+    "src/virtual/vtree.h"
 
     "src/adaptor/adaptor.h"
 )

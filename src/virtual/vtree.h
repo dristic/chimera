@@ -1,7 +1,7 @@
 // Copyright 2016 Dan Ristic
 
-#ifndef SRC_COMPONENT_H_
-#define SRC_COMPONENT_H_
+#ifndef SRC_VTREE_H_
+#define SRC_VTREE_H_
 
 #include <string>
 #include <vector>
@@ -12,7 +12,7 @@
 
 namespace Chimera {
 
-namespace Api {
+namespace Virtual {
 
 enum class AttributeType {
     String,
@@ -103,10 +103,15 @@ public:
             element->id = id.asString();
         }
 
+        element->textContent = textContent;
+
+        printf("[VElement] %s %s\n", element->tagName.c_str(), element->textContent.c_str());
+
         return element;
     }
 
     std::unordered_map<std::string, Attribute> attributes{};
+    std::string textContent;
 };
 
 template<class E>
@@ -116,39 +121,23 @@ static inline VirtualElement<E> VElement(std::vector<Attribute> attributes)
 }
 
 template<class E>
+static inline VirtualElement<E> VElement(
+    std::vector<Attribute> attributes,
+    std::string textContent)
+{
+    VirtualElement<E> element{attributes};
+    element.textContent = textContent;
+    return element;
+}
+
+template<class E>
 static inline Element* CreateTree(Document& document, VirtualElement<E> element)
 {
     return element.create(document);
 }
 
-}  // namespace Api
-
-// class Component;
-
-// class ComponentManager {
-// public:
-//     ComponentManager(Chimera::Context* document);
-
-//     void update(double dt);
-//     void patch(
-//         PatchMode mode,
-//         Api::CElement* currentNode,
-//         Api::CElement* newNode,
-//         Chimera::Element* element);
-//     void walk(
-//         Api::CElement* currentNode,
-//         Api::CElement* newNode,
-//         Chimera::Element* elementRoot);
-//     void invalidate(Component* node);
-//     void render(Chimera::Element* root, std::shared_ptr<Api::CElement> element);
-
-//     std::vector<std::function<void(void)>> tasks;
-
-// private:
-//     Chimera::Context* mContext;
-//     std::shared_ptr<Api::CElement> mTreeRoot;
-// };
+}  // namespace Virtual
     
 }  // namespace Chimera
 
-#endif  // SRC_COMPONENT_H_
+#endif  // SRC_VTREE_H_

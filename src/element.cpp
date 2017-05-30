@@ -111,11 +111,12 @@ void Div::render(DrawData* data, Style* parentStyle) {
     if (style.position == Position::Absolute) {
         rect.x = style.left;
         rect.y = style.top;
-        scissor.x = rect.x;
-        scissor.y = rect.y;
-        scissor.width = rect.width;
-        scissor.height = rect.height;
     }
+
+    scissor.x = rect.x;
+    scissor.y = rect.y;
+    scissor.width = rect.width;
+    scissor.height = rect.height;
 
     if (style.backgroundImage != "") {
         if (mBackgroundImage == nullptr) {

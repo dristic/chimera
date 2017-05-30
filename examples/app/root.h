@@ -42,14 +42,15 @@ public:
             {Chimera::StyleProp::Width, width},
             {Chimera::StyleProp::Height, height},
             {Chimera::StyleProp::BackgroundImage, "assets/bg.png"},
-            {Chimera::StyleProp::AnimationName, "fade-in"}
+            {Chimera::StyleProp::AnimationName, "fade-in"},
+            {Chimera::StyleProp::Color, Chimera::Color::fromRGBA(255, 255, 255, 1)}
         });
     }
 
     void createTree(Chimera::Document& document)
     {
-        append(Chimera::Api::CreateTree(document,
-            Chimera::Api::VElement<Chimera::Div>({{"id", "background"}})
+        append(Chimera::Virtual::CreateTree(document,
+            Chimera::Virtual::VElement<Chimera::Div>({{"id", "background"}}, "Hello World")
         ));
     }
 

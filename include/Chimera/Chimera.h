@@ -6,4 +6,4 @@
 #include "src/style.h"
 #include "src/types.h"
 
-#include "src/component/component.h"
+#include "src/virtual/vtree.h"
