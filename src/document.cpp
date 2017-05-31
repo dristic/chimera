@@ -19,7 +19,9 @@ Document::Document(Context& context)
     , mContext{&context}
     , mCursorType{CursorType::Arrow}
 {
+    // Default element set
     registerElement<Div>("div");
+    registerElement<Img>("img");
     registerElement<Input>("input");
     registerElement<Button>("button");
 

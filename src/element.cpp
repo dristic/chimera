@@ -105,19 +105,40 @@ bool Div::handleEvent(Event* event) {
 void Div::render(DrawData* data, Style* parentStyle) {
     style.update(this, mDocument->animationController);
 
-    rect.width = style.width;
-    rect.height = style.height;
+    float textWidth = data->measureText(textContent, style.fontFamily, style.fontSize);
 
-    if (style.position == Position::Absolute) {
-        rect.x = style.left;
-        rect.y = style.top;
+    int internalHeight{0};
+    int internalWidth{0};
+    for (auto& child : mChildren) {
+        if (style.flexDirection == Direction::Row)
+        {
+            internalHeight = std::max((float)internalHeight, child->layout.rect.height);
+            internalWidth += child->layout.rect.width;
+        }
+        else
+        {
+            internalHeight += child->layout.rect.height;
+            internalWidth = std::max((float)internalWidth, child->layout.rect.width);
+        }
     }
 
-    scissor.x = rect.x;
-    scissor.y = rect.y;
-    scissor.width = rect.width;
-    scissor.height = rect.height;
+    if (textWidth > internalWidth)
+    {
+        internalWidth = textWidth;
+    }
 
+    layout.intrinsicHeight = internalHeight;
+    layout.intrinsicWidth = internalWidth;
+
+    // Layout
+    layout.layout(style);
+
+    scissor.x = layout.rect.x;
+    scissor.y = layout.rect.y;
+    scissor.width = layout.rect.width;
+    scissor.height = layout.rect.height;
+
+    // Rendering
     if (style.backgroundImage != "") {
         if (mBackgroundImage == nullptr) {
             mBackgroundImage = mDocument->loadImage(style.backgroundImage,
@@ -129,25 +150,15 @@ void Div::render(DrawData* data, Style* parentStyle) {
     }
 
     if (textContent != "") {
-        float width = data->measureText(textContent, style.fontFamily, style.fontSize);
-
-        if (rect.width < width) {
-            rect.width = width;
-        }
-
-        if (rect.height < style.fontSize) {
-            rect.height = style.fontSize;
-        }
-
         Rect position{
-            rect.x + style.padding.left,
-            rect.y + style.padding.top,
-            rect.width,
-            rect.height
+            layout.rect.x + style.padding.left,
+            layout.rect.y + style.padding.top,
+            layout.rect.width,
+            layout.rect.height
         };
 
         if (style.textAlign == Align::Center) {
-            position.x = rect.x + (rect.width / 2) - (width / 2);
+            position.x = layout.rect.x + (layout.rect.width / 2) - (textWidth / 2);
         }
 
         auto newColor = style.color;
@@ -162,21 +173,19 @@ void Div::render(DrawData* data, Style* parentStyle) {
     }
 
     // Render scrollbars
-    int internalHeight = 0;
-    for (auto& child : mChildren) {
-        internalHeight += child->rect.height;
-    }
-    if (rect.height < internalHeight) {
-        Rect scrollbar{
-            rect.x + rect.width,
-            rect.y - scroll.y,
-            20,
-            50
-        };
-        //data->addRectFilled(scrollbar, Color::fromRGBA(150, 150, 150, 0.7), scrollbar);
-    }
+    // if (rect.height < internalHeight) {
+    //     Rect scrollbar{
+    //         rect.x + rect.width,
+    //         rect.y - scroll.y,
+    //         20,
+    //         50
+    //     };
+    //     //data->addRectFilled(scrollbar, Color::fromRGBA(150, 150, 150, 0.7), scrollbar);
+    // }
 
-    float xValue = rect.x;
+    rect = layout.rect;
+
+    float xValue = layout.rect.x;
     float yValue = rect.y + style.padding.top + scroll.y;
     float previousAlpha = data->globalAlpha;
     data->globalAlpha *= style.opacity;

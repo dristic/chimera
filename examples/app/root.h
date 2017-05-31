@@ -5,11 +5,60 @@
 
 #include <Chimera/Chimera.h>
 
-class CustomDiv : public Chimera::Div {
+/*
+root
+    header
+        img
+        name
+        status
+    list
+        title
+        user
+            img
+            name
+            status
+        user2...
+    list2...
+
+document.animationController.addAnimation("slide-in",
+    [](float time, Chimera::Element* element) {
+        float pos = -50 * time * (time-2);
+        element->style.margin.top = 50 - pos;
+        element->style.opacity = -1 * time * (time - 2);
+    });
+
+document.animationController.addAnimation("slide-out",
+    [](float time, Chimera::Element* element) {
+        float pos = 200 * time * (time-2);
+        element->style.margin.top = pos;
+        element->style.opacity = 1 - (-1 * time * (time - 2));
+    });
+
+document.animationController.addAnimation("fade-in",
+    [](float time, Chimera::Element* element) {
+        element->style.opacity = -1 * time * (time - 2);
+    });
+*/
+
+class Heading : public Chimera::Element {
 public:
-    CustomDiv(Chimera::Document& document)
-        : Chimera::Div(document)
-        { }
+    Heading(Chimera::Document& document)
+        : Chimera::Element("heading", document)
+    {
+        createTree(document);
+    }
+
+    void createTree(Chimera::Document& document)
+    {
+        append(Chimera::Virtual::CreateTree(document,
+            Chimera::Virtual::VElement("div", {{"id", "heading"}},
+                std::vector<Chimera::Virtual::VirtualElement>({
+                    Chimera::Virtual::VElement("img", {}),
+                    Chimera::Virtual::VElement("div", {}, "Lionheart"),
+                    Chimera::Virtual::VElement("div", {}, "Online")
+                }))
+        ));
+    }
 };
 
 class AppElement : public Chimera::Element {
@@ -17,7 +66,7 @@ public:
     AppElement(Chimera::Document& document)
         : Chimera::Element("app-element", document)
     {
-        document.registerElement<CustomDiv>("custom-div");
+        document.registerElement<Heading>("heading");
 
         addStyles(document);
         createTree(document);
@@ -27,25 +76,6 @@ public:
     {
         int width = document.getWidth();
         int height = document.getHeight();
-
-        document.animationController.addAnimation("slide-in",
-            [](float time, Chimera::Element* element) {
-                float pos = -50 * time * (time-2);
-                element->style.margin.top = 50 - pos;
-                element->style.opacity = -1 * time * (time - 2);
-            });
-
-        document.animationController.addAnimation("slide-out",
-            [](float time, Chimera::Element* element) {
-                float pos = 200 * time * (time-2);
-                element->style.margin.top = pos;
-                element->style.opacity = 1 - (-1 * time * (time - 2));
-            });
-
-        document.animationController.addAnimation("fade-in",
-            [](float time, Chimera::Element* element) {
-                element->style.opacity = -1 * time * (time - 2);
-            });
 
         document.styleManager.addRule("#background", {
             {Chimera::StyleProp::Width, width},
@@ -66,8 +96,7 @@ public:
         append(Chimera::Virtual::CreateTree(document,
             Chimera::Virtual::VElement("div", {{"id", "background"}},
                 std::vector<Chimera::Virtual::VirtualElement>({
-                    Chimera::Virtual::VElement("custom-div", {{"id", "title"}}, "Hello World!"),
-                    Chimera::Virtual::VElement("div", {{"id", "title"}}, "Also Hello World!")
+                    Chimera::Virtual::VElement("heading", {{"id", "title"}}, "Hello World!")
                 }))
         ));
     }

@@ -15,6 +15,8 @@ class Layout {
     void layout(Style& style);
 
     Rect rect;
+    int intrinsicWidth{0};
+    int intrinsicHeight{0};
 };
 
 }  // namespace Chimera
