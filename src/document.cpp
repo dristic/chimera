@@ -19,6 +19,10 @@ Document::Document(Context& context)
     , mContext{&context}
     , mCursorType{CursorType::Arrow}
 {
+    registerElement<Div>("div");
+    registerElement<Input>("input");
+    registerElement<Button>("button");
+
     body = createElement<Div>();
 }
 

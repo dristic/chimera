@@ -6,6 +6,7 @@
 #include <Chimera/Chimera.h>
 
 class CustomDiv : public Chimera::Div {
+public:
     CustomDiv(Chimera::Document& document)
         : Chimera::Div(document)
         { }
@@ -16,6 +17,8 @@ public:
     AppElement(Chimera::Document& document)
         : Chimera::Element("app-element", document)
     {
+        document.registerElement<CustomDiv>("custom-div");
+
         addStyles(document);
         createTree(document);
     }
@@ -61,10 +64,11 @@ public:
     void createTree(Chimera::Document& document)
     {
         append(Chimera::Virtual::CreateTree(document,
-            Chimera::Virtual::VElement("div", {{"id", "background"}}, {
-                Chimera::Virtual::VElement("custom-div", {{"id", "title"}}, "Hello World!"),
-                Chimera::Virtual::VElement("div", {{"id", "title"}}, "Also Hello World!")
-            })
+            Chimera::Virtual::VElement("div", {{"id", "background"}},
+                std::vector<Chimera::Virtual::VirtualElement>({
+                    Chimera::Virtual::VElement("custom-div", {{"id", "title"}}, "Hello World!"),
+                    Chimera::Virtual::VElement("div", {{"id", "title"}}, "Also Hello World!")
+                }))
         ));
     }
 

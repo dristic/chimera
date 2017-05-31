@@ -7,7 +7,9 @@
 #include <vector>
 #include <memory>
 #include <utility>
+#include <functional>
 
+#include "src/core.h"
 #include "src/element.h"
 #include "src/style.h"
 #include "src/focus.h"
@@ -33,6 +35,30 @@ class Document {
         mElements.push_back(std::move(el));
 
         return dynamic_cast<E*>(mElements.back().get());
+    }
+
+    using ElementFactory = std::function<Element*(Document&)>;
+    std::unordered_map<std::string, ElementFactory> elementTypes{};
+
+    template<class E>
+    void registerElement(std::string name)
+    {
+        elementTypes[name] = [](Document& document) {
+            return static_cast<Element*>(document.createElement<E>());
+        };
+    }
+
+    Element* createElement(std::string name)
+    {
+        if (elementTypes.count(name) > 0)
+        {
+            return elementTypes[name](*this);
+        }
+        else
+        {
+            DEBUG(printf("[ERROR] Element not found: %s\n", name.c_str()));
+            return nullptr;
+        }
     }
 
     void setDimensions(int width, int height);

@@ -82,10 +82,10 @@ private:
     EventCallback mCallbackValue;
 };
 
-template<class E>
 class VirtualElement {
 public:
-    VirtualElement(std::vector<Attribute> _attributes)
+    VirtualElement(std::string _name, std::vector<Attribute> _attributes)
+        : name{_name}
     {
         for (auto& attribute : _attributes) {
             std::string key = attribute.getKey();
@@ -95,7 +95,7 @@ public:
 
     Element* create(Document& document)
     {
-        auto element = document.createElement<E>();
+        auto element = document.createElement(name);
 
         if (attributes.count("id") == 1)
         {
@@ -119,39 +119,40 @@ public:
         return element;
     }
 
+    std::string name{"div"};
     std::string textContent;
     std::vector<VirtualElement> children{};
     std::unordered_map<std::string, Attribute> attributes{};
 };
 
-template<class E>
-static inline VirtualElement<E> VElement(std::vector<Attribute> attributes)
+static inline VirtualElement VElement(
+    std::string name,
+    std::vector<Attribute> attributes)
 {
-    return {attributes};
+    return {name, attributes};
 }
 
-template<class E>
-static inline VirtualElement<E> VElement(
+static inline VirtualElement VElement(
+    std::string name,
     std::vector<Attribute> attributes,
     std::string textContent)
 {
-    VirtualElement<E> element{attributes};
+    VirtualElement element{name, attributes};
     element.textContent = textContent;
     return element;
 }
 
-template<class E>
-static inline VirtualElement<E> VElement(
+static inline VirtualElement VElement(
+    std::string name,
     std::vector<Attribute> attributes,
     std::vector<VirtualElement> children)
 {
-    VirtualElement<E> element{attributes};
+    VirtualElement element{name, attributes};
     element.children = children;
     return element;
 }
 
-template<class E>
-static inline Element* CreateTree(Document& document, VirtualElement<E> element)
+static inline Element* CreateTree(Document& document, VirtualElement element)
 {
     return element.create(document);
 }
