@@ -481,7 +481,7 @@ std::unique_ptr<ImageRef> OpenGL3Bridge::loadImage(std::string imagePath, int& w
 
     // If there is an error, display it
     if (error) {
-        printf("Decoder error %s\n", lodepng_error_text(error));
+        printf("Decoder error for %s: %s\n", imagePath.c_str(), lodepng_error_text(error));
     }
 
     width = static_cast<int>(w);

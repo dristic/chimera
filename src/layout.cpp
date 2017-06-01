@@ -2,6 +2,9 @@
 
 #include "src/layout.h"
 
+#include "src/style.h"
+#include "src/element.h"
+
 namespace Chimera {
 
 Layout::Layout()
@@ -33,6 +36,11 @@ void Layout::layout(Style& style)
     {
         rect.height = style.fontSize;
     }
+}
+
+void Layout::updateChildren(std::vector<Element*>& children, Style& style)
+{
+
 }
 
 }  // namespace Chimera

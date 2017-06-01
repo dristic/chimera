@@ -3,16 +3,22 @@
 #ifndef SRC_LAYOUT_H_
 #define SRC_LAYOUT_H_
 
-#include "src/style.h"
+#include <vector>
+
 #include "src/types.h"
 
 namespace Chimera {
+
+class Element;
+class Style;
 
 class Layout {
  public:
     Layout();
 
     void layout(Style& style);
+
+    void updateChildren(std::vector<Element*>& children, Style& style);
 
     Rect rect;
     int intrinsicWidth{0};

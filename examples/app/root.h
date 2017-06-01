@@ -45,7 +45,20 @@ public:
     Heading(Chimera::Document& document)
         : Chimera::Element("heading", document)
     {
+        addStyles(document);
         createTree(document);
+    }
+
+    void addStyles(Chimera::Document& document)
+    {
+        document.styleManager.addRule("#username", {
+            {Chimera::StyleProp::Color, Chimera::Color::fromRGBA(255, 255, 255, 1)}
+        });
+
+        document.styleManager.addRule("#user-icon", {
+            {Chimera::StyleProp::Width, 50},
+            {Chimera::StyleProp::Height, 50}
+        });
     }
 
     void createTree(Chimera::Document& document)
@@ -53,9 +66,12 @@ public:
         append(Chimera::Virtual::CreateTree(document,
             Chimera::Virtual::VElement("div", {{"id", "heading"}},
                 std::vector<Chimera::Virtual::VirtualElement>({
-                    Chimera::Virtual::VElement("img", {}),
-                    Chimera::Virtual::VElement("div", {}, "Lionheart"),
-                    Chimera::Virtual::VElement("div", {}, "Online")
+                    Chimera::Virtual::VElement("img", {
+                        {"src", "assets/logo.png"},
+                        {"id", "user-icon"}
+                    }),
+                    Chimera::Virtual::VElement("div", {{"id", "username"}}, "Lionheart"),
+                    Chimera::Virtual::VElement("div", {{"id", "username"}}, "Online")
                 }))
         ));
     }
@@ -81,12 +97,11 @@ public:
             {Chimera::StyleProp::Width, width},
             {Chimera::StyleProp::Height, height},
             {Chimera::StyleProp::BackgroundImage, "assets/bg.png"},
+            {Chimera::StyleProp::FlexDirection, Chimera::Direction::Column},
             {Chimera::StyleProp::AnimationName, "fade-in"}
         });
 
         document.styleManager.addRule("#title", {
-            {Chimera::StyleProp::Width, 300},
-            {Chimera::StyleProp::Height, 300},
             {Chimera::StyleProp::Color, Chimera::Color::fromRGBA(255, 255, 255, 1)}
         });
     }
@@ -96,7 +111,9 @@ public:
         append(Chimera::Virtual::CreateTree(document,
             Chimera::Virtual::VElement("div", {{"id", "background"}},
                 std::vector<Chimera::Virtual::VirtualElement>({
-                    Chimera::Virtual::VElement("heading", {{"id", "title"}}, "Hello World!")
+                    Chimera::Virtual::VElement("heading", {{"id", "title"}}),
+                    Chimera::Virtual::VElement("heading", {{"id", "title"}}),
+                    Chimera::Virtual::VElement("heading", {{"id", "title"}})
                 }))
         ));
     }

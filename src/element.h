@@ -112,8 +112,8 @@ class Img: public Element {
 
     void render(DrawData* data, Style* parentStyle);
 
-    std::string const& src() const { return mSrc; }
-    void src(std::string const& newSrc);
+    std::string const& getSrc() const { return mSrc; }
+    void setSrc(std::string const& newSrc);
 
  private:
     std::string mSrc;
