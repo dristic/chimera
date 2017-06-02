@@ -37,6 +37,12 @@ Element* VirtualElement::create(Document& document)
         }
     }
 
+    for (auto& attribute : attributes)
+    {
+        element->attributeChangedCallback(
+            attribute.first, "", attribute.second.asString());
+    }
+
     element->textContent = textContent;
 
     DEBUG(

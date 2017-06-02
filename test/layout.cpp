@@ -11,8 +11,8 @@ namespace ChimeraTest {
 class LayoutTest : public ::testing::Test {
  protected:
     LayoutTest()
-        : layout{}
-        , style{}
+        : style{}
+        , layout{&style}
         { }
 
     virtual ~LayoutTest() { }
@@ -29,8 +29,7 @@ TEST_F(LayoutTest, OverridesWithIntrinsicDimensions) {
     layout.intrinsicWidth = 500;
     layout.intrinsicHeight = 300;
 
-    layout.layout(style);
-
+    layout.layout();
 
     EXPECT_EQ(500, layout.rect.width);
     EXPECT_EQ(300, layout.rect.height);

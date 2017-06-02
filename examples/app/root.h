@@ -49,15 +49,48 @@ public:
         createTree(document);
     }
 
+    void attributeChangedCallback(
+        std::string name, std::string oldValue, std::string newValue) override
+    {
+        if (name == "size")
+        {
+            mSize = newValue;
+
+            auto element = getElementById("heading");
+            if (element)
+            {
+                element->className = mSize;
+            }
+        }
+    }
+
     void addStyles(Chimera::Document& document)
     {
+        using namespace Chimera;
+
+        document.styleManager.addRule("#heading", {
+            {StyleProp::Margin, LayoutProperty({5, 5, 5, 5})}
+        });
+
         document.styleManager.addRule("#username", {
-            {Chimera::StyleProp::Color, Chimera::Color::fromRGBA(255, 255, 255, 1)}
+            {StyleProp::Margin, LayoutProperty({5, 5, 5, 0})},
+            {StyleProp::Color, Color::fromRGBA(255, 255, 255, 1)}
+        });
+
+        document.styleManager.addRule("#status", {
+            {StyleProp::Margin, LayoutProperty({5, 5, 5, 5})},
+            {StyleProp::Color, Color::fromRGBA(150, 150, 150, 1)},
+            {StyleProp::FontSize, 20}
         });
 
         document.styleManager.addRule("#user-icon", {
-            {Chimera::StyleProp::Width, 50},
-            {Chimera::StyleProp::Height, 50}
+            {StyleProp::Width, 50},
+            {StyleProp::Height, 50},
+            {StyleProp::Margin, LayoutProperty({10, 10, 10, 10})}
+        });
+
+        document.styleManager.addRule("#heading-right", {
+            {StyleProp::FlexDirection, Chimera::Direction::Column}
         });
     }
 
@@ -70,9 +103,43 @@ public:
                         {"src", "assets/logo.png"},
                         {"id", "user-icon"}
                     }),
-                    Chimera::Virtual::VElement("div", {{"id", "username"}}, "Lionheart"),
-                    Chimera::Virtual::VElement("div", {{"id", "username"}}, "Online")
+                    Chimera::Virtual::VElement("div", {{"id", "heading-right"}},
+                        std::vector<Chimera::Virtual::VirtualElement>({
+                            Chimera::Virtual::VElement("div", {{"id", "username"}}, "Username"),
+                            Chimera::Virtual::VElement("div", {{"id", "status"}}, "Online")
+                        }))
                 }))
+        ));
+    }
+
+ private:
+    std::string mSize{"large"};
+};
+
+class Spacer : public Chimera::Element {
+public:
+    Spacer(Chimera::Document& document)
+        : Chimera::Element("spacer", document)
+    {
+        addStyles(document);
+        createTree(document);
+    }
+
+    void addStyles(Chimera::Document& document)
+    {
+        using namespace Chimera;
+
+        document.styleManager.addRule("#spacer-bar", {
+            {StyleProp::Width, 300},
+            {StyleProp::Height, 5},
+            {StyleProp::BackgroundColor, Color::fromRGBA(255, 255, 255, 1)}
+        });
+    }
+
+    void createTree(Chimera::Document& document)
+    {
+        append(Chimera::Virtual::CreateTree(document,
+            Chimera::Virtual::VElement("div", {{"id", "spacer-bar"}})
         ));
     }
 };
@@ -83,6 +150,7 @@ public:
         : Chimera::Element("app-element", document)
     {
         document.registerElement<Heading>("heading");
+        document.registerElement<Spacer>("spacer");
 
         addStyles(document);
         createTree(document);
@@ -90,19 +158,17 @@ public:
 
     void addStyles(Chimera::Document& document)
     {
+        using namespace Chimera;
+
         int width = document.getWidth();
         int height = document.getHeight();
 
         document.styleManager.addRule("#background", {
-            {Chimera::StyleProp::Width, width},
-            {Chimera::StyleProp::Height, height},
-            {Chimera::StyleProp::BackgroundImage, "assets/bg.png"},
-            {Chimera::StyleProp::FlexDirection, Chimera::Direction::Column},
-            {Chimera::StyleProp::AnimationName, "fade-in"}
-        });
-
-        document.styleManager.addRule("#title", {
-            {Chimera::StyleProp::Color, Chimera::Color::fromRGBA(255, 255, 255, 1)}
+            {StyleProp::Width, width},
+            {StyleProp::Height, height},
+            {StyleProp::BackgroundImage, "assets/bg.png"},
+            {StyleProp::FlexDirection, Direction::Column},
+            {StyleProp::AnimationName, "fade-in"}
         });
     }
 
@@ -111,9 +177,12 @@ public:
         append(Chimera::Virtual::CreateTree(document,
             Chimera::Virtual::VElement("div", {{"id", "background"}},
                 std::vector<Chimera::Virtual::VirtualElement>({
-                    Chimera::Virtual::VElement("heading", {{"id", "title"}}),
-                    Chimera::Virtual::VElement("heading", {{"id", "title"}}),
-                    Chimera::Virtual::VElement("heading", {{"id", "title"}})
+                    Chimera::Virtual::VElement("heading", {}),
+                    Chimera::Virtual::VElement("spacer", {}),
+                    Chimera::Virtual::VElement("heading", {{"size", "small"}}),
+                    Chimera::Virtual::VElement("heading", {}),
+                    Chimera::Virtual::VElement("heading", {}),
+                    Chimera::Virtual::VElement("heading", {})
                 }))
         ));
     }

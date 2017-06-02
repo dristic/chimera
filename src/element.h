@@ -30,13 +30,15 @@ class Element {
     void append(Element* element);
     void remove(Element* element);
     const std::vector<Element*>& getChildren() const;
-    virtual void connectedCallback() { }
 
     void on(EventType type, EventCallback func);
     void dispatch(EventType type, Event* event);
 
     virtual bool handleEvent(Event* event);
     virtual void render(DrawData* data, Style* parentStyle);
+
+    virtual void attributeChangedCallback(
+        std::string name, std::string oldValue, std::string newValue) { };
 
     // Declarative methods
     Element* children(std::vector<Element*> children) {

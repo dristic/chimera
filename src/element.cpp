@@ -13,7 +13,7 @@ Element::Element(std::string name, Document& document)
     : scissor{}
     , scroll{}
     , style{}
-    , layout{}
+    , layout{&style}
     , tagName{name}
     , textContent{""}
     , mEventObservers{}
@@ -62,62 +62,16 @@ bool Element::handleEvent(Event* event) {
 void Element::render(DrawData* data, Style* parentStyle) {
     style.update(this, mDocument->animationController);
 
-    int internalHeight{0};
-    int internalWidth{0};
-    for (auto& child : mChildren) {
-        if (style.flexDirection == Direction::Row)
-        {
-            internalHeight = std::max((float)internalHeight, child->layout.rect.height);
-            internalWidth += child->layout.rect.width;
-        }
-        else
-        {
-            internalHeight += child->layout.rect.height;
-            internalWidth = std::max((float)internalWidth, child->layout.rect.width);
-        }
-    }
+    layout.calculateDimensions(mChildren);
+    layout.layout();
 
-    layout.intrinsicHeight = internalHeight;
-    layout.intrinsicWidth = internalWidth;
-
-    layout.layout(style);
+    layout.updateChildren(mChildren);
 
     float previousAlpha = data->globalAlpha;
     data->globalAlpha *= style.opacity;
 
-    float xValue = layout.rect.x + style.padding.left;
-    float yValue = layout.rect.y + style.padding.top + scroll.y;
-
     for (auto &element : mChildren) {
-        if (element->style.position != Position::Absolute) {
-            if (style.justifyContent == Align::Center) {
-                float midpoint = (layout.rect.width - element->layout.rect.width) / 2;
-                element->layout.rect.x = xValue + midpoint;
-            } else if (style.justifyContent == Align::Right) {
-                element->layout.rect.x = xValue + rect.width - element->layout.rect.width;
-            } else {
-                element->layout.rect.x = xValue + style.padding.left;
-            }
-
-            if (style.alignItems == Align::Center) {
-                float midpoint = (rect.height - element->style.height) / 2;
-                element->layout.rect.y = yValue + midpoint;
-            } else {
-                element->layout.rect.y = yValue + element->style.margin.top;
-            }
-        }
-
         element->render(data, &style);
-
-        if (element->style.position != Position::Absolute) {
-            if (style.flexDirection == Direction::Row) {
-                xValue += element->layout.rect.width + element->style.margin.right;
-                xValue += element->style.margin.left;
-            } else {
-                yValue += element->layout.rect.height + element->style.margin.bottom;
-                yValue += element->style.margin.top;
-            }
-        }
     }
 
     data->globalAlpha = previousAlpha;
@@ -158,31 +112,20 @@ void Div::render(DrawData* data, Style* parentStyle) {
 
     float textWidth = data->measureText(textContent, style.fontFamily, style.fontSize);
 
-    int internalHeight{0};
-    int internalWidth{0};
-    for (auto& child : mChildren) {
-        if (style.flexDirection == Direction::Row)
-        {
-            internalHeight = std::max((float)internalHeight, child->layout.rect.height);
-            internalWidth += child->layout.rect.width;
-        }
-        else
-        {
-            internalHeight += child->layout.rect.height;
-            internalWidth = std::max((float)internalWidth, child->layout.rect.width);
-        }
-    }
+    layout.calculateDimensions(mChildren);
 
-    if (textWidth > internalWidth)
+    if (textWidth > layout.intrinsicWidth)
     {
-        internalWidth = textWidth;
+        layout.intrinsicWidth = textWidth;
     }
 
-    layout.intrinsicHeight = internalHeight;
-    layout.intrinsicWidth = internalWidth;
+    if (layout.intrinsicHeight < style.fontSize && textContent != "")
+    {
+        layout.intrinsicHeight = style.fontSize;
+    }
 
     // Layout
-    layout.layout(style);
+    layout.layout();
 
     scissor.x = layout.rect.x;
     scissor.y = layout.rect.y;
@@ -234,42 +177,14 @@ void Div::render(DrawData* data, Style* parentStyle) {
     //     //data->addRectFilled(scrollbar, Color::fromRGBA(150, 150, 150, 0.7), scrollbar);
     // }
 
+    layout.updateChildren(mChildren);
+
     float previousAlpha = data->globalAlpha;
     data->globalAlpha *= style.opacity;
 
-    float xValue = layout.rect.x + style.padding.left;
-    float yValue = layout.rect.y + style.padding.top + scroll.y;
-
-    for (auto &element : mChildren) {
-        if (element->style.position != Position::Absolute) {
-            if (style.justifyContent == Align::Center) {
-                float midpoint = (layout.rect.width - element->layout.rect.width) / 2;
-                element->layout.rect.x = xValue + midpoint;
-            } else if (style.justifyContent == Align::Right) {
-                element->layout.rect.x = xValue + rect.width - element->layout.rect.width;
-            } else {
-                element->layout.rect.x = xValue + style.padding.left;
-            }
-
-            if (style.alignItems == Align::Center) {
-                float midpoint = (rect.height - element->style.height) / 2;
-                element->layout.rect.y = yValue + midpoint;
-            } else {
-                element->layout.rect.y = yValue + element->style.margin.top;
-            }
-        }
-
+    for (auto& element : mChildren)
+    {
         element->render(data, &style);
-
-        if (element->style.position != Position::Absolute) {
-            if (style.flexDirection == Direction::Row) {
-                xValue += element->layout.rect.width + element->style.margin.right;
-                xValue += element->style.margin.left;
-            } else {
-                yValue += element->layout.rect.height + element->style.margin.bottom;
-                yValue += element->style.margin.top;
-            }
-        }
     }
 
     data->globalAlpha = previousAlpha;
@@ -287,7 +202,7 @@ void Img::render(DrawData* data, Style* parentStyle) {
     layout.intrinsicWidth = style.width;
     layout.intrinsicHeight = style.height;
 
-    layout.layout(style);
+    layout.layout();
 
     if (mImageRef != nullptr) {
         mImageRef->render();

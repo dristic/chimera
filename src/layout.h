@@ -14,15 +14,22 @@ class Style;
 
 class Layout {
  public:
-    Layout();
+    Layout(Style* style);
 
-    void layout(Style& style);
+    void layout();
 
-    void updateChildren(std::vector<Element*>& children, Style& style);
+    int getBoundingWidth();
+    int getBoundingHeight();
+
+    void calculateDimensions(std::vector<Element*>& children);
+    void updateChildren(std::vector<Element*>& children);
 
     Rect rect;
     int intrinsicWidth{0};
     int intrinsicHeight{0};
+
+ private:
+    Style* mStyle{nullptr};
 };
 
 }  // namespace Chimera

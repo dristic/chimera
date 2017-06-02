@@ -196,6 +196,12 @@ void OpenGL3Bridge::createShaders() {
             "outColor = fragColor * texture(image, fragUV);\n"
         "}\n";
 
+    // "if (any(lessThan(fragUV, vec2(0.03)))) {\n"
+    //     "outColor = vec4(0.0, 0.0, 0.0, 1.0);\n"
+    // "} else {\n"
+    //     "outColor = fragColor * texture(image, fragUV);\n"
+    // "}\n"
+
     GLuint vertexShaderId = glCreateShader(GL_VERTEX_SHADER);
     GLuint fragmentShaderId = glCreateShader(GL_FRAGMENT_SHADER);
     glShaderSource(vertexShaderId, 1, &vertexShaderSource, NULL);
