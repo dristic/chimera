@@ -36,8 +36,9 @@ set(
     "src/layout.h"
     "src/rendering.cpp"
     "src/rendering.h"
-    "src/style.cpp"
-    "src/style.h"
+
+    "src/style/style.cpp"
+    "src/style/style.h"
 
     "src/virtual/vtree.cpp"
     "src/virtual/vtree.h"

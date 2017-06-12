@@ -11,7 +11,7 @@
 
 #include "src/core.h"
 #include "src/element.h"
-#include "src/style.h"
+#include "src/style/style.h"
 #include "src/focus.h"
 #include "src/animation.h"
 

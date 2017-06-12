@@ -6,19 +6,6 @@
 #include <Chimera/Chimera.h>
 
 /*
-root
-    header
-        img
-        name
-        status
-    list
-        title
-        user
-            img
-            name
-            status
-        user2...
-    list2...
 
 document.animationController.addAnimation("slide-in",
     [](float time, Chimera::Element* element) {
@@ -40,6 +27,22 @@ document.animationController.addAnimation("fade-in",
     });
 */
 
+struct UserData {
+    std::string name{""};
+    std::string status{""};
+};
+
+struct SocialData {
+    UserData currentUser{"Validus", "Online"};
+    std::vector<UserData> friends{
+        {"Validus", "Online"},
+        {"Validus", "Online"},
+        {"Validus", "Online"},
+        {"Validus", "Online"},
+        {"Validus", "Online"}
+    };
+};
+
 class Heading : public Chimera::Element {
 public:
     Heading(Chimera::Document& document)
@@ -56,11 +59,23 @@ public:
         {
             mSize = newValue;
 
-            auto element = getElementById("heading");
-            if (element)
-            {
-                element->className = mSize;
-            }
+            auto element = getElementById("user-icon");
+            element->className = mSize;
+
+            element = getElementById("username");
+            element->className = mSize;
+        }
+
+        if (name == "name")
+        {
+            auto element = getElementById("username");
+            element->textContent = newValue;
+        }
+
+        if (name == "status")
+        {
+            auto element = getElementById("status");
+            element->textContent = newValue;
         }
     }
 
@@ -77,16 +92,25 @@ public:
             {StyleProp::Color, Color::fromRGBA(255, 255, 255, 1)}
         });
 
+        document.styleManager.addRule("#username.small", {
+            {StyleProp::FontSize, 18}
+        });
+
         document.styleManager.addRule("#status", {
-            {StyleProp::Margin, LayoutProperty({5, 5, 5, 5})},
+            {StyleProp::Margin, LayoutProperty({2, 5, 5, 5})},
             {StyleProp::Color, Color::fromRGBA(150, 150, 150, 1)},
-            {StyleProp::FontSize, 20}
+            {StyleProp::FontSize, 16}
         });
 
         document.styleManager.addRule("#user-icon", {
             {StyleProp::Width, 50},
             {StyleProp::Height, 50},
             {StyleProp::Margin, LayoutProperty({10, 10, 10, 10})}
+        });
+
+        document.styleManager.addRule("#user-icon.small", {
+            {StyleProp::Width, 30},
+            {StyleProp::Height, 30}
         });
 
         document.styleManager.addRule("#heading-right", {
@@ -144,6 +168,34 @@ public:
     }
 };
 
+class ChatWindow : public Chimera::Element {
+public:
+    ChatWindow(Chimera::Document& document)
+        : Chimera::Element("spacer", document)
+    {
+        addStyles(document);
+        createTree(document);
+    }
+
+    void addStyles(Chimera::Document& document)
+    {
+        using namespace Chimera;
+
+        document.styleManager.addRule("#spacer-bar", {
+            {StyleProp::Width, 300},
+            {StyleProp::Height, 5},
+            {StyleProp::BackgroundColor, Color::fromRGBA(255, 255, 255, 1)}
+        });
+    }
+
+    void createTree(Chimera::Document& document)
+    {
+        append(Chimera::Virtual::CreateTree(document,
+            Chimera::Virtual::VElement("div", {{"id", "spacer-bar"}})
+        ));
+    }
+};
+
 class AppElement : public Chimera::Element {
 public:
     AppElement(Chimera::Document& document)
@@ -151,6 +203,7 @@ public:
     {
         document.registerElement<Heading>("heading");
         document.registerElement<Spacer>("spacer");
+        document.registerElement<ChatWindow>("chat-window");
 
         addStyles(document);
         createTree(document);
@@ -167,8 +220,14 @@ public:
             {StyleProp::Width, width},
             {StyleProp::Height, height},
             {StyleProp::BackgroundImage, "assets/bg.png"},
-            {StyleProp::FlexDirection, Direction::Column},
             {StyleProp::AnimationName, "fade-in"}
+        });
+
+        document.styleManager.addRule("#sidebar", {
+            {StyleProp::Width, 300},
+            {StyleProp::Height, height},
+            {StyleProp::FlexDirection, Direction::Column},
+            {StyleProp::BackgroundColor, Color::fromRGBA(11, 30, 50, 1)}
         });
     }
 
@@ -177,18 +236,24 @@ public:
         append(Chimera::Virtual::CreateTree(document,
             Chimera::Virtual::VElement("div", {{"id", "background"}},
                 std::vector<Chimera::Virtual::VirtualElement>({
-                    Chimera::Virtual::VElement("heading", {}),
-                    Chimera::Virtual::VElement("spacer", {}),
-                    Chimera::Virtual::VElement("heading", {{"size", "small"}}),
-                    Chimera::Virtual::VElement("heading", {}),
-                    Chimera::Virtual::VElement("heading", {}),
-                    Chimera::Virtual::VElement("heading", {})
+                    Chimera::Virtual::VElement("div", {{"id", "sidebar"}},
+                        std::vector<Chimera::Virtual::VirtualElement>({
+                            Chimera::Virtual::VElement("heading", {}),
+                            Chimera::Virtual::VElement("spacer", {}),
+                            Chimera::Virtual::VElement("heading", {{"size", "small"}}),
+                            Chimera::Virtual::VElement("heading", {{"size", "small"}}),
+                            Chimera::Virtual::VElement("heading", {{"size", "small"}}),
+                            Chimera::Virtual::VElement("heading", {{"size", "small"}})
+                        })),
+                    Chimera::Virtual::VElement("chat-window", {})
                 }))
         ));
     }
 
 private:
     bool loaded{false};
+
+    SocialData data;
 };
 
 #endif  // EXAMPLES_APP_ROOT_H_

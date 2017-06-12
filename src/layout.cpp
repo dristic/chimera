@@ -2,7 +2,7 @@
 
 #include "src/layout.h"
 
-#include "src/style.h"
+#include "src/style/style.h"
 #include "src/element.h"
 
 namespace Chimera {

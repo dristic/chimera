@@ -3,7 +3,7 @@
 #include <iostream>
 #include "gtest/gtest.h"
 
-#include "src/style.h"
+#include "src/style/style.h"
 #include "src/layout.h"
 
 namespace ChimeraTest {

@@ -8,7 +8,7 @@
 #include <vector>
 #include <unordered_map>
 
-#include "src/style.h"
+#include "src/style/style.h"
 #include "src/types.h"
 #include "src/layout.h"
 

@@ -1,9 +1,10 @@
 // Copyright 2017 Dan Ristic
 
+#include "src/style/style.h"
+
 #include <algorithm>
 #include <stack>
 
-#include "src/style.h"
 #include "src/element.h"
 
 namespace Chimera {
@@ -305,12 +306,23 @@ void StyleRule::applyRule(Style& style) {
 }
 
 bool StyleRule::matches(Element* element) {
-    size_t classFound = className == "" ?
-        std::string::npos :
-        element->className.find(className);
+    bool matches = element->mPseudoClass == pseudoClass;
 
-    bool matches = element->mPseudoClass == pseudoClass
-        && (element->id == idName || element->tagName == tagName || classFound != std::string::npos);
+    if (idName != "")
+    {
+        matches = matches && element->id == idName;
+    }
+
+    if (tagName != "")
+    {
+        matches = matches && element->tagName == tagName;
+    }
+
+    if (className != "")
+    {
+        size_t classFound = element->className.find(className);
+        matches = matches && classFound != std::string::npos;
+    }
     
     return matches;
 }
@@ -325,17 +337,69 @@ void StyleManager::addRule(StyleRule&& rule) {
     mRules.push_back(std::move(rule));
 }
 
+enum class ParseMode
+{
+    Class, Id, Tag
+};
+
+void StyleManager::parseSelector(std::string selector, StyleRule& rule)
+{
+    std::string result;
+    ParseMode mode{ParseMode::Tag};
+
+    for (auto& c : selector)
+    {
+        if (c == '.')
+        {
+            if (result != "")
+            {
+                switch (mode)
+                {
+                    case ParseMode::Class: rule.addClass(result); break;
+                    case ParseMode::Id: rule.addId(result); break;
+                    case ParseMode::Tag: rule.addTag(result); break;
+                }
+
+                result = "";
+            }
+            mode = ParseMode::Class;
+        }
+        else if (c == '#')
+        {
+            if (result != "")
+            {
+                switch (mode)
+                {
+                    case ParseMode::Class: rule.addClass(result); break;
+                    case ParseMode::Id: rule.addId(result); break;
+                    case ParseMode::Tag: rule.addTag(result); break;
+                }
+
+                result = "";
+            }
+            mode = ParseMode::Id;
+        }
+        else
+        {
+            result += c;
+        }
+    }
+
+    if (result != "")
+    {
+        switch (mode)
+        {
+            case ParseMode::Class: rule.addClass(result); break;
+            case ParseMode::Id: rule.addId(result); break;
+            case ParseMode::Tag: rule.addTag(result); break;
+        }
+    }
+}
+
 void StyleManager::addRule(std::string selector, std::vector<StyleAttribute> attributes) {
     StyleRule rule{};
 
-    auto& type = selector.at(0);
-    if (type == '.') {
-        rule.addClass(selector.substr(1));
-    } else if (type == '#') {
-        rule.addId(selector.substr(1));
-    } else {
-        rule.addTag(selector);
-    }
+    parseSelector(selector, rule);
 
     for (auto& attribute : attributes) {
         switch (attribute.getProp()) {
@@ -370,12 +434,6 @@ void StyleManager::addRule(std::string selector, std::vector<StyleAttribute> att
         }
     }
 
-    addRule(std::move(rule));
-}
-
-void StyleManager::addRule(std::function<void(StyleRule&)> factory) {
-    StyleRule rule;
-    factory(rule);
     addRule(std::move(rule));
 }
 
