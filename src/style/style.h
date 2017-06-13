@@ -198,7 +198,8 @@ enum class StyleAttributeType {
     Direction,
     Align,
     Color,
-    LayoutProperty
+    LayoutProperty,
+    Position
 };
 
 class StyleAttribute {
@@ -239,6 +240,12 @@ class StyleAttribute {
         , mType{StyleAttributeType::LayoutProperty}
         { }
 
+    StyleAttribute(StyleProp prop, Position value)
+        : mProp{prop}
+        , mPositionValue{value}
+        , mType{StyleAttributeType::Position}
+        { }
+
     StyleProp getProp() {
         return mProp;
     }
@@ -275,6 +282,10 @@ class StyleAttribute {
         return mLayoutPropertyValue;
     }
 
+    Position asPosition() {
+        return mPositionValue;
+    }
+
 private:
     StyleProp mProp;
     StyleAttributeType mType;
@@ -285,6 +296,7 @@ private:
     Align mAlignValue{Align::Left};
     Color mColorValue{};
     LayoutProperty mLayoutPropertyValue{0, 0, 0, 0};
+    Position mPositionValue{Position::Relative};
 };
 
 class StyleManager {
