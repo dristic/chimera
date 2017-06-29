@@ -406,6 +406,8 @@ void StyleManager::addRule(std::string selector, std::vector<StyleAttribute> att
             case StyleProp::Width:
             case StyleProp::Height:
             case StyleProp::FontSize:
+            case StyleProp::Top:
+            case StyleProp::Left:
                 rule.addValue(attribute.getProp(), attribute.asInt());
                 break;
             case StyleProp::BackgroundImage:
@@ -428,6 +430,9 @@ void StyleManager::addRule(std::string selector, std::vector<StyleAttribute> att
             case StyleProp::Margin:
             case StyleProp::Padding:
                 rule.addValue(attribute.getProp(), attribute.asLayoutProperty());
+                break;
+            case StyleProp::Position:
+                rule.addValue(attribute.getProp(), attribute.asPosition());
                 break;
             default:
                 break;

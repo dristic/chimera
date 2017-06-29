@@ -126,17 +126,19 @@ public:
 
     void createTree(Chimera::Document& document)
     {
-        append(Chimera::Virtual::CreateTree(document,
-            Chimera::Virtual::VElement("div", {{"id", "heading"}},
-                std::vector<Chimera::Virtual::VirtualElement>({
-                    Chimera::Virtual::VElement("img", {
+        using namespace Chimera;
+
+        append(Virtual::CreateTree(document,
+            Virtual::VElement("div", {{"id", "heading"}},
+                std::vector<Virtual::VirtualElement>({
+                    Virtual::VElement("img", {
                         {"src", "assets/logo.png"},
                         {"id", "user-icon"}
                     }),
-                    Chimera::Virtual::VElement("div", {{"id", "heading-right"}},
-                        std::vector<Chimera::Virtual::VirtualElement>({
-                            Chimera::Virtual::VElement("div", {{"id", "username"}}, "Username"),
-                            Chimera::Virtual::VElement("div", {{"id", "status"}}, "Online")
+                    Virtual::VElement("div", {{"id", "heading-right"}},
+                        std::vector<Virtual::VirtualElement>({
+                            Virtual::VElement("div", {{"id", "username"}}, "Username"),
+                            Virtual::VElement("div", {{"id", "status"}}, "Online")
                         }))
                 }))
         ));
@@ -168,8 +170,10 @@ public:
 
     void createTree(Chimera::Document& document)
     {
-        append(Chimera::Virtual::CreateTree(document,
-            Chimera::Virtual::VElement("div", {{"id", "spacer-bar"}})
+        using namespace Chimera;
+
+        append(Virtual::CreateTree(document,
+            Virtual::VElement("div", {{"id", "spacer-bar"}})
         ));
     }
 };
@@ -187,17 +191,47 @@ public:
     {
         using namespace Chimera;
 
-        document.styleManager.addRule("#spacer-bar", {
-            {StyleProp::Width, 300},
-            {StyleProp::Height, 5},
-            {StyleProp::BackgroundColor, Color::fromRGBA(255, 255, 255, 1)}
+        document.styleManager.addRule("#chat-window", {
+            {StyleProp::Width, 400},
+            {StyleProp::Height, 300},
+            {StyleProp::Position, Position::Absolute},
+            {StyleProp::Left, 880},
+            {StyleProp::Top, 420},
+            {StyleProp::FlexDirection, Direction::Column},
+            {StyleProp::BackgroundColor, Color::fromRGBA(11, 30, 50, 1)}
+        });
+
+        document.styleManager.addRule("#messages", {
+            {StyleProp::Width, 380},
+            {StyleProp::Height, 150},
+            {StyleProp::Color, Color::fromRGBA(255, 255, 255, 1)},
+            {StyleProp::FontSize, 18},
+            {StyleProp::Margin, LayoutProperty({10, 10, 10, 10})},
+            {StyleProp::Padding, LayoutProperty({10, 10, 10, 10})},
+            {StyleProp::BackgroundColor, Color::fromRGBA(15, 40, 67, 1)}
+        });
+
+        document.styleManager.addRule("#send-message", {
+            {StyleProp::Width, 380},
+            {StyleProp::Height, 24},
+            {StyleProp::Color, Color::fromRGBA(255, 255, 255, 1)},
+            {StyleProp::FontSize, 18},
+            {StyleProp::Margin, LayoutProperty({10, 10, 10, 10})},
+            {StyleProp::BackgroundColor, Color::fromRGBA(15, 40, 67, 1)}
         });
     }
 
     void createTree(Chimera::Document& document)
     {
-        append(Chimera::Virtual::CreateTree(document,
-            Chimera::Virtual::VElement("div", {{"id", "spacer-bar"}})
+        using namespace Chimera;
+
+        append(Virtual::CreateTree(document,
+            Virtual::VElement("div", {{"id", "chat-window"}},
+                std::vector<Virtual::VirtualElement>({
+                    Virtual::VElement("heading", {}),
+                    Virtual::VElement("div", {{"id", "messages"}}, "[Username] Hello!"),
+                    Virtual::VElement("input", {{"id", "send-message"}})
+                }))
         ));
     }
 };
@@ -239,19 +273,21 @@ public:
 
     void createTree(Chimera::Document& document)
     {
-        append(Chimera::Virtual::CreateTree(document,
-            Chimera::Virtual::VElement("div", {{"id", "background"}},
-                std::vector<Chimera::Virtual::VirtualElement>({
-                    Chimera::Virtual::VElement("div", {{"id", "sidebar"}},
-                        std::vector<Chimera::Virtual::VirtualElement>({
-                            Chimera::Virtual::VElement("heading", {}),
-                            Chimera::Virtual::VElement("spacer", {}),
-                            Chimera::Virtual::VElement("heading", {{"size", "small"}}),
-                            Chimera::Virtual::VElement("heading", {{"size", "small"}}),
-                            Chimera::Virtual::VElement("heading", {{"size", "small"}}),
-                            Chimera::Virtual::VElement("heading", {{"size", "small"}})
+        using namespace Chimera;
+
+        append(Virtual::CreateTree(document,
+            Virtual::VElement("div", {{"id", "background"}},
+                std::vector<Virtual::VirtualElement>({
+                    Virtual::VElement("div", {{"id", "sidebar"}},
+                        std::vector<Virtual::VirtualElement>({
+                            Virtual::VElement("heading", {}),
+                            Virtual::VElement("spacer", {}),
+                            Virtual::VElement("heading", {{"size", "small"}}),
+                            Virtual::VElement("heading", {{"size", "small"}}),
+                            Virtual::VElement("heading", {{"size", "small"}}),
+                            Virtual::VElement("heading", {{"size", "small"}})
                         })),
-                    Chimera::Virtual::VElement("chat-window", {})
+                    Virtual::VElement("chat-window", {})
                 }))
         ));
     }
