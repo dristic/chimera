@@ -30,6 +30,11 @@ document.animationController.addAnimation("fade-in",
 struct UserData {
     std::string name{""};
     std::string status{""};
+
+    UserData(std::string _name, std::string _status)
+        : name{ _name }
+        , status{ _status }
+    { }
 };
 
 struct SocialData {
@@ -89,7 +94,8 @@ public:
 
         document.styleManager.addRule("#username", {
             {StyleProp::Margin, LayoutProperty({5, 5, 5, 0})},
-            {StyleProp::Color, Color::fromRGBA(255, 255, 255, 1)}
+            {StyleProp::Color, Color::fromRGBA(255, 255, 255, 1)},
+            {StyleProp::FontSize, 24}
         });
 
         document.styleManager.addRule("#username.small", {

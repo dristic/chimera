@@ -184,13 +184,27 @@ void Renderer::loadFont(Context& context, std::string name, std::string location
         return;
     }
 
-    FT_Set_Pixel_Sizes(face, 0, 24);
+#if WIN32
+    FT_Set_Char_Size(
+        face,    /* handle to face object           */
+        0,       /* char_width in 1/64th of points  */
+        24 * 64,   /* char_height in 1/64th of points */
+        96,     /* horizontal device resolution    */
+        96);   /* vertical device resolution      */
+#else
+    FT_Set_Char_Size(
+        face,    /* handle to face object           */
+        0,       /* char_width in 1/64th of points  */
+        24 * 64,   /* char_height in 1/64th of points */
+        72,     /* horizontal device resolution    */
+        72);   /* vertical device resolution      */
+#endif
 
     Font newFont;
 
     newFont.face = face;
 
-    auto index = FT_Get_Char_Index(face, 0x00002022);
+    // auto index = FT_Get_Char_Index(face, 0x00002022);
 
     for (int c = 32; c < 128; c++) {
         if (FT_Load_Char(face, c, FT_LOAD_RENDER)) {
@@ -204,7 +218,6 @@ void Renderer::loadFont(Context& context, std::string name, std::string location
             * face->glyph->bitmap.rows;
 
         newFont.characters.insert(std::pair<unsigned char, Character>(c, {
-            // static_cast<unsigned char*>(malloc(size * 4)),
             face->glyph->bitmap.width,
             face->glyph->bitmap.rows,
             face->glyph->bitmap_left,

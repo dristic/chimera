@@ -3,13 +3,13 @@
 
 #include "lodepng/lodepng.h"
 
-namespace Cosmonaut {
+namespace Chimera {
 
 DX9Adaptor::DX9Adaptor(LPDIRECT3DDEVICE9 _device)
     : device{ _device }
     { }
 
-std::unique_ptr<Cosmonaut::ImageRef> DX9Adaptor::loadImage(std::string imagePath, int& width, int& height) {
+std::unique_ptr<ImageRef> DX9Adaptor::loadImage(std::string imagePath, int& width, int& height) {
     std::vector<unsigned char> image;  // The raw pixels
     unsigned w, h;
     unsigned error = lodepng::decode(image, w, h, imagePath.c_str());
@@ -38,7 +38,7 @@ std::unique_ptr<Cosmonaut::ImageRef> DX9Adaptor::loadImage(std::string imagePath
 
     auto textureID = loadTexture(width, height, reinterpret_cast<unsigned char*>(image.data()));
 
-    return std::make_unique<Cosmonaut::ImageRef>(width, height, textureID);
+    return std::make_unique<ImageRef>(width, height, textureID);
 }
 
 unsigned int DX9Adaptor::loadTexture(unsigned int width, unsigned int height, unsigned char* buffer) {
@@ -71,12 +71,13 @@ unsigned int DX9Adaptor::loadTexture(unsigned int width, unsigned int height, un
         return 0;
     }
 
-    for (int y = 0; y < height; y++) {
-        memcpy(
-            static_cast<unsigned char *>(lockedRect.pBits) + lockedRect.Pitch * y,
-            buffer + (width * 4) * y,
-            (width * 4)
-        );
+    auto pDest = static_cast<unsigned char*>(lockedRect.pBits);
+    auto pSource = buffer;
+    for (unsigned int y = 0; y < height; y++) {
+        memcpy(pDest, pSource, width * 4);
+
+        pDest += lockedRect.Pitch;
+        pSource += width * 4;
     }
 
     textures[textureId]->UnlockRect(0);
@@ -87,7 +88,7 @@ unsigned int DX9Adaptor::loadTexture(unsigned int width, unsigned int height, un
     return returnId;
 }
 
-void DX9Adaptor::renderCallback(Cosmonaut::DrawData* data) {
+void DX9Adaptor::renderCallback(DrawData* data) {
     device->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
     device->SetRenderState(D3DRS_LIGHTING, false);
     device->SetRenderState(D3DRS_ZENABLE, false);
@@ -100,8 +101,11 @@ void DX9Adaptor::renderCallback(Cosmonaut::DrawData* data) {
     device->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
     device->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
     device->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
-    device->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
-    device->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
+    device->SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP);
+    device->SetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP);
+    device->SetSamplerState(0, D3DSAMP_ADDRESSW, D3DTADDRESS_CLAMP);
+    device->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_POINT);
+    device->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_POINT);
 
     D3DVIEWPORT9 vp;
     vp.X = 0;
@@ -144,8 +148,8 @@ void DX9Adaptor::renderCallback(Cosmonaut::DrawData* data) {
     CUSTOMVERTEX* vertexData;
     vBuffer->Lock(0, 0, reinterpret_cast<void**>(&vertexData), 0);
     for (auto& vert : data->vertices) {
-        vertexData->X = vert.pos.x;
-        vertexData->Y = vert.pos.y;
+        vertexData->X = vert.pos.x - 0.5f;
+        vertexData->Y = vert.pos.y - 0.5f;
         vertexData->Z = 0.0f;
         vertexData->COLOR = D3DCOLOR_ARGB(
             static_cast<int>(vert.color.w * 255.0f),

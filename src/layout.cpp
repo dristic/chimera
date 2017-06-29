@@ -2,6 +2,8 @@
 
 #include "src/layout.h"
 
+#include <algorithm>
+
 #include "src/style/style.h"
 #include "src/element.h"
 

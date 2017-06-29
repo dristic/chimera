@@ -7,9 +7,7 @@ project(ChimeraDX9)
 # Glob all source files
 set(
     DX9_EXAMPLE_SOURCES
-    "examples/app/login.cpp"
-    "examples/app/login.h"
-    "examples/app/loading.h"
+    "examples/app/root.h"
 
     "examples/dx9/dx9.cpp"
 
@@ -35,6 +33,8 @@ foreach(source IN LISTS DX9_EXAMPLE_SOURCES)
     source_group("${source_path_msvc}" FILES "${source}")
 endforeach()
 
+set_target_properties(CosmonautDX9 PROPERTIES LINK_FLAGS "/SUBSYSTEM:WINDOWS")
+
 include_directories(./)
 include_directories(vendor)
 include_directories(vendor/libnsgif/include)
@@ -50,7 +50,7 @@ target_link_libraries(CosmonautDX9 ${FREETYPE_LIBRARIES})
 include_directories(${HARFBUZZ_INCLUDE_DIR})
 target_link_libraries(CosmonautDX9 ${HARFBUZZ_LIBRARY})
 
-target_link_libraries(CosmonautDX9 Nova)
+target_link_libraries(CosmonautDX9 Chimera)
 
 # Copy assets to build directory
 file(COPY examples/assets DESTINATION ${CMAKE_BINARY_DIR})

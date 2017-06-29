@@ -1,10 +1,9 @@
 // Copyright 2016 Dan Ristic
 
-#include "Cosmonaut/Cosmonaut.h"
+#include "Chimera/Chimera.h"
 
-#include "app/login.h"
-#include "app/loading.h"
 #include "src/adaptor/dx9.h"
+#include "app/root.h"
 
 #include <Windows.h>
 #include <windowsx.h>
@@ -31,8 +30,8 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
     const int WIDTH = 1280;
     const int HEIGHT = 720;
 
-    Nova::Context context;
-    Nova::Document& document = context.document;
+    Chimera::Context context;
+    Chimera::Document& document = context.document;
 
     OutputDebugString(TEXT("Starting..."));
 
@@ -55,6 +54,10 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
     // register the window class
     RegisterClassEx(&wc);
 
+    RECT windowRect{ 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
+
+    AdjustWindowRect(&windowRect, WS_OVERLAPPEDWINDOW, false);
+
     // create the window and use the result as the handle
     hWnd = CreateWindowEx(NULL,
         TEXT("Cosmonaut"),    // name of the window class
@@ -62,8 +65,8 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
         WS_OVERLAPPEDWINDOW,    // window style
         300,    // x-position of the window
         300,    // y-position of the window
-        SCREEN_WIDTH,    // width of the window
-        SCREEN_HEIGHT,    // height of the window
+        windowRect.right - windowRect.left,    // width of the window
+        windowRect.bottom - windowRect.top,    // height of the window
         NULL,    // we have no parent window, NULL
         NULL,    // we aren't using menus, NULL
         hInstance,    // application handle
@@ -77,14 +80,13 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
     document.setDimensions(WIDTH, HEIGHT);
     document.setScreenDimensions(WIDTH, HEIGHT);
 
-    auto adaptor = std::make_shared<Cosmonaut::DX9Adaptor>(d3ddev);
+    auto adaptor = std::make_shared<Chimera::DX9Adaptor>(d3ddev);
     context.useAdaptor(adaptor);
 
     context.renderer.loadFont(context, "Roboto", "assets/Roboto-Regular.ttf");
     context.renderer.loadFont(context, "Roboto Thin", "assets/Roboto-Thin.ttf");
 
-    auto loadingComponent = std::make_shared<LoadingComponent>();
-    context.component.render(document.body, loadingComponent);
+    document.body->append(document.createElement<AppElement>());
 
     // enter the main loop:
 

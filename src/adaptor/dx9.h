@@ -20,15 +20,15 @@ struct CUSTOMVERTEX {
 };
 #define CUSTOMFVF (D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1)
 
-namespace Cosmonaut {
+namespace Chimera {
 
-class DX9Adaptor : public Cosmonaut::Adaptor {
+class DX9Adaptor : public Chimera::Adaptor {
 public:
     DX9Adaptor(LPDIRECT3DDEVICE9 _device);
 
-    std::unique_ptr<Cosmonaut::ImageRef> loadImage(std::string imagePath, int& width, int& height) override;
+    std::unique_ptr<Chimera::ImageRef> loadImage(std::string imagePath, int& width, int& height) override;
     unsigned int loadTexture(unsigned int width, unsigned int height, unsigned char* buffer) override;
-    void renderCallback(Cosmonaut::DrawData* data) override;
+    void renderCallback(Chimera::DrawData* data) override;
 
     LPDIRECT3DDEVICE9 device;
 
