@@ -341,12 +341,12 @@ void Input::render(DrawData* data, Style* parentStyle) {
     // Draw input line
     if (isFocused) {
         mFrames++;
-        if (mFrames < 30) {
+        if (mFrames < 15) {
             float textWidth = data->measureText(value, style.fontFamily, style.fontSize);
             Rect inputLine{layout.rect.x + 2 + textWidth, layout.rect.y + 2, 1, layout.rect.height - 4};
             data->addRectFilled(inputLine, style.color);
         } else {
-            if (mFrames > 60) {
+            if (mFrames > 30) {
                 mFrames = 0;
             }
         }

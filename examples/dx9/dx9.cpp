@@ -20,6 +20,8 @@
 LPDIRECT3D9 d3d;    // the pointer to our Direct3D interface
 LPDIRECT3DDEVICE9 d3ddev;    // the pointer to the device class
 
+Chimera::Context context;
+
 void initD3D(HWND hWnd);    // sets up and initializes Direct3D
 void cleanD3D(void);    // closes Direct3D and releases memory
 
@@ -30,7 +32,6 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
     const int WIDTH = 1280;
     const int HEIGHT = 720;
 
-    Chimera::Context context;
     Chimera::Document& document = context.document;
 
     OutputDebugString(TEXT("Starting..."));
@@ -172,6 +173,26 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
         // close the application entirely
         PostQuitMessage(0);
         return 0;
+    } break;
+
+    case WM_MOUSEMOVE:
+    {
+        int xPos = GET_X_LPARAM(lParam);
+        int yPos = GET_Y_LPARAM(lParam);
+
+        context.setMousePosition(xPos, yPos);
+    } break;
+
+    case WM_LBUTTONDOWN:
+    {
+        context.setMouseDown();
+    } break;
+
+    case WM_CHAR:
+    {
+        char value = static_cast<char>(wParam);
+        std::string chars{ value };
+        context.addInputCharacters(chars);
     } break;
     }
 
