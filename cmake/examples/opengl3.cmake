@@ -7,9 +7,7 @@ project(ChimeraOpengl3)
 # Glob all source files
 set(
     OPENGL3_EXAMPLE_SOURCES
-    "examples/app/login.cpp"
-    "examples/app/login.h"
-    "examples/app/loading.h"
+    "examples/app/root.h"
 
     "examples/opengl3/opengl3.cpp"
 

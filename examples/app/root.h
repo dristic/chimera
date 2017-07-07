@@ -5,52 +5,9 @@
 
 #include <Chimera/Chimera.h>
 
-/*
-
-document.animationController.addAnimation("slide-in",
-    [](float time, Chimera::Element* element) {
-        float pos = -50 * time * (time-2);
-        element->style.margin.top = 50 - pos;
-        element->style.opacity = -1 * time * (time - 2);
-    });
-
-document.animationController.addAnimation("slide-out",
-    [](float time, Chimera::Element* element) {
-        float pos = 200 * time * (time-2);
-        element->style.margin.top = pos;
-        element->style.opacity = 1 - (-1 * time * (time - 2));
-    });
-
-document.animationController.addAnimation("fade-in",
-    [](float time, Chimera::Element* element) {
-        element->style.opacity = -1 * time * (time - 2);
-    });
-*/
-
-struct UserData {
-    std::string name{""};
-    std::string status{""};
-
-    UserData(std::string _name, std::string _status)
-        : name{ _name }
-        , status{ _status }
-    { }
-};
-
-struct SocialData {
-    UserData currentUser{"Validus", "Online"};
-    std::vector<UserData> friends{
-        {"Validus", "Online"},
-        {"Validus", "Online"},
-        {"Validus", "Online"},
-        {"Validus", "Online"},
-        {"Validus", "Online"}
-    };
-};
-
-class Heading : public Chimera::Element {
+class CustomComponent : public Chimera::Element {
 public:
-    Heading(Chimera::Document& document)
+    CustomComponent(Chimera::Document& document)
         : Chimera::Element("heading", document)
     {
         addStyles(document);
@@ -148,102 +105,12 @@ public:
     std::string mSize{"large"};
 };
 
-class Spacer : public Chimera::Element {
-public:
-    Spacer(Chimera::Document& document)
-        : Chimera::Element("spacer", document)
-    {
-        addStyles(document);
-        createTree(document);
-    }
-
-    void addStyles(Chimera::Document& document)
-    {
-        using namespace Chimera;
-
-        document.styleManager.addRule("#spacer-bar", {
-            {StyleProp::Width, 300},
-            {StyleProp::Height, 5},
-            {StyleProp::BackgroundColor, Color::fromRGBA(255, 255, 255, 1)}
-        });
-    }
-
-    void createTree(Chimera::Document& document)
-    {
-        using namespace Chimera;
-
-        append(Virtual::CreateTree(document,
-            Virtual::VElement("div", {{"id", "spacer-bar"}})
-        ));
-    }
-};
-
-class ChatWindow : public Chimera::Element {
-public:
-    ChatWindow(Chimera::Document& document)
-        : Chimera::Element("spacer", document)
-    {
-        addStyles(document);
-        createTree(document);
-    }
-
-    void addStyles(Chimera::Document& document)
-    {
-        using namespace Chimera;
-
-        document.styleManager.addRule("#chat-window", {
-            {StyleProp::Width, 400},
-            {StyleProp::Height, 300},
-            {StyleProp::Position, Position::Absolute},
-            {StyleProp::Left, 880},
-            {StyleProp::Top, 420},
-            {StyleProp::FlexDirection, Direction::Column},
-            {StyleProp::BackgroundColor, Color::fromRGBA(11, 30, 50, 1)}
-        });
-
-        document.styleManager.addRule("#messages", {
-            {StyleProp::Width, 380},
-            {StyleProp::Height, 150},
-            {StyleProp::Color, Color::fromRGBA(255, 255, 255, 1)},
-            {StyleProp::FontSize, 18},
-            {StyleProp::Margin, LayoutProperty({10, 10, 10, 10})},
-            {StyleProp::Padding, LayoutProperty({10, 10, 10, 10})},
-            {StyleProp::BackgroundColor, Color::fromRGBA(15, 40, 67, 1)}
-        });
-
-        document.styleManager.addRule("#send-message", {
-            {StyleProp::Width, 380},
-            {StyleProp::Height, 24},
-            {StyleProp::Color, Color::fromRGBA(255, 255, 255, 1)},
-            {StyleProp::FontSize, 18},
-            {StyleProp::Margin, LayoutProperty({10, 10, 10, 10})},
-            {StyleProp::BackgroundColor, Color::fromRGBA(15, 40, 67, 1)}
-        });
-    }
-
-    void createTree(Chimera::Document& document)
-    {
-        using namespace Chimera;
-
-        append(Virtual::CreateTree(document,
-            Virtual::VElement("div", {{"id", "chat-window"}},
-                std::vector<Virtual::VirtualElement>({
-                    Virtual::VElement("heading", {}),
-                    Virtual::VElement("div", {{"id", "messages"}}, "[Username] Hello!"),
-                    Virtual::VElement("input", {{"id", "send-message"}})
-                }))
-        ));
-    }
-};
-
 class AppElement : public Chimera::Element {
 public:
     AppElement(Chimera::Document& document)
         : Chimera::Element("app-element", document)
     {
-        document.registerElement<Heading>("heading");
-        document.registerElement<Spacer>("spacer");
-        document.registerElement<ChatWindow>("chat-window");
+        document.registerElement<CustomComponent>("custom-component");
 
         addStyles(document);
         createTree(document);
@@ -260,14 +127,27 @@ public:
             {StyleProp::Width, width},
             {StyleProp::Height, height},
             {StyleProp::BackgroundImage, "assets/bg.png"},
-            {StyleProp::AnimationName, "fade-in"}
+            {StyleProp::FlexDirection, Direction::Column}
         });
 
-        document.styleManager.addRule("#sidebar", {
-            {StyleProp::Width, 300},
-            {StyleProp::Height, height},
-            {StyleProp::FlexDirection, Direction::Column},
-            {StyleProp::BackgroundColor, Color::fromRGBA(11, 30, 50, 1)}
+        document.styleManager.addRule("#title", {
+            {StyleProp::Color, Color::fromRGBA(255, 255, 255, 1)},
+            {StyleProp::Margin, LayoutProperty({10, 10, 10, 10})}
+        });
+
+        document.styleManager.addRule("#image", {
+            {StyleProp::Width, 50},
+            {StyleProp::Height, 50},
+            {StyleProp::Margin, LayoutProperty({10, 10, 10, 10})}
+        });
+
+        document.styleManager.addRule("#input-box", {
+            {StyleProp::Width, 380},
+            {StyleProp::Height, 24},
+            {StyleProp::Color, Color::fromRGBA(255, 255, 255, 1)},
+            {StyleProp::FontSize, 18},
+            {StyleProp::BackgroundColor, Color::fromRGBA(15, 40, 67, 1)},
+            {StyleProp::Margin, LayoutProperty({10, 10, 10, 10})}
         });
     }
 
@@ -278,24 +158,18 @@ public:
         append(Virtual::CreateTree(document,
             Virtual::VElement("div", {{"id", "background"}},
                 std::vector<Virtual::VirtualElement>({
-                    Virtual::VElement("div", {{"id", "sidebar"}},
-                        std::vector<Virtual::VirtualElement>({
-                            Virtual::VElement("heading", {}),
-                            Virtual::VElement("spacer", {}),
-                            Virtual::VElement("heading", {{"size", "small"}}),
-                            Virtual::VElement("heading", {{"size", "small"}}),
-                            Virtual::VElement("heading", {{"size", "small"}}),
-                            Virtual::VElement("heading", {{"size", "small"}})
-                        })),
-                    Virtual::VElement("chat-window", {})
+                    Virtual::VElement("div", {{"id", "title"}}, "Hello World"),
+                    Virtual::VElement("img", {
+                        {"src", "assets/logo.png"},
+                        {"id", "image"}
+                    }),
+                    Virtual::VElement("input", {{"id", "input-box"}})
                 }))
         ));
     }
 
 private:
     bool loaded{false};
-
-    SocialData data;
 };
 
 #endif  // EXAMPLES_APP_ROOT_H_
