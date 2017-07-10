@@ -37,10 +37,10 @@ namespace Chimera {
     void Context::setMousePosition(int x, int y) {
         document.setCursorType(CursorType::Arrow);
 
-        if (x != mMouseX || y != mMouseY) {
+        // if (x != mMouseX || y != mMouseY) {
             MouseMoveEvent event{x, y};
             document.body->handleEvent(dynamic_cast<Event*>(&event));
-        }
+        // }
 
         mMouseX = x;
         mMouseY = y;

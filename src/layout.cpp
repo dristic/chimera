@@ -66,6 +66,9 @@ void Layout::layout()
     {
         rect.height = intrinsicHeight;
     }
+
+    rect.width += mStyle->padding.left + mStyle->padding.right;
+    rect.height += mStyle->padding.top + mStyle->padding.bottom;
 }
 
 void Layout::updateChildren(std::vector<Element*>& children)

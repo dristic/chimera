@@ -149,6 +149,14 @@ public:
             {StyleProp::BackgroundColor, Color::fromRGBA(15, 40, 67, 1)},
             {StyleProp::Margin, LayoutProperty({10, 10, 10, 10})}
         });
+
+        document.styleManager.addRule("#button", {
+            {StyleProp::Color, Color::fromRGBA(255, 255, 255, 1)},
+            {StyleProp::FontSize, 18},
+            {StyleProp::BackgroundColor, Color::fromRGBA(15, 40, 67, 1)},
+            {StyleProp::Padding, LayoutProperty({10, 10, 10, 10})},
+            {StyleProp::Margin, LayoutProperty({10, 10, 10, 10})}
+        });
     }
 
     void createTree(Chimera::Document& document)
@@ -163,7 +171,8 @@ public:
                         {"src", "assets/logo.png"},
                         {"id", "image"}
                     }),
-                    Virtual::VElement("input", {{"id", "input-box"}})
+                    Virtual::VElement("input", {{"id", "input-box"}}),
+                    Virtual::VElement("button", {{"id", "button"}}, "Accept")
                 }))
         ));
     }

@@ -362,7 +362,7 @@ Button::~Button() { }
 bool Button::handleEvent(Event* event) {
     if (event->type == EventType::MouseMove) {
         MouseMoveEvent* mouseMoveEvent = dynamic_cast<MouseMoveEvent*>(event);
-        if (rect.contains(mouseMoveEvent->x, mouseMoveEvent->y)) {
+        if (layout.rect.contains(mouseMoveEvent->x, mouseMoveEvent->y)) {
             mPseudoClass = PseudoClass::Hover;
             mDocument->setCursorType(CursorType::Hand);
         } else {
@@ -370,7 +370,7 @@ bool Button::handleEvent(Event* event) {
         }
     } else if (event->type == EventType::MouseDown) {
         MouseDownEvent* mouseDownEvent = dynamic_cast<MouseDownEvent*>(event);
-        if (rect.contains(mouseDownEvent->x, mouseDownEvent->y)) {
+        if (layout.rect.contains(mouseDownEvent->x, mouseDownEvent->y)) {
             dispatch(EventType::MouseDown, event);
             return false;
         }
@@ -380,43 +380,75 @@ bool Button::handleEvent(Event* event) {
 }
 
 void Button::render(DrawData* data, Style* parentStyle) {
-    rect.width = style.width;
-    rect.height = style.height;
+    style.update(this, mDocument->animationController);
 
+    float textWidth = data->measureText(textContent, style.fontFamily, style.fontSize);
+
+    layout.calculateDimensions(mChildren);
+
+    if (textWidth > layout.intrinsicWidth)
+    {
+        layout.intrinsicWidth = textWidth;
+    }
+
+    if (layout.intrinsicHeight < style.fontSize && textContent != "")
+    {
+        layout.intrinsicHeight = style.fontSize;
+    }
+
+    // Layout
+    layout.layout();
+
+    scissor.x = layout.rect.x;
+    scissor.y = layout.rect.y;
+    scissor.width = layout.rect.width;
+    scissor.height = layout.rect.height;
+
+    // Rendering
     if (style.backgroundImage != "") {
         if (mBackgroundImage == nullptr) {
             mBackgroundImage = mDocument->loadImage(style.backgroundImage,
                 style.width, style.height);
         }
-        data->addImage(rect, mBackgroundImage->textureId);
+        data->addImage(layout.rect, mBackgroundImage->textureId);
     } else {
-        data->addRectFilled(rect, style.backgroundColor);
+        data->addRectFilled(layout.rect, style.backgroundColor);
     }
 
     if (textContent != "") {
         Rect position{
-            rect.x + style.padding.left,
-            rect.y + style.padding.top,
-            rect.width,
-            rect.height
+            layout.rect.x + style.padding.left,
+            layout.rect.y + style.padding.top,
+            layout.rect.width,
+            layout.rect.height
         };
 
         if (style.textAlign == Align::Center) {
-            float width = data->measureText(textContent, style.fontFamily, 24);
-            position.x = rect.x + (rect.width / 2) - (width / 2);
+            position.x = layout.rect.x + (layout.rect.width / 2) - (textWidth / 2);
         }
 
-        data->addText(position, textContent, style.fontFamily, 24, rect, style.color);
+        auto newColor = style.color;
+        newColor.a *= style.opacity;
+        data->addText(position, textContent, style.fontFamily, style.fontSize, scissor, newColor);
+
+        if (style.textDecoration == TextDecoration::Underline) {
+            float textWidth = data->measureText(textContent, style.fontFamily, style.fontSize);
+            Rect decorationRect{position.x, position.y + style.fontSize, textWidth, 2};
+            data->addRectFilled(decorationRect, style.color, scissor);
+        }
     }
 
-    float yValue = rect.y + style.padding.top;
-    for (auto &element : mChildren) {
-        element->rect.x = rect.x + style.padding.left;
-        element->rect.y = yValue;
+    layout.updateChildren(mChildren);
+
+    float previousAlpha = data->globalAlpha;
+    data->globalAlpha *= style.opacity;
+
+    for (auto& element : mChildren)
+    {
         element->render(data, &style);
-
-        yValue += element->rect.height;
     }
+
+    data->globalAlpha = previousAlpha;
 }
 
 }  // namespace Chimera
