@@ -81,79 +81,102 @@ void DrawData::addText(
     // Add the font size to the baseline
     position.y += 24 * scale;
 
-    /* Create hb-ft font. */
-    hb_font_t *hb_font;
-    hb_font = hb_ft_font_create(renderer->fontManager.fonts[name].face, NULL);
+    int xPosition = 0;
 
-    /* Create hb-buffer and populate. */
-    hb_buffer_t *hb_buffer;
-    hb_buffer = hb_buffer_create();
-    hb_buffer_add_utf8(hb_buffer, text.c_str(), -1, 0, -1);
-    hb_buffer_guess_segment_properties(hb_buffer);
-
-    /* Shape it! */
-    hb_shape(hb_font, hb_buffer, nullptr, 0);
-
-    /* Get glyph information and positions out of the buffer. */
-    unsigned int len = hb_buffer_get_length(hb_buffer);
-    hb_glyph_info_t *info = hb_buffer_get_glyph_infos(hb_buffer, NULL);
-    hb_glyph_position_t *pos = hb_buffer_get_glyph_positions(hb_buffer, NULL);
-
-    /* And converted to absolute positions. */
+    for (auto c : text)
     {
-        double current_x = 0;
-        double current_y = 0;
-        for (unsigned int i = 0; i < len; i++) {
-            hb_codepoint_t gid   = info[i].codepoint;
-            // unsigned int cluster = info[i].cluster;
-            double x_position = current_x + pos[i].x_offset / 64.;
-            double y_position = current_y + pos[i].y_offset / 64.;
-            x_position *= scale;
-            y_position *= scale;
+        Rect rect;
 
-            char glyphname[32];
-            hb_font_get_glyph_name(hb_font, gid, glyphname, sizeof(glyphname));
+        Character& ch = renderer->fontManager.fonts[name].characters[c];
 
-            if (strncmp(glyphname, "space", 5) != 0) {
-                Rect rect;
+        rect.x = position.x + xPosition;
+        rect.y = position.y - (ch.top * scale);
 
-                Character& ch = renderer->fontManager.fonts[name].characters[text[i]];
+        rect.width = ch.width * scale;
+        rect.height = ch.rows * scale;
 
-                rect.x = position.x + x_position;
-                rect.y = position.y + y_position - (ch.top * scale);
+        addRectFilled(rect, color);
 
-                rect.width = ch.width * scale;
-                rect.height = ch.rows * scale;
+        commands.back().textureId = ch.textureId;
 
-                addRectFilled(rect, color);
+        commands.back().scissor = scissor;
 
-                commands.back().textureId = ch.textureId;
-
-                commands.back().scissor = scissor;
-            } else {
-                double length_x = current_x + (pos[i].x_advance / 64.);
-                for (unsigned int j = i + 1; j < len; j++) {
-                    hb_codepoint_t nGid = info[j].codepoint;
-                    char glyphname[32];
-                    hb_font_get_glyph_name(hb_font, nGid, glyphname, sizeof(glyphname));
-
-                    if (strncmp(glyphname, "space", 5) != 0) {
-                        if (length_x * scale > position.width) {
-                            current_x = -(pos[i].x_advance / 64.);
-                            position.y += 24 * scale;
-                        }
-
-                        break;
-                    } else {
-                        length_x += pos[j].x_advance / 64.;
-                    }
-                }
-            }
-
-            current_x += pos[i].x_advance / 64.;
-            current_y += pos[i].y_advance / 64.;
-        }
+        xPosition += (ch.advance >> 6) * scale;
     }
+
+    /* Create hb-ft font. */
+    // hb_font_t *hb_font;
+    // hb_font = hb_ft_font_create(renderer->fontManager.fonts[name].face, NULL);
+
+    // /* Create hb-buffer and populate. */
+    // hb_buffer_t *hb_buffer;
+    // hb_buffer = hb_buffer_create();
+    // hb_buffer_add_utf8(hb_buffer, text.c_str(), -1, 0, -1);
+    // hb_buffer_guess_segment_properties(hb_buffer);
+
+    // /* Shape it! */
+    // hb_shape(hb_font, hb_buffer, nullptr, 0);
+
+    // /* Get glyph information and positions out of the buffer. */
+    // unsigned int len = hb_buffer_get_length(hb_buffer);
+    // hb_glyph_info_t *info = hb_buffer_get_glyph_infos(hb_buffer, NULL);
+    // hb_glyph_position_t *pos = hb_buffer_get_glyph_positions(hb_buffer, NULL);
+
+    // /* And converted to absolute positions. */
+    // {
+    //     double current_x = 0;
+    //     double current_y = 0;
+    //     for (unsigned int i = 0; i < len; i++) {
+    //         hb_codepoint_t gid   = info[i].codepoint;
+    //         // unsigned int cluster = info[i].cluster;
+    //         double x_position = current_x + pos[i].x_offset / 64.;
+    //         double y_position = current_y + pos[i].y_offset / 64.;
+    //         x_position *= scale;
+    //         y_position *= scale;
+
+    //         char glyphname[32];
+    //         hb_font_get_glyph_name(hb_font, gid, glyphname, sizeof(glyphname));
+
+    //         if (strncmp(glyphname, "space", 5) != 0) {
+    //             Rect rect;
+
+    //             Character& ch = renderer->fontManager.fonts[name].characters[text[i]];
+
+    //             rect.x = position.x + x_position;
+    //             rect.y = position.y + y_position - (ch.top * scale);
+
+    //             rect.width = ch.width * scale;
+    //             rect.height = ch.rows * scale;
+
+    //             addRectFilled(rect, color);
+
+    //             commands.back().textureId = ch.textureId;
+
+    //             commands.back().scissor = scissor;
+    //         } else {
+    //             double length_x = current_x + (pos[i].x_advance / 64.);
+    //             for (unsigned int j = i + 1; j < len; j++) {
+    //                 hb_codepoint_t nGid = info[j].codepoint;
+    //                 char glyphname[32];
+    //                 hb_font_get_glyph_name(hb_font, nGid, glyphname, sizeof(glyphname));
+
+    //                 if (strncmp(glyphname, "space", 5) != 0) {
+    //                     if (length_x * scale > position.width) {
+    //                         current_x = -(pos[i].x_advance / 64.);
+    //                         position.y += 24 * scale;
+    //                     }
+
+    //                     break;
+    //                 } else {
+    //                     length_x += pos[j].x_advance / 64.;
+    //                 }
+    //             }
+    //         }
+
+    //         current_x += pos[i].x_advance / 64.;
+    //         current_y += pos[i].y_advance / 64.;
+    //     }
+    // }
 }
 
 float DrawData::measureText(const std::string& text, std::string name, int size) {

@@ -8,8 +8,8 @@
 #include <string>
 #include <unordered_map>
 #include <cstdlib>
-#include <harfbuzz/hb.h>
-#include <harfbuzz/hb-ft.h>
+//#include <harfbuzz/hb.h>
+//#include <harfbuzz/hb-ft.h>
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
