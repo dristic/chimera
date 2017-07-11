@@ -8,11 +8,12 @@
 
 #include "src/animation.h"
 #include "src/document.h"
-#include "src/rendering.h"
 #include "src/types.h"
-#include "src/adaptor/adaptor.h"
 
 namespace Chimera {
+
+class Adaptor;
+class Renderer;
 
 class Context {
  public:
@@ -32,7 +33,7 @@ class Context {
     unsigned int loadTexture(unsigned int width, unsigned int height, unsigned char* buffer);
 
     Document document;
-    Renderer renderer;
+    std::unique_ptr<Renderer> renderer;
 
  private:
     int mMouseX, mMouseY, mScrollDirection;

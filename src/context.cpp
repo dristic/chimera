@@ -4,6 +4,7 @@
 
 #include <string>
 
+#include "src/adaptor/adaptor.h"
 #include "src/element.h"
 #include "src/document.h"
 #include "src/rendering.h"
@@ -11,7 +12,7 @@
 namespace Chimera {
     Context::Context()
         : document{*this}
-        , renderer{}
+        , renderer{std::make_unique<Renderer>()}
         , mAdaptor{}
         , mMouseX{0}
         , mMouseY{0}
@@ -90,7 +91,7 @@ namespace Chimera {
         data.screenWidth = document.getScreenWidth();
         data.screenHeight = document.getScreenHeight();
 
-        data.renderer = &renderer;
+        data.renderer = renderer.get();
 
         if (document.body != nullptr) {
             document.body->render(&data, &document.globalStyle);
