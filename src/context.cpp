@@ -4,6 +4,7 @@
 
 #include <string>
 
+#include "src/core.h"
 #include "src/adaptor/adaptor.h"
 #include "src/element.h"
 #include "src/document.h"
@@ -13,9 +14,9 @@ namespace Chimera {
     Context::Context()
         : document{*this}
         , renderer{std::make_unique<Renderer>()}
-        , mAdaptor{}
         , mMouseX{0}
         , mMouseY{0}
+        , mAdaptor{}
     {
         mAdaptor = std::make_shared<Adaptor>();
     }
@@ -23,6 +24,7 @@ namespace Chimera {
     Context::~Context() { }
 
     void Context::update(double dt) {
+        CHIMERA_UNUSED(dt);
     }
 
     void Context::addInputCharacters(std::string characters) {
@@ -81,6 +83,8 @@ namespace Chimera {
     }
 
     void Context::render(float dt) {
+        CHIMERA_UNUSED(dt);
+
         // TODO: Make this not happen every frame
         document.styleManager.applyRules(document.body);
 
@@ -94,7 +98,7 @@ namespace Chimera {
         data.renderer = renderer.get();
 
         if (document.body != nullptr) {
-            document.body->render(&data, &document.globalStyle);
+            document.body->render(&data);
         }
 
         if (mAdaptor) {

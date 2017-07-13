@@ -8,6 +8,7 @@
 #include <vector>
 #include <unordered_map>
 
+#include "src/core.h"
 #include "src/style/style.h"
 #include "src/types.h"
 #include "src/layout.h"
@@ -35,10 +36,15 @@ class Element {
     void dispatch(EventType type, Event* event);
 
     virtual bool handleEvent(Event* event);
-    virtual void render(DrawData* data, Style* parentStyle);
+    virtual void render(DrawData* data);
 
     virtual void attributeChangedCallback(
-        std::string name, std::string oldValue, std::string newValue) { };
+        std::string name, std::string oldValue, std::string newValue)
+    {
+        CHIMERA_UNUSED(name);
+        CHIMERA_UNUSED(oldValue);
+        CHIMERA_UNUSED(newValue);
+    };
 
     // Declarative methods
     Element* children(std::vector<Element*> children) {
@@ -104,7 +110,7 @@ class Div: public Element {
     ~Div();
 
     bool handleEvent(Event* event) override;
-    void render(DrawData* data, Style* parentStyle) override;
+    void render(DrawData* data) override;
 };
 
 class Img: public Element {
@@ -112,7 +118,7 @@ class Img: public Element {
     Img(Document& document);
     ~Img();
 
-    void render(DrawData* data, Style* parentStyle);
+    void render(DrawData* data);
 
     std::string const& getSrc() const { return mSrc; }
     void setSrc(std::string const& newSrc);
@@ -128,7 +134,7 @@ class Input: public Element {
     ~Input();
 
     bool handleEvent(Event* event) override;
-    void render(DrawData* data, Style* parentStyle) override;
+    void render(DrawData* data) override;
 
     std::string value;
     std::string placeholder;
@@ -143,7 +149,7 @@ class Button: public Element {
     ~Button();
 
     bool handleEvent(Event* event) override;
-    void render(DrawData* data, Style* parentStyle) override;
+    void render(DrawData* data) override;
 };
 
 }  // namespace Chimera

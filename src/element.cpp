@@ -4,6 +4,7 @@
 
 #include <algorithm>
 
+#include "src/core.h"
 #include "src/document.h"
 #include "src/rendering.h"
 
@@ -59,7 +60,7 @@ bool Element::handleEvent(Event* event) {
     return true;
 }
 
-void Element::render(DrawData* data, Style* parentStyle) {
+void Element::render(DrawData* data) {
     style.update(this, mDocument->animationController);
 
     layout.calculateDimensions(mChildren);
@@ -71,7 +72,7 @@ void Element::render(DrawData* data, Style* parentStyle) {
     data->globalAlpha *= style.opacity;
 
     for (auto &element : mChildren) {
-        element->render(data, &style);
+        element->render(data);
     }
 
     data->globalAlpha = previousAlpha;
@@ -107,7 +108,7 @@ bool Div::handleEvent(Event* event) {
     return true;
 }
 
-void Div::render(DrawData* data, Style* parentStyle) {
+void Div::render(DrawData* data) {
     style.update(this, mDocument->animationController);
 
     float textWidth = data->measureText(textContent, style.fontFamily, style.fontSize);
@@ -184,7 +185,7 @@ void Div::render(DrawData* data, Style* parentStyle) {
 
     for (auto& element : mChildren)
     {
-        element->render(data, &style);
+        element->render(data);
     }
 
     data->globalAlpha = previousAlpha;
@@ -198,7 +199,7 @@ Img::Img(Document& document)
 
 Img::~Img() { }
 
-void Img::render(DrawData* data, Style* parentStyle) {
+void Img::render(DrawData* data) {
     layout.intrinsicWidth = style.width;
     layout.intrinsicHeight = style.height;
 
@@ -209,7 +210,7 @@ void Img::render(DrawData* data, Style* parentStyle) {
         data->addImage(layout.rect, mImageRef->textureId, style.opacity);
     }
 
-    Element::render(data, &style);
+    Element::render(data);
 }
 
 void Img::setSrc(std::string const& newSrc) {
@@ -269,7 +270,7 @@ bool Input::handleEvent(Event* event) {
     return true;
 }
 
-void Input::render(DrawData* data, Style* parentStyle) {
+void Input::render(DrawData* data) {
     style.update(this, mDocument->animationController);
 
     if (layout.intrinsicHeight < style.fontSize)
@@ -379,7 +380,7 @@ bool Button::handleEvent(Event* event) {
     return true;
 }
 
-void Button::render(DrawData* data, Style* parentStyle) {
+void Button::render(DrawData* data) {
     style.update(this, mDocument->animationController);
 
     float textWidth = data->measureText(textContent, style.fontFamily, style.fontSize);
@@ -445,7 +446,7 @@ void Button::render(DrawData* data, Style* parentStyle) {
 
     for (auto& element : mChildren)
     {
-        element->render(data, &style);
+        element->render(data);
     }
 
     data->globalAlpha = previousAlpha;

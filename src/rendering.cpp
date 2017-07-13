@@ -251,7 +251,7 @@ void Renderer::loadFont(Context& context, std::string name, std::string location
 
         auto buffer = static_cast<unsigned char*>(malloc(size * 4));
 
-        for (int i = 0; i < size; i++) {
+        for (size_t i = 0; i < size; i++) {
             int p = i * 4;
             buffer[p] = 255;
             buffer[p+1] = 255;

@@ -76,11 +76,12 @@ public:
 
 private:
     std::string mKey;
-    AttributeType mType;
 
     std::string mStringValue;
     Chimera::Style mStyleValue;
     EventCallback mCallbackValue;
+
+    AttributeType mType;
 };
 
 class VirtualElement {

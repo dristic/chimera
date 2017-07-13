@@ -76,5 +76,14 @@ target_link_libraries(ChimeraOpengl3 ${HARFBUZZ_LIBRARY})
 
 target_link_libraries(ChimeraOpengl3 Chimera)
 
+if (APPLE)
+    target_compile_options(Chimera PRIVATE "-Werror")
+    target_compile_options(Chimera PRIVATE "-Wextra")
+endif (APPLE)
+if (MSVC)
+    target_compile_options(Chimera PRIVATE "/WX")
+    target_compile_options(Chimera PRIVATE "/Wall")
+endif (MSVC)
+
 # Copy assets to build directory
 file(COPY examples/assets DESTINATION ${CMAKE_BINARY_DIR})

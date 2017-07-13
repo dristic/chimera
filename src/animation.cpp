@@ -2,6 +2,7 @@
 
 #include "src/animation.h"
 
+#include "src/core.h"
 #include "src/element.h"
 
 namespace Chimera {
@@ -20,6 +21,8 @@ namespace Chimera {
     Animation::~Animation() { }
 
     void Animation::update(double dt) {
+        CHIMERA_UNUSED(dt);
+
         if (mCurrent < mEnd) {
             mUpdate(mCurrent, mElement);
             mCurrent += 0.08f;

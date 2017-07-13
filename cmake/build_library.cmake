@@ -96,6 +96,15 @@ target_link_libraries(TestAll ${HARFBUZZ_LIBRARY})
 
 add_test(ChimeraTest TestAll)
 
+if (APPLE)
+    target_compile_options(Chimera PRIVATE "-Werror")
+    target_compile_options(Chimera PRIVATE "-Wextra")
+endif (APPLE)
+if (MSVC)
+    target_compile_options(Chimera PRIVATE "/WX")
+    target_compile_options(Chimera PRIVATE "/Wall")
+endif (MSVC)
+
 ##########
 # Examples
 ##########

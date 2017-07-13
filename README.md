@@ -1,7 +1,7 @@
-Cosmonaut
+Chimera
 =========
 
-The Cosmonaut UI is a high performance user interface library for C++ projects. It is targeting projects that utilize the GPU such as simulations and games. The aim is to provide a framework that is easy to use and integrate yet delivers the high quality and performance that these applications expect.
+The Chimera UI is a high performance user interface library for C++ projects. It is targeting projects that utilize the GPU such as simulations and games. The aim is to provide a framework that is easy to use and integrate yet delivers the high quality and performance that these applications expect.
 
 Project Goals:
 - Fast execution speed and rendering performance
@@ -19,20 +19,20 @@ Specifically, the API mimics the one provided from web browsers such as Chromium
 Example
 =======
 
-Cosmonaut is a component-based framework. To show UI on the screen a tree of several components is built and then given over to the framework's renderer. The framework takes care of translating a well defined component tree into a list of commands to be given to a back-end GPU.
+Chimera is a component-based framework. To show UI on the screen a tree of several components is built and then given over to the framework's renderer. The framework takes care of translating a well defined component tree into a list of commands to be given to a back-end GPU.
 
 ```cpp
-#include "Cosmonaut/Cosmonaut.h"
+#include "Chimera/Chimera.h"
 
-class MyComponent : public Cosmonaut::Component {
+class MyComponent : public Chimera::Component {
 public:
     MyComponent()
-        : Cosmonaut::Component()
+        : Chimera::Component()
         { }
 
-    std::shared_ptr<Cosmonaut::Api::CElement> render(Nova::Context& context) override {
+    std::shared_ptr<Chimera::Api::CElement> render(Nova::Context& context) override {
         using namespace Nova;
-        using namespace Cosmonaut::Api;
+        using namespace Chimera::Api;
 
         Nova::Document& document = context.document;
 

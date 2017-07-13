@@ -45,7 +45,7 @@ Element* VirtualElement::create(Document& document)
 
     element->textContent = textContent;
 
-    DEBUG(
+    CHIMERA_DEBUG(
         printf("[VElement] %s %s\n",
             element->tagName.c_str(),
             element->id.c_str());

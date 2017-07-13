@@ -288,8 +288,7 @@ class StyleAttribute {
 
 private:
     StyleProp mProp;
-    StyleAttributeType mType;
-    
+
     std::string mStringValue;
     int mIntValue;
     Direction mDirectionValue{Direction::Row};
@@ -297,6 +296,8 @@ private:
     Color mColorValue{};
     LayoutProperty mLayoutPropertyValue{0, 0, 0, 0};
     Position mPositionValue{Position::Relative};
+
+    StyleAttributeType mType;
 };
 
 class StyleManager {

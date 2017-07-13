@@ -34,7 +34,7 @@ class Document {
 
         mElements.push_back(std::move(el));
 
-        return dynamic_cast<E*>(mElements.back().get());
+        return static_cast<E*>(mElements.back().get());
     }
 
     using ElementFactory = std::function<Element*(Document&)>;
@@ -56,7 +56,7 @@ class Document {
         }
         else
         {
-            DEBUG(printf("[ERROR] Element not found: %s\n", name.c_str()));
+            CHIMERA_DEBUG(printf("[ERROR] Element not found: %s\n", name.c_str()));
             return nullptr;
         }
     }
