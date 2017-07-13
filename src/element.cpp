@@ -92,10 +92,10 @@ bool Div::handleEvent(Event* event) {
     if (event->type == EventType::Scroll) {
         auto mouseScrollEvent = dynamic_cast<MouseScrollEvent*>(event);
 
-        if (rect.contains(mouseScrollEvent->x, mouseScrollEvent->y)) {
+        if (rect.contains(float(mouseScrollEvent->x), float(mouseScrollEvent->y))) {
             int internalHeight = 0;
             for (auto& child : mChildren) {
-                internalHeight += child->rect.height;
+                internalHeight += int(child->rect.height);
             }
 
             if (rect.height < internalHeight) {
@@ -117,7 +117,7 @@ void Div::render(DrawData* data) {
 
     if (textWidth > layout.intrinsicWidth)
     {
-        layout.intrinsicWidth = textWidth;
+        layout.intrinsicWidth = int(textWidth);
     }
 
     if (layout.intrinsicHeight < style.fontSize && textContent != "")
@@ -161,7 +161,6 @@ void Div::render(DrawData* data) {
         data->addText(position, textContent, style.fontFamily, style.fontSize, scissor, newColor);
 
         if (style.textDecoration == TextDecoration::Underline) {
-            float textWidth = data->measureText(textContent, style.fontFamily, style.fontSize);
             Rect decorationRect{position.x, position.y + style.fontSize, textWidth, 2};
             data->addRectFilled(decorationRect, style.color, scissor);
         }
@@ -256,13 +255,13 @@ bool Input::handleEvent(Event* event) {
     } else if (event->type == EventType::MouseDown) {
         auto mouseDownEvent = dynamic_cast<MouseDownEvent*>(event);
 
-        if (layout.rect.contains(mouseDownEvent->x, mouseDownEvent->y)) {
+        if (layout.rect.contains(float(mouseDownEvent->x), float(mouseDownEvent->y))) {
             mDocument->focusManager.focusElement(this);
             return false;
         }
     } else if (event->type == EventType::MouseMove) {
         MouseMoveEvent* mouseMoveEvent = dynamic_cast<MouseMoveEvent*>(event);
-        if (layout.rect.contains(mouseMoveEvent->x, mouseMoveEvent->y)) {
+        if (layout.rect.contains(float(mouseMoveEvent->x), float(mouseMoveEvent->y))) {
             mDocument->setCursorType(CursorType::IBeam);
         }
     }
@@ -336,7 +335,7 @@ void Input::render(DrawData* data) {
             borderRect.height
         };
 
-        data->addText(position, placeholder, style.fontFamily, style.fontSize, borderRect, Color::fromRGBA(150, 150, 150, 0.6));
+        data->addText(position, placeholder, style.fontFamily, style.fontSize, borderRect, Color::fromRGBA(150, 150, 150, 0.6f));
     }
 
     // Draw input line
@@ -363,7 +362,7 @@ Button::~Button() { }
 bool Button::handleEvent(Event* event) {
     if (event->type == EventType::MouseMove) {
         MouseMoveEvent* mouseMoveEvent = dynamic_cast<MouseMoveEvent*>(event);
-        if (layout.rect.contains(mouseMoveEvent->x, mouseMoveEvent->y)) {
+        if (layout.rect.contains(float(mouseMoveEvent->x), float(mouseMoveEvent->y))) {
             mPseudoClass = PseudoClass::Hover;
             mDocument->setCursorType(CursorType::Hand);
         } else {
@@ -371,7 +370,7 @@ bool Button::handleEvent(Event* event) {
         }
     } else if (event->type == EventType::MouseDown) {
         MouseDownEvent* mouseDownEvent = dynamic_cast<MouseDownEvent*>(event);
-        if (layout.rect.contains(mouseDownEvent->x, mouseDownEvent->y)) {
+        if (layout.rect.contains(float(mouseDownEvent->x), float(mouseDownEvent->y))) {
             dispatch(EventType::MouseDown, event);
             return false;
         }
@@ -389,7 +388,7 @@ void Button::render(DrawData* data) {
 
     if (textWidth > layout.intrinsicWidth)
     {
-        layout.intrinsicWidth = textWidth;
+        layout.intrinsicWidth = int(textWidth);
     }
 
     if (layout.intrinsicHeight < style.fontSize && textContent != "")
@@ -433,7 +432,6 @@ void Button::render(DrawData* data) {
         data->addText(position, textContent, style.fontFamily, style.fontSize, scissor, newColor);
 
         if (style.textDecoration == TextDecoration::Underline) {
-            float textWidth = data->measureText(textContent, style.fontFamily, style.fontSize);
             Rect decorationRect{position.x, position.y + style.fontSize, textWidth, 2};
             data->addRectFilled(decorationRect, style.color, scissor);
         }

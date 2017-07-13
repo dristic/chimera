@@ -29,6 +29,9 @@ void cleanD3D(void);    // closes Direct3D and releases memory
 LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
 int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
+    CHIMERA_UNUSED(hPrevInstance);
+    CHIMERA_UNUSED(lpCmdLine);
+
     const int WIDTH = 1280;
     const int HEIGHT = 720;
 

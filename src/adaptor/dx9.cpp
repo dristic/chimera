@@ -25,7 +25,7 @@ std::unique_ptr<ImageRef> DX9Adaptor::loadImage(std::string imagePath, int& widt
     width = static_cast<int>(w);
     height = static_cast<int>(h);
 
-    for (int i = 0; i < image.size(); i += 4) {
+    for (unsigned int i = 0; i < image.size(); i += 4) {
         unsigned char r = image[i + 0];
         unsigned char g = image[i + 1];
         unsigned char b = image[i + 2];
@@ -57,9 +57,9 @@ unsigned int DX9Adaptor::loadTexture(unsigned int width, unsigned int height, un
         nullptr);
 
     if (result != D3D_OK) {
-        char buffer[100];
-        sprintf_s(buffer, "Failed to create texture of %u %u.\n", width, height);
-        OutputDebugString(TEXT(buffer));
+        char text[100];
+        sprintf_s(text, "Failed to create texture of %u %u.\n", width, height);
+        OutputDebugString(TEXT(text));
 
         return 0;
     }
@@ -116,7 +116,9 @@ void DX9Adaptor::renderCallback(DrawData* data) {
     vp.MaxZ = 1.0f;
     device->SetViewport(&vp);
 
-    float scale = data->screenWidth / data->width;
+    float scale = float(data->screenWidth / data->width);
+
+    CHIMERA_UNUSED(scale);
 
     D3DMATRIX identityMatrix = {
         1.0f, 0.0f, 0.0f, 0.0f,
@@ -185,18 +187,20 @@ void DX9Adaptor::renderCallback(DrawData* data) {
 
     unsigned int offset = 0;
     for (auto &command : data->commands) {
-        unsigned int textureId = command.textureId;
+        unsigned int texId = command.textureId;
 
-        device->SetTexture(0, textures[textureId]);
+        device->SetTexture(0, textures[texId]);
 
-        int sy = data->height - (command.scissor.y + command.scissor.height);
+        int sy = int(data->height - (command.scissor.y + command.scissor.height));
 
-        RECT scissorRect = {
+        CHIMERA_UNUSED(sy);
+
+        /*RECT scissorRect = {
             command.scissor.x * scale,
             sy * scale,
             command.scissor.width * scale,
             command.scissor.height *  scale
-        };
+        };*/
         //device->SetScissorRect(&scissorRect);
 
         device->DrawIndexedPrimitive(D3DPT_TRIANGLELIST,

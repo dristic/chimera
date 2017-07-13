@@ -101,7 +101,7 @@ void DrawData::addText(
 
         commands.back().scissor = scissor;
 
-        xPosition += (ch.advance >> 6) * scale;
+        xPosition += int((ch.advance >> 6) * scale);
     }
 
     /* Create hb-ft font. */
@@ -229,7 +229,7 @@ void Renderer::loadFont(Context& context, std::string name, std::string location
 
     // auto index = FT_Get_Char_Index(face, 0x00002022);
 
-    for (int c = 32; c < 128; c++) {
+    for (unsigned char c = 32; c < 128; c++) {
         if (FT_Load_Char(face, c, FT_LOAD_RENDER)) {
             printf("FreeType failed to load glyph %i\n", c);
             continue;

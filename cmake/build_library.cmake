@@ -102,7 +102,7 @@ if (APPLE)
 endif (APPLE)
 if (MSVC)
     target_compile_options(Chimera PRIVATE "/WX")
-    target_compile_options(Chimera PRIVATE "/Wall")
+    target_compile_options(Chimera PRIVATE "/W4")
 endif (MSVC)
 
 ##########

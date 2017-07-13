@@ -16,12 +16,12 @@ Layout::Layout(Style* style)
 
 int Layout::getBoundingWidth()
 {
-    return rect.width + mStyle->margin.left + mStyle->margin.right;
+    return int(rect.width + mStyle->margin.left + mStyle->margin.right);
 }
 
 int Layout::getBoundingHeight()
 {
-    return rect.height + mStyle->margin.top + mStyle->margin.bottom;
+    return int(rect.height + mStyle->margin.top + mStyle->margin.bottom);
 }
 
 void Layout::calculateDimensions(std::vector<Element*>& children)
@@ -48,23 +48,23 @@ void Layout::layout()
     rect.x += mStyle->margin.left;
     rect.y += mStyle->margin.top;
 
-    rect.width = mStyle->width;
-    rect.height = mStyle->height;
+    rect.width = float(mStyle->width);
+    rect.height = float(mStyle->height);
 
     if (mStyle->position == Position::Absolute)
     {
-        rect.x = mStyle->left;
-        rect.y = mStyle->top;
+        rect.x = float(mStyle->left);
+        rect.y = float(mStyle->top);
     }
 
     if (rect.width < intrinsicWidth)
     {
-        rect.width = intrinsicWidth;
+        rect.width = float(intrinsicWidth);
     }
 
     if (rect.height < intrinsicHeight)
     {
-        rect.height = intrinsicHeight;
+        rect.height = float(intrinsicHeight);
     }
 
     rect.width += mStyle->padding.left + mStyle->padding.right;

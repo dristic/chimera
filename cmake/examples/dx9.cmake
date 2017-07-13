@@ -25,7 +25,7 @@ add_executable(CosmonautDX9 ${DX9_EXAMPLE_SOURCES})
 target_sources(CosmonautDX9 PRIVATE "vendor/lodepng/lodepng.cpp")
 
 # Add gif loading
-target_sources(CosmonautDX9 PRIVATE "vendor/libnsgif/src/libnsgif.c")
+# target_sources(CosmonautDX9 PRIVATE "vendor/libnsgif/src/libnsgif.c")
 
 foreach(source IN LISTS DX9_EXAMPLE_SOURCES)
     get_filename_component(source_path "${source}" PATH)
@@ -51,6 +51,9 @@ include_directories(${HARFBUZZ_INCLUDE_DIR})
 target_link_libraries(CosmonautDX9 ${HARFBUZZ_LIBRARY})
 
 target_link_libraries(CosmonautDX9 Chimera)
+
+target_compile_options(CosmonautDX9 PRIVATE "/WX")
+target_compile_options(CosmonautDX9 PRIVATE "/W4")
 
 # Copy assets to build directory
 file(COPY examples/assets DESTINATION ${CMAKE_BINARY_DIR})
