@@ -128,21 +128,6 @@ class Img: public Element {
     std::unique_ptr<ImageRef> mImageRef;
 };
 
-class Input: public Element {
- public:
-    Input(Document& document);
-    ~Input();
-
-    bool handleEvent(Event* event) override;
-    void render(DrawData* data) override;
-
-    std::string value;
-    std::string placeholder;
-
- private:
-    int mFrames;
-};
-
 class Button: public Element {
  public:
     Button(Document& document);

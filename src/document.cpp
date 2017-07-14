@@ -7,6 +7,7 @@
 #include <utility>
 
 #include "src/context.h"
+#include "src/dom/input.h"
 
 namespace Chimera {
 

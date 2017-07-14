@@ -81,7 +81,7 @@ void DrawData::addText(
     // Add the font size to the baseline
     position.y += 24 * scale;
 
-    int xPosition = 0;
+    float xPosition = 0;
 
     for (auto c : text)
     {
@@ -101,7 +101,7 @@ void DrawData::addText(
 
         commands.back().scissor = scissor;
 
-        xPosition += int((ch.advance >> 6) * scale);
+        xPosition += (ch.advance >> 6) * scale;
     }
 
     /* Create hb-ft font. */

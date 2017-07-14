@@ -37,6 +37,9 @@ set(
     "src/rendering.cpp"
     "src/rendering.h"
 
+    "src/dom/input.cpp"
+    "src/dom/input.h"
+
     "src/style/style.cpp"
     "src/style/style.h"
 
