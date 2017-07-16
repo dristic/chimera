@@ -207,6 +207,8 @@ void Renderer::loadFont(Context& context, std::string name, std::string location
         return;
     }
 
+    FT_Select_Charmap(face , ft_encoding_unicode);
+
 #if WIN32
     FT_Set_Char_Size(
         face,    /* handle to face object           */
@@ -227,7 +229,8 @@ void Renderer::loadFont(Context& context, std::string name, std::string location
 
     newFont.face = face;
 
-    // auto index = FT_Get_Char_Index(face, 0x00002022);
+    // unsigned long filter = (unsigned long)0x2022;
+    // auto index = FT_Get_Char_Index(face, filter);
 
     for (unsigned char c = 32; c < 128; c++) {
         if (FT_Load_Char(face, c, FT_LOAD_RENDER)) {
