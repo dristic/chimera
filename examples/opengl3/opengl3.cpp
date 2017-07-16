@@ -56,10 +56,15 @@ class GLFWapplication {
     }
 
     static void errorCallback(int error, const char* description) {
+        CHIMERA_UNUSED(error);
+
         fprintf(stderr, "Error: %s\n", description);
     }
 
     static void scrollCallback(GLFWwindow* window, double xOffset, double yOffset) {
+        CHIMERA_UNUSED(window);
+        CHIMERA_UNUSED(xOffset);
+
         int direction = 0;
 
         if (yOffset > 0) {
@@ -72,6 +77,9 @@ class GLFWapplication {
     }
 
     static void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
+        CHIMERA_UNUSED(window);
+        CHIMERA_UNUSED(mods);
+
         if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
             mContext->setMouseDown();
         }
@@ -87,13 +95,19 @@ class GLFWapplication {
     }
 
     static void characterCallback(GLFWwindow* window, unsigned int codepoint) {
+        CHIMERA_UNUSED(window);
+
         std::string text = UnicodeToUTF8(codepoint);
 
         mContext->addInputCharacters(text);
     }
 
     static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
-        if (key == GLFW_KEY_BACKSPACE && action == GLFW_PRESS) {
+        CHIMERA_UNUSED(window);
+        CHIMERA_UNUSED(scancode);
+        CHIMERA_UNUSED(mods);
+
+        if (key == GLFW_KEY_BACKSPACE && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
             mContext->setKeyPress(Chimera::KeyType::Backspace);
         }
     }

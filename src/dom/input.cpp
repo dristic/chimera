@@ -32,7 +32,10 @@ bool Input::handleEvent(Event* event) {
             switch (keyEvent->key) {
             case KeyType::Backspace:
             {
-                value.pop_back();
+                if (value != "")
+                {
+                    value.pop_back();
+                }
 
                 TextInputEvent dispatchEvent{value};
                 dispatch(EventType::Change, dynamic_cast<Event*>(&dispatchEvent));

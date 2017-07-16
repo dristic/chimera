@@ -88,7 +88,7 @@ void Layout::updateChildren(std::vector<Element*>& children)
             }
 
             if (mStyle->alignItems == Align::Center) {
-                float midpoint = (rect.height - element->style.height) / 2;
+                float midpoint = (rect.height - element->layout.rect.height) / 2;
                 element->layout.rect.y = yValue + midpoint;
             } else {
                 element->layout.rect.y = yValue;

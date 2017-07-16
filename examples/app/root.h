@@ -17,6 +17,8 @@ public:
     void attributeChangedCallback(
         std::string name, std::string oldValue, std::string newValue) override
     {
+        CHIMERA_UNUSED(oldValue);
+
         if (name == "size")
         {
             mSize = newValue;
