@@ -123,6 +123,19 @@ void StyleRule::addValue(StyleProp property, LayoutProperty value) {
 
 void StyleRule::addValue(StyleProp property, Align value) {
     switch (property) {
+    case StyleProp::AlignItems:
+    {
+        std::unique_ptr<StyleValueInternal> styleValue{
+            new StyleValue<Align>(
+                value,
+                [](Style& style, Align align) {
+                    style.alignItems = align;
+                })
+        };
+
+        mProperties[property] = std::move(styleValue);
+        break;
+    }
     case StyleProp::TextAlign:
     {
         std::unique_ptr<StyleValueInternal> styleValue{
@@ -419,6 +432,7 @@ void StyleManager::addRule(std::string selector, std::vector<StyleAttribute> att
             case StyleProp::FlexDirection:
                 rule.addValue(attribute.getProp(), attribute.asDirection());
                 break;
+            case StyleProp::AlignItems:
             case StyleProp::TextAlign:
             case StyleProp::JustifyContent:
                 rule.addValue(attribute.getProp(), attribute.asAlign());
@@ -435,6 +449,7 @@ void StyleManager::addRule(std::string selector, std::vector<StyleAttribute> att
                 rule.addValue(attribute.getProp(), attribute.asPosition());
                 break;
             default:
+                CHIMERA_DEBUG(printf("Unrecognized style attribute property."));
                 break;
         }
     }

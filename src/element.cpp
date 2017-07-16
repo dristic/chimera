@@ -144,6 +144,14 @@ void Div::render(DrawData* data) {
         data->addRectFilled(layout.rect, style.backgroundColor);
     }
 
+#define CHIMERA_DEBUG_RENDER 0
+#if CHIMERA_DEBUG_RENDER
+    if (style.backgroundColor.a == 0)
+    {
+        style.backgroundColor = Color::fromRGBA(rand() % 255, rand() % 255, rand() % 255, 1);
+    }
+#endif
+
     if (textContent != "") {
         Rect position{
             layout.rect.x + style.padding.left,
