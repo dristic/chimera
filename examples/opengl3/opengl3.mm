@@ -1,5 +1,7 @@
 // Copyright 2017 Dan Ristic
 
+#import <Cocoa/Cocoa.h>
+
 #include <string>
 #include <functional>
 
@@ -80,8 +82,17 @@ class GLFWapplication {
         CHIMERA_UNUSED(window);
         CHIMERA_UNUSED(mods);
 
-        if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
+        if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
+        {
             mContext->setMouseDown();
+
+            if (mods == GLFW_MOD_CONTROL)
+            {
+                NSEvent *event = [NSApp currentEvent];
+
+                NSMenu *theMenu = [NSApp windowsMenu];
+                [NSMenu popUpContextMenu:theMenu withEvent:event forView:[[event window] contentView]];
+            }
         }
     }
 
@@ -152,7 +163,7 @@ int main() {
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     glfwWindowHint(GLFW_DECORATED, GL_FALSE);
-    window = glfwCreateWindow(WIDTH, HEIGHT, "Chimera", NULL, NULL);
+    window = glfwCreateWindow(WIDTH, HEIGHT, "Chimera", nullptr, nullptr);
     if (!window)
     {
         glfwTerminate();

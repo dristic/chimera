@@ -9,11 +9,13 @@ set(
     OPENGL3_EXAMPLE_SOURCES
     "examples/app/root.h"
 
-    "examples/opengl3/opengl3.cpp"
+    "examples/opengl3/opengl3.mm"
 
     "src/adaptor/opengl3.cpp"
     "src/adaptor/opengl3.h"
 )
+
+set_source_files_properties("examples/opengl3/opengl3.mm" PROPERTIES COMPILE_FLAGS "-x objective-c++")
 
 # Add this file
 list(APPEND OPENGL3_EXAMPLE_SOURCES "cmake/build_examples.cmake")
@@ -80,10 +82,6 @@ if (APPLE)
     target_compile_options(ChimeraOpengl3 PRIVATE "-Werror")
     target_compile_options(ChimeraOpengl3 PRIVATE "-Wextra")
 endif (APPLE)
-if (MSVC)
-    target_compile_options(ChimeraOpengl3 PRIVATE "/WX")
-    target_compile_options(ChimeraOpengl3 PRIVATE "/Wall")
-endif (MSVC)
 
 # Copy assets to build directory
 file(COPY examples/assets DESTINATION ${CMAKE_BINARY_DIR})
