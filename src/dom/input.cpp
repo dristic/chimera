@@ -106,7 +106,7 @@ void Input::render(DrawData* data) {
             layout.rect.width - textWidth : 0;
 
         Rect position{
-            layout.rect.x,
+            layout.rect.x + pad,
             layout.rect.y + ((layout.rect.height - style.fontSize) / 2),
             layout.rect.width,
             layout.rect.height
