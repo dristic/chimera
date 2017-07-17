@@ -350,9 +350,19 @@ void StyleManager::addRule(StyleRule&& rule) {
     mRules.push_back(std::move(rule));
 }
 
+PseudoClass StyleManager::getPseudoFromString(std::string value)
+{
+    if (value == "hover")
+    {
+        return PseudoClass::Hover;
+    }
+
+    return PseudoClass::None;
+}
+
 enum class ParseMode
 {
-    Class, Id, Tag
+    Class, Id, Tag, Pseudo
 };
 
 void StyleManager::parseSelector(std::string selector, StyleRule& rule)
@@ -360,37 +370,40 @@ void StyleManager::parseSelector(std::string selector, StyleRule& rule)
     std::string result;
     ParseMode mode{ParseMode::Tag};
 
+    auto ParseResult = [&result, &mode, &rule, this]()
+    {
+        if (result != "")
+        {
+            switch (mode)
+            {
+                case ParseMode::Class: rule.addClass(result); break;
+                case ParseMode::Id: rule.addId(result); break;
+                case ParseMode::Tag: rule.addTag(result); break;
+                case ParseMode::Pseudo:
+                    rule.addPseudoClass(getPseudoFromString(result));
+                    break;
+            }
+
+            result = "";
+        }
+    };
+
     for (auto& c : selector)
     {
         if (c == '.')
         {
-            if (result != "")
-            {
-                switch (mode)
-                {
-                    case ParseMode::Class: rule.addClass(result); break;
-                    case ParseMode::Id: rule.addId(result); break;
-                    case ParseMode::Tag: rule.addTag(result); break;
-                }
-
-                result = "";
-            }
+            ParseResult();
             mode = ParseMode::Class;
         }
         else if (c == '#')
         {
-            if (result != "")
-            {
-                switch (mode)
-                {
-                    case ParseMode::Class: rule.addClass(result); break;
-                    case ParseMode::Id: rule.addId(result); break;
-                    case ParseMode::Tag: rule.addTag(result); break;
-                }
-
-                result = "";
-            }
+            ParseResult();
             mode = ParseMode::Id;
+        }
+        else if (c == ':')
+        {
+            ParseResult();
+            mode = ParseMode::Pseudo;
         }
         else
         {
@@ -398,15 +411,7 @@ void StyleManager::parseSelector(std::string selector, StyleRule& rule)
         }
     }
 
-    if (result != "")
-    {
-        switch (mode)
-        {
-            case ParseMode::Class: rule.addClass(result); break;
-            case ParseMode::Id: rule.addId(result); break;
-            case ParseMode::Tag: rule.addTag(result); break;
-        }
-    }
+    ParseResult();
 }
 
 void StyleManager::addRule(std::string selector, std::vector<StyleAttribute> attributes) {

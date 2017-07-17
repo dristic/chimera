@@ -312,6 +312,8 @@ class StyleManager {
     void applyRules(Element* root);
 
  private:
+    PseudoClass getPseudoFromString(std::string value);
+
     std::vector<StyleRule> mRules;
 };
 
