@@ -33,7 +33,7 @@ class Element {
     const std::vector<Element*>& getChildren() const;
 
     void on(EventType type, EventCallback func);
-    void dispatch(EventType type, Event* event);
+    void dispatch(Event* event);
 
     virtual bool handleEvent(Event* event);
     virtual void render(DrawData* data);

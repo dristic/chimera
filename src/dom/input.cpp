@@ -23,7 +23,8 @@ bool Input::handleEvent(Event* event) {
             value += textInputEvent->value;
 
             TextInputEvent dispatchEvent{value};
-            dispatch(EventType::Change, dynamic_cast<Event*>(&dispatchEvent));
+            dispatchEvent.type = EventType::Change;
+            dispatch(dynamic_cast<Event*>(&dispatchEvent));
         }
     } else if (event->type == EventType::Key) {
         if (mDocument->focusManager.focusedElement == this) {
@@ -38,7 +39,8 @@ bool Input::handleEvent(Event* event) {
                 }
 
                 TextInputEvent dispatchEvent{value};
-                dispatch(EventType::Change, dynamic_cast<Event*>(&dispatchEvent));
+                dispatchEvent.type = EventType::Change;
+                dispatch(dynamic_cast<Event*>(&dispatchEvent));
 
                 break;
             }

@@ -44,7 +44,8 @@ void Element::on(EventType type, EventCallback func) {
     mEventObservers[type] = func;
 }
 
-void Element::dispatch(EventType type, Event* event) {
+void Element::dispatch(Event* event) {
+    auto& type = event->type;
     if (mEventObservers.find(type) != mEventObservers.end()) {
         mEventObservers[type](event);
     }
@@ -243,7 +244,7 @@ bool Button::handleEvent(Event* event) {
     } else if (event->type == EventType::MouseDown) {
         MouseDownEvent* mouseDownEvent = dynamic_cast<MouseDownEvent*>(event);
         if (layout.rect.contains(float(mouseDownEvent->x), float(mouseDownEvent->y))) {
-            dispatch(EventType::MouseDown, event);
+            dispatch(event);
             return false;
         }
     }

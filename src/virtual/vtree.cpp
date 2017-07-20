@@ -37,6 +37,24 @@ Element* VirtualElement::create(Document& document)
         }
     }
 
+    if (attributes.count("onChange") == 1)
+    {
+        auto func = attributes.at("onChange");
+        element->on(EventType::Change, func.asCallback());
+    }
+
+    if (attributes.count("onMouseDown") == 1)
+    {
+        auto func = attributes.at("onMouseDown");
+        element->on(EventType::MouseDown, func.asCallback());
+    }
+
+    if (attributes.count("onCustom") == 1)
+    {
+        auto func = attributes.at("onCustom");
+        element->on(EventType::Custom, func.asCallback());
+    }
+
     for (auto& attribute : attributes)
     {
         element->attributeChangedCallback(
