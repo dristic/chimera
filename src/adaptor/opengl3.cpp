@@ -11,6 +11,9 @@ extern "C" {
     #include "libnsgif.h"
 }
 
+#include <vpx/vpx_decoder.h>
+#include <vpx/vp8dx.h>
+
 namespace Chimera {
 
 std::atomic<bool> gQuitting;
@@ -101,6 +104,36 @@ GLuint gVboHandle, gElementsHandle, gVaoHandle;
 
 //     return v;
 // }
+
+std::unique_ptr<VideoRef> OpenGL3Bridge::loadVideo(std::string videoPath)
+{
+    CHIMERA_UNUSED(videoPath);
+
+    vpx_codec_ctx *m_ctx;
+    const void *m_iter;
+    int m_delay;
+
+    unsigned threads = 1;
+    const vpx_codec_dec_cfg_t codecCfg = {
+        threads,
+        0,
+        0
+    };
+    vpx_codec_iface_t *codecIface = NULL;
+
+    codecIface = vpx_codec_vp8_dx();
+
+    m_ctx = new vpx_codec_ctx_t;
+    if (vpx_codec_dec_init(m_ctx, codecIface, &codecCfg, m_delay > 0 ? VPX_CODEC_USE_FRAME_THREADING : 0))
+    {
+        delete m_ctx;
+        m_ctx = NULL;
+    }
+
+    auto v = std::make_unique<VideoRef>(1, 1, 1);
+
+    return v;
+}
 
 OpenGL3Bridge::OpenGL3Bridge()
     : mTextureCache{}

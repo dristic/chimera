@@ -13,12 +13,12 @@
 namespace Chimera {
     Context::Context()
         : document{*this}
-        , renderer{std::make_unique<Renderer>()}
         , mMouseX{0}
         , mMouseY{0}
         , mAdaptor{}
     {
         mAdaptor = std::make_shared<Adaptor>();
+        mRenderer = std::make_unique<Renderer>(mAdaptor.get());
     }
 
     Context::~Context() { }
@@ -72,6 +72,7 @@ namespace Chimera {
 
     void Context::useAdaptor(std::shared_ptr<Adaptor> adaptor) {
         mAdaptor = adaptor;
+        mRenderer->setAdaptor(mAdaptor.get());
     }
 
     std::unique_ptr<ImageRef> Context::loadImage(std::string name, int& width, int& height) {
@@ -82,12 +83,18 @@ namespace Chimera {
         return mAdaptor->loadTexture(width, height, buffer);
     }
 
+    void Context::loadFont(std::string name, std::string location)
+    {
+        mRenderer->getFontManager()->loadFont(name, location);
+    }
+
     void Context::render(float dt) {
         CHIMERA_UNUSED(dt);
 
         // TODO: Make this not happen every frame
         document.styleManager.applyRules(document.body);
 
+        // TODO: Push this into renderer and cache it
         DrawData data;
 
         data.width = document.getWidth();
@@ -95,7 +102,7 @@ namespace Chimera {
         data.screenWidth = document.getScreenWidth();
         data.screenHeight = document.getScreenHeight();
 
-        data.renderer = renderer.get();
+        data.renderer = mRenderer.get();
 
         if (document.body != nullptr) {
             document.body->render(&data);

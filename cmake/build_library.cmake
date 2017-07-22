@@ -40,6 +40,9 @@ set(
     "src/dom/input.cpp"
     "src/dom/input.h"
 
+    "src/render/font.cpp"
+    "src/render/font.h"
+
     "src/style/style.cpp"
     "src/style/style.h"
 

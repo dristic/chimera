@@ -87,8 +87,8 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
     auto adaptor = std::make_shared<Chimera::DX9Adaptor>(d3ddev);
     context.useAdaptor(adaptor);
 
-    context.renderer->loadFont(context, "Roboto", "assets/Roboto-Regular.ttf");
-    context.renderer->loadFont(context, "Roboto Thin", "assets/Roboto-Thin.ttf");
+    context.loadFont("Roboto", "assets/Roboto-Regular.ttf");
+    context.loadFont("Roboto Thin", "assets/Roboto-Thin.ttf");
 
     document.body->append(document.createElement<AppElement>());
 

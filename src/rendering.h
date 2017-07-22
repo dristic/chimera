@@ -6,18 +6,15 @@
 #include <stdint.h>
 #include <vector>
 #include <string>
-#include <unordered_map>
 #include <cstdlib>
-//#include <harfbuzz/hb.h>
-//#include <harfbuzz/hb-ft.h>
-#include <ft2build.h>
-#include FT_FREETYPE_H
 
 #include "src/types.h"
+#include "src/render/font.h"
 
 namespace Chimera {
 
 class Context;
+class Adaptor;
 
 struct DrawVert {
     Vec2 pos;
@@ -53,51 +50,17 @@ class DrawCommand {
     ~DrawCommand() {}
 };
 
-struct Character {
-    // unsigned char* buffer;
-    unsigned int width;
-    unsigned int rows;
-    int left, top;
-    int64_t advance;
-    unsigned int textureId;
-};
-
-class Font {
- public:
-    Font()
-        : characters{}
-        { }
-
-    ~Font() {
-        // for (auto &character : characters) {
-        //     free(character.second.buffer);
-        // }
-    }
-
-    std::unordered_map<unsigned char, Character> characters;
-    FT_Face face;
-};
-
-class FontManager {
- public:
-    FontManager()
-        : fonts{}
-        { }
-
-    ~FontManager()  { }
-
-    std::unordered_map<std::string, Font> fonts;
-};
-
 class Renderer {
  public:
-    Renderer();
-    ~Renderer();
+    Renderer(Adaptor* adaptor);
 
-    void loadFont(Context& context, std::string name, std::string location);
+    Adaptor* getAdaptor();
+    void setAdaptor(Adaptor* adaptor);
+    FontManager* getFontManager();
 
-    FT_Library ft;
-    FontManager fontManager;
+ private:
+    Adaptor* mAdaptor;
+    FontManager mFontManager;
 };
 
 class DrawData {

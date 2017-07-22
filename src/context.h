@@ -31,13 +31,14 @@ class Context {
     void useAdaptor(std::shared_ptr<Adaptor> adaptor);
     std::unique_ptr<ImageRef> loadImage(std::string name, int& width, int& height);
     unsigned int loadTexture(unsigned int width, unsigned int height, unsigned char* buffer);
+    void loadFont(std::string name, std::string location);
 
     Document document;
-    std::unique_ptr<Renderer> renderer;
 
  private:
     int mMouseX, mMouseY, mScrollDirection;
     std::shared_ptr<Adaptor> mAdaptor;
+    std::unique_ptr<Renderer> mRenderer;
 };
 
 }  // namespace Chimera

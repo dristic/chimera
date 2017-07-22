@@ -76,6 +76,10 @@ target_link_libraries(ChimeraOpengl3 ${FREETYPE_LIBRARIES})
 include_directories(${HARFBUZZ_INCLUDE_DIR})
 target_link_libraries(ChimeraOpengl3 ${HARFBUZZ_LIBRARY})
 
+find_package(WebM REQUIRED)
+include_directories(${WEBM_INCLUDE_DIR})
+target_link_libraries(ChimeraOpengl3 ${WEBM_LIBRARY})
+
 target_link_libraries(ChimeraOpengl3 Chimera)
 
 if (APPLE)

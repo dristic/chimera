@@ -5,6 +5,7 @@
 #include <utility>
 
 #include "src/context.h"
+#include "src/adaptor/adaptor.h"
 
 namespace Chimera {
 
@@ -87,7 +88,7 @@ void DrawData::addText(
     {
         Rect rect;
 
-        Character& ch = renderer->fontManager.fonts[name].characters[c];
+        Character& ch = renderer->getFontManager()->getFont(name)->characters[c];
 
         rect.x = position.x + xPosition;
         rect.y = position.y - (ch.top * scale);
@@ -184,99 +185,31 @@ float DrawData::measureText(const std::string& text, std::string name, int size)
     float result = 0;
 
     for (auto &character : text) {
-        Character& ch = renderer->fontManager.fonts[name].characters[character];
+        Character& ch = renderer->getFontManager()->getFont(name)->characters[character];
         result += (ch.advance >> 6) * scale;
     }
 
     return result;
 }
 
-Renderer::Renderer()
-    : fontManager{}
+Renderer::Renderer(Adaptor* adaptor)
+    : mAdaptor{adaptor}
+    , mFontManager{this}
     { }
 
-void Renderer::loadFont(Context& context, std::string name, std::string location) {
-    if (FT_Init_FreeType(&ft)) {
-        printf("Could not init FreeType library\n");
-        return;
-    }
-
-    FT_Face face;
-    if (FT_New_Face(ft, location.c_str(), 0, &face)) {
-        printf("FreeType could not load the font\n");
-        return;
-    }
-
-    FT_Select_Charmap(face , ft_encoding_unicode);
-
-#if WIN32
-    FT_Set_Char_Size(
-        face,    /* handle to face object           */
-        0,       /* char_width in 1/64th of points  */
-        24 * 64,   /* char_height in 1/64th of points */
-        96,     /* horizontal device resolution    */
-        96);   /* vertical device resolution      */
-#else
-    FT_Set_Char_Size(
-        face,    /* handle to face object           */
-        0,       /* char_width in 1/64th of points  */
-        24 * 64,   /* char_height in 1/64th of points */
-        72,     /* horizontal device resolution    */
-        72);   /* vertical device resolution      */
-#endif
-
-    Font newFont;
-
-    newFont.face = face;
-
-    // unsigned long filter = (unsigned long)0x2022;
-    // auto index = FT_Get_Char_Index(face, filter);
-
-    for (unsigned char c = 32; c < 128; c++) {
-        if (FT_Load_Char(face, c, FT_LOAD_RENDER)) {
-            printf("FreeType failed to load glyph %i\n", c);
-            continue;
-        }
-
-        size_t size =
-            sizeof(unsigned char)
-            * face->glyph->bitmap.width
-            * face->glyph->bitmap.rows;
-
-        newFont.characters.insert(std::pair<unsigned char, Character>(c, {
-            face->glyph->bitmap.width,
-            face->glyph->bitmap.rows,
-            face->glyph->bitmap_left,
-            face->glyph->bitmap_top,
-            face->glyph->advance.x,
-            0,
-        }));
-
-        auto buffer = static_cast<unsigned char*>(malloc(size * 4));
-
-        for (size_t i = 0; i < size; i++) {
-            int p = i * 4;
-            buffer[p] = 255;
-            buffer[p+1] = 255;
-            buffer[p+2] = 255;
-            buffer[p+3] = face->glyph->bitmap.buffer[i];
-        }
-
-        newFont.characters[c].textureId = context.loadTexture(
-            newFont.characters[c].width,
-            newFont.characters[c].rows,
-            buffer);
-
-        free(buffer);
-
-        // memcpy(characters[c].buffer, face->glyph->bitmap.buffer, size);
-    }
-
-    fontManager.fonts[name] = newFont;
+Adaptor* Renderer::getAdaptor()
+{
+    return mAdaptor;
 }
 
-Renderer::~Renderer() {
-    FT_Done_FreeType(ft);
+void Renderer::setAdaptor(Adaptor* adaptor)
+{
+    mAdaptor = adaptor;
+}
+
+FontManager* Renderer::getFontManager()
+{
+    return &mFontManager;
 }
 
 }  // namespace Chimera

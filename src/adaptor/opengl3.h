@@ -45,35 +45,30 @@ class GifRef: public ImageRef {
     }
 };
 
-// class VideoRef: public ImageRef {
-//  public:
-//     VideoRef(int width, int height, GLuint texId, std::unique_ptr<cv::VideoCapture> video)
-//         : ImageRef(width, height, texId)
-//         , frame{}
-//         , cap{std::move(video)}
-//         { }
+class VideoRef: public ImageRef {
+ public:
+    VideoRef(int width, int height, GLuint texId)
+        : ImageRef(width, height, texId)
+        { }
 
-//     cv::Mat frame;
-//     std::unique_ptr<cv::VideoCapture> cap;
+    void render() {
+        // if (!frame.empty()) {
+        //     glBindTexture(GL_TEXTURE_2D, textureId);
 
-//     void render() {
-//         if (!frame.empty()) {
-//             glBindTexture(GL_TEXTURE_2D, textureId);
-
-//             cv::Size frameSize = frame.size();
-//             glTexImage2D(
-//                 GL_TEXTURE_2D,
-//                 0,
-//                 GL_RGBA,
-//                 frameSize.width,
-//                 frameSize.height,
-//                 0,
-//                 GL_BGR,
-//                 GL_UNSIGNED_BYTE,
-//                 frame.data);
-//         }
-//     }
-// };
+        //     cv::Size frameSize = frame.size();
+        //     glTexImage2D(
+        //         GL_TEXTURE_2D,
+        //         0,
+        //         GL_RGBA,
+        //         frameSize.width,
+        //         frameSize.height,
+        //         0,
+        //         GL_BGR,
+        //         GL_UNSIGNED_BYTE,
+        //         frame.data);
+        // }
+    }
+};
 
 class OpenGL3Bridge : public Chimera::Adaptor {
  public:
@@ -87,7 +82,7 @@ class OpenGL3Bridge : public Chimera::Adaptor {
     static void processVideo();
 
     std::unique_ptr<GifRef> loadGIF(std::string imagePath);
-    // std::unique_ptr<VideoRef> loadVideo(std::string videoPath);
+    std::unique_ptr<VideoRef> loadVideo(std::string videoPath);
     std::unique_ptr<ImageRef> loadImage(std::string imagePath, int& width, int& height) override;
     unsigned int loadTexture(unsigned int width, unsigned int height, unsigned char* buffer) override;
     void renderCallback(DrawData* data) override;
