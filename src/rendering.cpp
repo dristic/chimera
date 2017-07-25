@@ -88,21 +88,21 @@ void DrawData::addText(
     {
         Rect rect;
 
-        Character& ch = renderer->getFontManager()->getFont(name)->characters[c];
+        Character* ch = renderer->getFontManager()->getGlyph(name, c);
 
         rect.x = position.x + xPosition;
-        rect.y = position.y - (ch.top * scale);
+        rect.y = position.y - (ch->top * scale);
 
-        rect.width = ch.width * scale;
-        rect.height = ch.rows * scale;
+        rect.width = ch->width * scale;
+        rect.height = ch->rows * scale;
 
         addRectFilled(rect, color);
 
-        commands.back().textureId = ch.textureId;
+        commands.back().textureId = ch->textureId;
 
         commands.back().scissor = scissor;
 
-        xPosition += (ch.advance >> 6) * scale;
+        xPosition += (ch->advance >> 6) * scale;
     }
 
     /* Create hb-ft font. */
@@ -185,8 +185,8 @@ float DrawData::measureText(const std::string& text, std::string name, int size)
     float result = 0;
 
     for (auto &character : text) {
-        Character& ch = renderer->getFontManager()->getFont(name)->characters[character];
-        result += (ch.advance >> 6) * scale;
+        Character* ch = renderer->getFontManager()->getGlyph(name, character);
+        result += (ch->advance >> 6) * scale;
     }
 
     return result;

@@ -29,7 +29,7 @@ class Font {
         : characters{}
         { }
 
-    std::unordered_map<unsigned char, Character> characters;
+    std::unordered_map<unsigned long, Character> characters;
     FT_Face face;
 };
 
@@ -40,6 +40,7 @@ class FontManager {
 
     void loadFont(std::string name, std::string location);
     Font* getFont(std::string name);
+    Character* getGlyph(std::string fontName, unsigned char glyph);
 
  private:
     Renderer* mRenderer;

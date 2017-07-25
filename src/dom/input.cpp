@@ -22,6 +22,9 @@ bool Input::handleEvent(Event* event) {
             auto textInputEvent = dynamic_cast<TextInputEvent*>(event);
             value += textInputEvent->value;
 
+            // char bullet[] = u8"•";
+            // value += std::string(bullet);
+
             TextInputEvent dispatchEvent{value};
             dispatchEvent.type = EventType::Change;
             dispatch(dynamic_cast<Event*>(&dispatchEvent));

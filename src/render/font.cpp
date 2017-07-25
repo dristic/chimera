@@ -46,11 +46,13 @@ void FontManager::loadFont(std::string name, std::string location)
 
     // unsigned long filter = (unsigned long)0x2022;
     // auto index = FT_Get_Char_Index(face, filter);
+    // printf("Got character index %u\n", index);
 
     auto adaptor = mRenderer->getAdaptor();
 
     // Cache a preset of glyphs
     for (unsigned char c = 32; c < 128; c++) {
+        unsigned long index = FT_Get_Char_Index(face, c);
         if (FT_Load_Char(face, c, FT_LOAD_RENDER)) {
             printf("FreeType failed to load glyph %i\n", c);
             continue;
@@ -61,7 +63,7 @@ void FontManager::loadFont(std::string name, std::string location)
             * face->glyph->bitmap.width
             * face->glyph->bitmap.rows;
 
-        newFont.characters.insert(std::pair<unsigned char, Character>(c, {
+        newFont.characters.insert(std::pair<unsigned long, Character>(index, {
             face->glyph->bitmap.width,
             face->glyph->bitmap.rows,
             face->glyph->bitmap_left,
@@ -80,9 +82,9 @@ void FontManager::loadFont(std::string name, std::string location)
             buffer[p+3] = face->glyph->bitmap.buffer[i];
         }
 
-        newFont.characters[c].textureId = adaptor->loadTexture(
-            newFont.characters[c].width,
-            newFont.characters[c].rows,
+        newFont.characters[index].textureId = adaptor->loadTexture(
+            newFont.characters[index].width,
+            newFont.characters[index].rows,
             buffer);
 
         free(buffer);
@@ -98,6 +100,25 @@ Font* FontManager::getFont(std::string name)
         return &mFonts[name];
     }
     
+    return nullptr;
+}
+
+Character* FontManager::getGlyph(std::string fontName, unsigned char glyph)
+{
+    auto font = getFont(fontName);
+
+    if (!font)
+    {
+        return nullptr;
+    }
+
+    auto index = FT_Get_Char_Index(font->face, glyph);
+
+    if (font->characters.count(index) == 1)
+    {
+        return &font->characters[index];
+    }
+
     return nullptr;
 }
 
