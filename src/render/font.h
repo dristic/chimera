@@ -40,7 +40,9 @@ class FontManager {
 
     void loadFont(std::string name, std::string location);
     Font* getFont(std::string name);
-    Character* getGlyph(std::string fontName, unsigned char glyph);
+
+    void loadGlyph(std::string name, unsigned long glyph);
+    Character* getGlyph(std::string fontName, unsigned long glyph);
 
  private:
     Renderer* mRenderer;

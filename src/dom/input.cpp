@@ -19,11 +19,11 @@ Input::~Input() { }
 bool Input::handleEvent(Event* event) {
     if (event->type == EventType::Input) {
         if (mDocument->focusManager.focusedElement == this) {
-            auto textInputEvent = dynamic_cast<TextInputEvent*>(event);
-            value += textInputEvent->value;
+            // auto textInputEvent = dynamic_cast<TextInputEvent*>(event);
+            // value += textInputEvent->value;
 
-            // char bullet[] = u8"•";
-            // value += std::string(bullet);
+            char bullet[] = u8"•";
+            value += std::string(bullet);
 
             TextInputEvent dispatchEvent{value};
             dispatchEvent.type = EventType::Change;

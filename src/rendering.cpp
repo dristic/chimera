@@ -3,6 +3,8 @@
 #include "src/rendering.h"
 
 #include <utility>
+#include <codecvt>
+#include <locale>
 
 #include "src/context.h"
 #include "src/adaptor/adaptor.h"
@@ -84,7 +86,10 @@ void DrawData::addText(
 
     float xPosition = 0;
 
-    for (auto c : text)
+    std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> converter{};
+    std::u32string utf32str = converter.from_bytes(text);
+
+    for (auto c : utf32str)
     {
         Rect rect;
 
@@ -184,7 +189,10 @@ float DrawData::measureText(const std::string& text, std::string name, int size)
     float scale = (float)size / (float)24;
     float result = 0;
 
-    for (auto &character : text) {
+    std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> converter{};
+    std::u32string utf32str = converter.from_bytes(text);
+
+    for (auto &character : utf32str) {
         Character* ch = renderer->getFontManager()->getGlyph(name, character);
         result += (ch->advance >> 6) * scale;
     }
