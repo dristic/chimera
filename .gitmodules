@@ -9,9 +9,6 @@
 [submodule "vendor/lodepng"]
 	path = vendor/lodepng
 	url = https://github.com/lvandeve/lodepng.git
-[submodule "vendor/libnsgif"]
-	path = vendor/libnsgif
-	url = https://git.netsurf-browser.org/libnsgif.git
 [submodule "vendor/googletest"]
 	path = vendor/googletest
 	url = https://github.com/google/googletest.git
