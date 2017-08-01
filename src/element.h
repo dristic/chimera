@@ -104,15 +104,6 @@ class Element {
     std::unique_ptr<ImageRef> mBackgroundImage;
 };
 
-class Div: public Element {
- public:
-    Div(Document& document);
-    ~Div();
-
-    bool handleEvent(Event* event) override;
-    void render(DrawData* data) override;
-};
-
 class Img: public Element {
  public:
     Img(Document& document);
