@@ -81,7 +81,7 @@ class OpenGL3Bridge : public Chimera::Adaptor {
 
     static void processVideo();
 
-    std::unique_ptr<GifRef> loadGIF(std::string imagePath);
+    // std::unique_ptr<GifRef> loadGIF(std::string imagePath);
     std::unique_ptr<VideoRef> loadVideo(std::string videoPath);
     std::unique_ptr<ImageRef> loadImage(std::string imagePath, int& width, int& height) override;
     unsigned int loadTexture(unsigned int width, unsigned int height, unsigned char* buffer) override;

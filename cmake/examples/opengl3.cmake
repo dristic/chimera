@@ -27,7 +27,7 @@ add_executable(ChimeraOpengl3 ${OPENGL3_EXAMPLE_SOURCES})
 target_sources(ChimeraOpengl3 PRIVATE "vendor/lodepng/lodepng.cpp")
 
 # Add gif loading
-target_sources(ChimeraOpengl3 PRIVATE "vendor/libnsgif/src/libnsgif.c")
+# target_sources(ChimeraOpengl3 PRIVATE "vendor/libnsgif/src/libnsgif.c")
 
 foreach(source IN LISTS OPENGL3_EXAMPLE_SOURCES)
     get_filename_component(source_path "${source}" PATH)

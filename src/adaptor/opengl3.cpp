@@ -7,9 +7,6 @@
 #include <algorithm>
 
 #include "lodepng/lodepng.h"
-extern "C" {
-    #include "libnsgif.h"
-}
 
 #include <vpx/vpx_decoder.h>
 #include <vpx/vp8dx.h>
@@ -378,99 +375,99 @@ void bitmap_modified(void *bitmap)
     return;
 }
 
-std::unique_ptr<GifRef> OpenGL3Bridge::loadGIF(std::string imagePath) {
-    gif_bitmap_callback_vt bitmap_callbacks = {
-        bitmap_create,
-        bitmap_destroy,
-        bitmap_get_buffer,
-        bitmap_set_opaque,
-        bitmap_test_opaque,
-        bitmap_modified
-    };
-    gif_animation gif;
-    size_t size;
-    gif_result code;
-    unsigned int i;
+// std::unique_ptr<GifRef> OpenGL3Bridge::loadGIF(std::string imagePath) {
+//     gif_bitmap_callback_vt bitmap_callbacks = {
+//         bitmap_create,
+//         bitmap_destroy,
+//         bitmap_get_buffer,
+//         bitmap_set_opaque,
+//         bitmap_test_opaque,
+//         bitmap_modified
+//     };
+//     gif_animation gif;
+//     size_t size;
+//     gif_result code;
+//     unsigned int i;
 
-    /* create our gif animation */
-    gif_create(&gif, &bitmap_callbacks);
+//     /* create our gif animation */
+//     gif_create(&gif, &bitmap_callbacks);
 
-    /* load file into memory */
-    unsigned char *data = load_file(imagePath, &size);
+//     /* load file into memory */
+//     unsigned char *data = load_file(imagePath, &size);
 
-    /* begin decoding */
-    do {
-        code = gif_initialise(&gif, size, data);
-        if (code != GIF_OK && code != GIF_WORKING) {
-            exit(1);
-        }
-    } while (code != GIF_OK);
+//     /* begin decoding */
+//     do {
+//         code = gif_initialise(&gif, size, data);
+//         if (code != GIF_OK && code != GIF_WORKING) {
+//             exit(1);
+//         }
+//     } while (code != GIF_OK);
 
-    printf("P3\n");
-    printf("# width                %u \n", gif.width);
-    printf("# height               %u \n", gif.height);
-    printf("# frame_count          %u \n", gif.frame_count);
-    printf("# frame_count_partial  %u \n", gif.frame_count_partial);
-    printf("# loop_count           %u \n", gif.loop_count);
-    printf("%u %u 256\n", gif.width, gif.height * gif.frame_count);
+//     printf("P3\n");
+//     printf("# width                %u \n", gif.width);
+//     printf("# height               %u \n", gif.height);
+//     printf("# frame_count          %u \n", gif.frame_count);
+//     printf("# frame_count_partial  %u \n", gif.frame_count_partial);
+//     printf("# loop_count           %u \n", gif.loop_count);
+//     printf("%u %u 256\n", gif.width, gif.height * gif.frame_count);
 
-    /* decode the frames */
-    GLuint* firstTextureId;
-    for (i = 0; i != gif.frame_count; i++) {
-        unsigned int row, col;
-        unsigned char *image;
+//     /* decode the frames */
+//     GLuint* firstTextureId;
+//     for (i = 0; i != gif.frame_count; i++) {
+//         unsigned int row, col;
+//         unsigned char *image;
 
-        code = gif_decode_frame(&gif, i);
-        if (code != GIF_OK)
-            printf("gif_decode_frame %i\n", code);
+//         code = gif_decode_frame(&gif, i);
+//         if (code != GIF_OK)
+//             printf("gif_decode_frame %i\n", code);
 
-        image = (unsigned char *) gif.frame_image;
-        for (row = 0; row != gif.height; row++) {
-            for (col = 0; col != gif.width; col++) {
-                size_t z = (row * gif.width + col) * 4;
-            }
-        }
+//         image = (unsigned char *) gif.frame_image;
+//         for (row = 0; row != gif.height; row++) {
+//             for (col = 0; col != gif.width; col++) {
+//                 size_t z = (row * gif.width + col) * 4;
+//             }
+//         }
 
-        GLint lastTextureBinding;
-        glGetIntegerv(GL_TEXTURE_BINDING_2D, &lastTextureBinding);
-        GLint lastTexture;
-        glGetIntegerv(GL_ACTIVE_TEXTURE, &lastTexture);
+//         GLint lastTextureBinding;
+//         glGetIntegerv(GL_TEXTURE_BINDING_2D, &lastTextureBinding);
+//         GLint lastTexture;
+//         glGetIntegerv(GL_ACTIVE_TEXTURE, &lastTexture);
 
-        // Create one OpenGL texture
-        GLuint textureID;
-        glGenTextures(1, &textureID);
+//         // Create one OpenGL texture
+//         GLuint textureID;
+//         glGenTextures(1, &textureID);
 
-        glBindTexture(GL_TEXTURE_2D, textureID);
+//         glBindTexture(GL_TEXTURE_2D, textureID);
 
-        // Give the image to OpenGL
-        glTexImage2D(
-            GL_TEXTURE_2D,
-            0,
-            GL_RGBA,
-            gif.width,
-            gif.height,
-            0,
-            GL_RGBA,
-            GL_UNSIGNED_BYTE,
-            image);
+//         // Give the image to OpenGL
+//         glTexImage2D(
+//             GL_TEXTURE_2D,
+//             0,
+//             GL_RGBA,
+//             gif.width,
+//             gif.height,
+//             0,
+//             GL_RGBA,
+//             GL_UNSIGNED_BYTE,
+//             image);
 
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+//         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+//         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
-        glActiveTexture(lastTexture);
-        glBindTexture(GL_TEXTURE_2D, lastTextureBinding);
+//         glActiveTexture(lastTexture);
+//         glBindTexture(GL_TEXTURE_2D, lastTextureBinding);
 
-        mTextureCache.push_back(textureID);
+//         mTextureCache.push_back(textureID);
 
-        if (i == 0) firstTextureId = &mTextureCache.back();
-    }
+//         if (i == 0) firstTextureId = &mTextureCache.back();
+//     }
 
-    /* clean up */
-    gif_finalise(&gif);
-    free(data);
+//     /* clean up */
+//     gif_finalise(&gif);
+//     free(data);
     
-    return std::make_unique<GifRef>(gif.width, gif.height, firstTextureId);
-}
+//     return std::make_unique<GifRef>(gif.width, gif.height, firstTextureId);
+// }
 
 unsigned int OpenGL3Bridge::loadTexture(
     unsigned int width,
@@ -505,9 +502,9 @@ unsigned int OpenGL3Bridge::loadTexture(
 }
 
 std::unique_ptr<ImageRef> OpenGL3Bridge::loadImage(std::string imagePath, int& width, int& height) {
-    if (imagePath.compare(imagePath.size() - 3, 3, "gif") == 0) {
-        return loadGIF(imagePath);
-    }
+    // if (imagePath.compare(imagePath.size() - 3, 3, "gif") == 0) {
+    //     return loadGIF(imagePath);
+    // }
     //  else if (imagePath.compare(imagePath.size() - 3, 3, "mov") == 0) {
     //     return loadVideo(imagePath);
     // } else if (imagePath.compare(imagePath.size() - 3, 3, "mp4") == 0) {
