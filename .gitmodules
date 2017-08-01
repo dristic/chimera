@@ -11,7 +11,7 @@
 	url = https://github.com/lvandeve/lodepng.git
 [submodule "vendor/libnsgif"]
 	path = vendor/libnsgif
-	url = http://git.netsurf-browser.org/libnsgif.git
+	url = https://git.netsurf-browser.org/libnsgif.git
 [submodule "vendor/googletest"]
 	path = vendor/googletest
 	url = https://github.com/google/googletest.git
