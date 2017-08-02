@@ -26,6 +26,8 @@ Element::Element(std::string name, Document& document)
 
 void Element::append(Element* element) {
     mChildren.push_back(element);
+
+    mDocument->styleManager.applyRules(element);
 }
 
 void Element::remove(Element* element) {

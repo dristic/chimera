@@ -91,9 +91,6 @@ namespace Chimera {
     void Context::render(float dt) {
         CHIMERA_UNUSED(dt);
 
-        // TODO: Make this not happen every frame
-        document.styleManager.applyRules(document.body);
-
         // TODO: Push this into renderer and cache it
         DrawData data;
 
