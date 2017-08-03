@@ -7,6 +7,8 @@
 #include <stack>
 #include <vector>
 #include <unordered_map>
+#include <utility>
+#include <memory>
 
 #include "src/core.h"
 #include "src/style/style.h"
@@ -106,7 +108,7 @@ class Element {
 
 class Img: public Element {
  public:
-    Img(Document& document);
+    explicit Img(Document& document);
     ~Img();
 
     void render(DrawData* data);
@@ -121,7 +123,7 @@ class Img: public Element {
 
 class Button: public Element {
  public:
-    Button(Document& document);
+    explicit Button(Document& document);
     ~Button();
 
     bool handleEvent(Event* event) override;

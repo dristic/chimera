@@ -42,7 +42,7 @@ enum class EventType {
     Key,
     Custom
 };
-    
+
 struct EventTypeHash {
     template <typename T>
     std::size_t operator()(T t) const {

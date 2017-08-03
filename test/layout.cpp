@@ -35,4 +35,27 @@ TEST_F(LayoutTest, OverridesWithIntrinsicDimensions) {
     EXPECT_EQ(300, layout.rect.height);
 }
 
+TEST_F(LayoutTest, OverridesWidthWithStyle) {
+    style.width = 500;
+    style.height = 300;
+
+    layout.layout();
+
+    EXPECT_EQ(500, layout.rect.width);
+    EXPECT_EQ(300, layout.rect.height);
+}
+
+TEST_F(LayoutTest, AddsPaddingCorrectly) {
+    style.width = 500;
+    style.height = 300;
+
+    style.padding.left = 10;
+    style.padding.top = 10;
+
+    layout.layout();
+
+    EXPECT_EQ(510, layout.rect.width);
+    EXPECT_EQ(310, layout.rect.height);
+}
+
 }  // namespace ChimeraTest

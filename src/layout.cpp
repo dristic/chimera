@@ -24,7 +24,7 @@ int Layout::getBoundingHeight()
     return int(rect.height + mStyle->margin.top + mStyle->margin.bottom);
 }
 
-void Layout::calculateDimensions(std::vector<Element*>& children)
+void Layout::calculateDimensions(const std::vector<Element*>& children)
 {
     intrinsicWidth = 0;
     intrinsicHeight = 0;
@@ -71,7 +71,7 @@ void Layout::layout()
     rect.height += mStyle->padding.top + mStyle->padding.bottom;
 }
 
-void Layout::updateChildren(std::vector<Element*>& children)
+void Layout::updateChildren(const std::vector<Element*>& children)
 {
     float xValue = rect.x + mStyle->padding.left;
     float yValue = rect.y + mStyle->padding.top;

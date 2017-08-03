@@ -17,6 +17,8 @@ class Input: public Element {
 
  private:
     int mFrames;
+    int mSelectionStart{0};
+    int mSelectionEnd{0};
 };
 
 }  // namespace Chimera

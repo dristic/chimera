@@ -52,7 +52,7 @@ class DrawCommand {
 
 class Renderer {
  public:
-    Renderer(Adaptor* adaptor);
+    explicit Renderer(Adaptor* adaptor);
 
     Adaptor* getAdaptor();
     void setAdaptor(Adaptor* adaptor);

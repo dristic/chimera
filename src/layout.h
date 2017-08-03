@@ -14,15 +14,15 @@ class Style;
 
 class Layout {
  public:
-    Layout(Style* style);
+    explicit Layout(Style* style);
 
     void layout();
 
     int getBoundingWidth();
     int getBoundingHeight();
 
-    void calculateDimensions(std::vector<Element*>& children);
-    void updateChildren(std::vector<Element*>& children);
+    void calculateDimensions(const std::vector<Element*>& children);
+    void updateChildren(const std::vector<Element*>& children);
 
     Rect rect;
     int intrinsicWidth{0};

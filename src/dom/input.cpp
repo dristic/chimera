@@ -55,6 +55,12 @@ bool Input::handleEvent(Event* event) {
         auto mouseDownEvent = dynamic_cast<MouseDownEvent*>(event);
 
         if (layout.rect.contains(float(mouseDownEvent->x), float(mouseDownEvent->y))) {
+            if (mDocument->focusManager.focusedElement == this)
+            {
+                mSelectionStart = 0;
+                mSelectionEnd = value.length();
+            }
+
             mDocument->focusManager.focusElement(this);
             return false;
         }
@@ -118,6 +124,20 @@ void Input::render(DrawData* data) {
         };
 
         data->addText(position, renderText, style.fontFamily, style.fontSize, layout.rect, style.color);
+
+        // if (mSelectionStart != mSelectionEnd)
+        // {
+        //     float textWidth = data->measureText(value, style.fontFamily, style.fontSize);
+
+        //     Rect highlight{
+        //         layout.rect.x,
+        //         layout.rect.y,
+        //         textWidth,
+        //         layout.rect.height
+        //     };
+
+        //     data->addRectFilled(highlight, Color::fromRGBA(0, 0, 255, 0.5));
+        // }
     }
 
     // Draw input line

@@ -75,11 +75,15 @@ namespace Chimera {
         mRenderer->setAdaptor(mAdaptor.get());
     }
 
-    std::unique_ptr<ImageRef> Context::loadImage(std::string name, int& width, int& height) {
+    std::unique_ptr<ImageRef> Context::loadImage(
+        std::string name, int& width, int& height)
+    {
         return mAdaptor->loadImage(name, width, height);
     }
 
-    unsigned int Context::loadTexture(unsigned int width, unsigned int height, unsigned char* buffer) {
+    unsigned int Context::loadTexture(
+        unsigned int width, unsigned int height, unsigned char* buffer)
+    {
         return mAdaptor->loadTexture(width, height, buffer);
     }
 
