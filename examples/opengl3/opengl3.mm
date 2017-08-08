@@ -4,6 +4,7 @@
 
 #include <string>
 #include <functional>
+#include <chrono>
 
 #include "Chimera/Chimera.h"
 
@@ -82,9 +83,22 @@ class GLFWapplication {
         CHIMERA_UNUSED(window);
         CHIMERA_UNUSED(mods);
 
+        double interval = [NSEvent doubleClickInterval] * 1000; // in ms
+
         if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
         {
             mContext->setMouseDown();
+
+            auto now = std::chrono::system_clock::now();
+            auto delta = std::chrono::duration<double, std::milli>(
+                now - mLastClick).count();
+
+            if (delta < interval)
+            {
+                mContext->setDoubleClick();
+            }
+
+            mLastClick = now;
 
             if (mods == GLFW_MOD_CONTROL)
             {
@@ -129,9 +143,12 @@ class GLFWapplication {
     void operator=(GLFWapplication const&);
 
     static Chimera::Context* mContext;
+    static std::chrono::system_clock::time_point mLastClick;
 };
 
 Chimera::Context* GLFWapplication::mContext{nullptr};
+
+std::chrono::system_clock::time_point GLFWapplication::mLastClick{};
 
 #ifdef _WIN32
 int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {

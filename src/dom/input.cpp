@@ -17,7 +17,8 @@ Input::Input(Document& document)
 Input::~Input() { }
 
 bool Input::handleEvent(Event* event) {
-    if (event->type == EventType::Input) {
+    if (event->type == EventType::Input)
+    {
         if (mDocument->focusManager.focusedElement == this) {
             auto textInputEvent = dynamic_cast<TextInputEvent*>(event);
             value += textInputEvent->value;
@@ -29,7 +30,9 @@ bool Input::handleEvent(Event* event) {
             dispatchEvent.type = EventType::Change;
             dispatch(dynamic_cast<Event*>(&dispatchEvent));
         }
-    } else if (event->type == EventType::Key) {
+    }
+    else if (event->type == EventType::Key)
+    {
         if (mDocument->focusManager.focusedElement == this) {
             auto keyEvent = dynamic_cast<KeyEvent*>(event);
 
@@ -51,23 +54,36 @@ bool Input::handleEvent(Event* event) {
                 break;
             }
         }
-    } else if (event->type == EventType::MouseDown) {
+    }
+    else if (event->type == EventType::MouseDown)
+    {
         auto mouseDownEvent = dynamic_cast<MouseDownEvent*>(event);
 
-        if (layout.rect.contains(float(mouseDownEvent->x), float(mouseDownEvent->y))) {
-            if (mDocument->focusManager.focusedElement == this)
-            {
-                mSelectionStart = 0;
-                mSelectionEnd = value.length();
-            }
-
+        if (layout.rect.contains(float(mouseDownEvent->x), float(mouseDownEvent->y)))
+        {
             mDocument->focusManager.focusElement(this);
             return false;
         }
-    } else if (event->type == EventType::MouseMove) {
+        else
+        {
+            mSelectionStart = mSelectionEnd = 0;
+        }
+    }
+    else if (event->type == EventType::MouseMove)
+    {
         MouseMoveEvent* mouseMoveEvent = dynamic_cast<MouseMoveEvent*>(event);
-        if (layout.rect.contains(float(mouseMoveEvent->x), float(mouseMoveEvent->y))) {
+        if (layout.rect.contains(float(mouseMoveEvent->x), float(mouseMoveEvent->y)))
+        {
             mDocument->setCursorType(CursorType::IBeam);
+        }
+    }
+    else if (event->type == EventType::DoubleClick)
+    {
+        if (mDocument->focusManager.focusedElement == this)
+        {
+            mSelectionStart = 0;
+            mSelectionEnd = value.length();
+            return false;
         }
     }
 
@@ -124,20 +140,6 @@ void Input::render(DrawData* data) {
         };
 
         data->addText(position, renderText, style.fontFamily, style.fontSize, layout.rect, style.color);
-
-        // if (mSelectionStart != mSelectionEnd)
-        // {
-        //     float textWidth = data->measureText(value, style.fontFamily, style.fontSize);
-
-        //     Rect highlight{
-        //         layout.rect.x,
-        //         layout.rect.y,
-        //         textWidth,
-        //         layout.rect.height
-        //     };
-
-        //     data->addRectFilled(highlight, Color::fromRGBA(0, 0, 255, 0.5));
-        // }
     }
 
     // Draw input line
@@ -159,6 +161,31 @@ void Input::render(DrawData* data) {
                 mFrames = 0;
             }
         }
+    }
+
+    // Draw selection box
+    if (mSelectionStart != mSelectionEnd)
+    {
+        float deltaWidth = 0;
+        if (mSelectionStart > 0)
+        {
+            auto prefix = value.substr(0, mSelectionStart);
+            deltaWidth = data->measureText(
+                prefix, style.fontFamily, style.fontSize);
+        }
+
+        auto content = value.substr(mSelectionStart, mSelectionEnd);
+        float contentWidth = data->measureText(
+            content, style.fontFamily, style.fontSize);
+
+        Rect highlight{
+            layout.rect.x + deltaWidth,
+            layout.rect.y + ((layout.rect.height - style.fontSize) / 2),
+            contentWidth,
+            static_cast<float>(style.fontSize)
+        };
+
+        data->addRectFilled(highlight, Color::fromRGBA(255, 255, 255, 0.5));
     }
 }
 

@@ -70,6 +70,13 @@ namespace Chimera {
         }
     }
 
+    void Context::setDoubleClick()
+    {
+        Event event{EventType::DoubleClick};
+
+        document.body->handleEvent(&event);
+    }
+
     void Context::useAdaptor(std::shared_ptr<Adaptor> adaptor) {
         mAdaptor = adaptor;
         mRenderer->setAdaptor(mAdaptor.get());

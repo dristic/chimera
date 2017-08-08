@@ -38,6 +38,8 @@ enum class EventType {
     Change,
     MouseMove,
     MouseDown,
+    Click,
+    DoubleClick,
     Scroll,
     Key,
     Custom

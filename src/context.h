@@ -28,6 +28,7 @@ class Context {
     void setScrollDirection(int direction);
     Vec2 getMousePosition();
     void setMouseDown();
+    void setDoubleClick();
     void useAdaptor(std::shared_ptr<Adaptor> adaptor);
     std::unique_ptr<ImageRef> loadImage(std::string name, int& width, int& height);
     unsigned int loadTexture(unsigned int width, unsigned int height, unsigned char* buffer);
