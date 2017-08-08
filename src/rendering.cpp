@@ -86,8 +86,8 @@ void DrawData::addText(
 
     float xPosition = 0;
 
-    std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> converter{};
-    std::u32string utf32str = converter.from_bytes(text);
+    std::wstring_convert<std::codecvt_utf8<unsigned int>, unsigned int> converter{};
+    auto utf32str = converter.from_bytes(text);
 
     for (auto c : utf32str)
     {
@@ -189,8 +189,8 @@ float DrawData::measureText(const std::string& text, std::string name, int size)
     float scale = (float)size / (float)24;
     float result = 0;
 
-    std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> converter{};
-    std::u32string utf32str = converter.from_bytes(text);
+    std::wstring_convert<std::codecvt_utf8<unsigned int>, unsigned int> converter{};
+    auto utf32str = converter.from_bytes(text);
 
     for (auto &character : utf32str) {
         Character* ch = renderer->getFontManager()->getGlyph(name, character);
