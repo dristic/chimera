@@ -86,7 +86,12 @@ void DrawData::addText(
 
     float xPosition = 0;
 
+#if WIN32
     std::wstring_convert<std::codecvt_utf8<unsigned int>, unsigned int> converter{};
+#else
+    std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> converter{};
+#endif
+
     auto utf32str = converter.from_bytes(text);
 
     for (auto c : utf32str)
@@ -189,7 +194,12 @@ float DrawData::measureText(const std::string& text, std::string name, int size)
     float scale = (float)size / (float)24;
     float result = 0;
 
+#if WIN32
     std::wstring_convert<std::codecvt_utf8<unsigned int>, unsigned int> converter{};
+#else
+    std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> converter{};
+#endif
+
     auto utf32str = converter.from_bytes(text);
 
     for (auto &character : utf32str) {
