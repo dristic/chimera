@@ -2,7 +2,6 @@
 layout: default
 title: Home
 cover: false
-about: 'about.html'
 ---
 
 <header class="main-header {% if page.cover %}" style="background-image: url({{ page.cover }}) {%else%}no-cover{% endif %}">
@@ -19,7 +18,6 @@ about: 'about.html'
             <h1 class="page-title">{{ site.name }}</h1>
             <h2 class="page-description">
                 {% if site.description %} {{ site.description }}. {% endif %}
-                {% if page.about %} <a href='{{ site.baseurl }}{{ page.about }}'> About me </a> {% endif %}
             </h2>
         </div>
     </div>
@@ -38,10 +36,13 @@ about: 'about.html'
 
     <article class="post">
         <header class="post-header">
-            <h2 class="post-title"><a href="{{ post.url }}">{{ post.title }}</a></h2>
+            <h2 class="post-title"><a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a></h2>
         </header>
         <section class="post-excerpt">
-            {{ post.excerpt }} <a class="read-more" href="{{ post.url }}">&raquo;</a>
+            {{ post.excerpt }} <a class="read-more" href="{{ site.baseurl }}{{ post.url }}">&raquo;</a>
+        </section>
+        <section class="post-content">
+            {{ post.content | markdownify }}
         </section>
         <footer class="post-meta">
             {% if site.author %}
@@ -56,23 +57,6 @@ about: 'about.html'
             </time> 
         </footer>
     </article>
-
-    <!-- Capser below -->
-<!--     <article class="{{post_class}}">
-    <header class="post-header">
-        <h2 class="post-title"><a href="{{url}}">{{{title}}}</a></h2>
-    </header>
-    <section class="post-excerpt">
-        <p>{{excerpt words="26"}} <a class="read-more" href="{{url}}">&raquo;</a></p>
-    </section>
-    <footer class="post-meta">
-        {{#if author.image}}<img class="author-thumb" src="{{author.image}}" alt="Author image" nopin="nopin" />{{/if}}
-        {{author}}
-        {{tags prefix=" on "}}
-        <time class="post-date" datetime="{{date format='YYYY-MM-DD'}}">{{date format="DD MMMM YYYY"}}</time>
-    </footer>
-    </article> -->
-    <!--  -->
 
     {% endfor %}
 
