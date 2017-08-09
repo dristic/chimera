@@ -16,15 +16,23 @@ Input::Input(Document& document)
 
 Input::~Input() { }
 
+void Input::attributeChangedCallback(
+        std::string name, std::string oldValue, std::string newValue)
+{
+    CHIMERA_UNUSED(oldValue);
+
+    if (name == "type")
+    {
+        mType = newValue;
+    }
+}
+
 bool Input::handleEvent(Event* event) {
     if (event->type == EventType::Input)
     {
         if (mDocument->focusManager.focusedElement == this) {
             auto textInputEvent = dynamic_cast<TextInputEvent*>(event);
             value += textInputEvent->value;
-
-            // char bullet[] = u8"•";
-            // value += std::string(bullet);
 
             TextInputEvent dispatchEvent{value};
             dispatchEvent.type = EventType::Change;
@@ -90,6 +98,24 @@ bool Input::handleEvent(Event* event) {
     return true;
 }
 
+std::string Input::filterText(std::string value)
+{
+    if (mType == "password")
+    {
+        std::string filtered{""};
+
+        for (auto& c : value)
+        {
+            char bullet[] = u8"•";
+            filtered += std::string(bullet);
+        }
+
+        return filtered;
+    }
+
+    return value;
+}
+
 void Input::render(DrawData* data) {
     style.update(this, mDocument->animationController);
 
@@ -124,7 +150,7 @@ void Input::render(DrawData* data) {
 
     // Draw current text
     if (value != "" || placeholder != "") {
-        auto renderText = value != "" ? value : placeholder;
+        auto renderText = value != "" ? filterText(value) : placeholder;
 
         auto color = value != "" ? style.color : Color::fromRGBA(150, 150, 150, 0.6f);
 
@@ -146,7 +172,8 @@ void Input::render(DrawData* data) {
     if (isFocused) {
         mFrames++;
         if (mFrames < 15) {
-            float textWidth = data->measureText(value, style.fontFamily, style.fontSize);
+            float textWidth = data->measureText(
+                filterText(value), style.fontFamily, style.fontSize);
 
             Rect inputLine{
                 layout.rect.x + textWidth,
@@ -169,12 +196,12 @@ void Input::render(DrawData* data) {
         float deltaWidth = 0;
         if (mSelectionStart > 0)
         {
-            auto prefix = value.substr(0, mSelectionStart);
+            auto prefix = filterText(value).substr(0, mSelectionStart);
             deltaWidth = data->measureText(
                 prefix, style.fontFamily, style.fontSize);
         }
 
-        auto content = value.substr(mSelectionStart, mSelectionEnd);
+        auto content = filterText(value).substr(mSelectionStart, mSelectionEnd);
         float contentWidth = data->measureText(
             content, style.fontFamily, style.fontSize);
 

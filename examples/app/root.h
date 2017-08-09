@@ -178,6 +178,10 @@ public:
                         {"id", "image"}
                     }),
                     Virtual::VElement("input", {{"id", "input-box"}}),
+                    Virtual::VElement("input", {
+                        {"id", "input-box"},
+                        {"type", "password"}
+                    }),
                     Virtual::VElement("button", {{"id", "button"}}, "Accept")
                 }))
         ));
