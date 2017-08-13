@@ -12,7 +12,7 @@ class Input: public Element {
     void attributeChangedCallback(
         std::string name, std::string oldValue, std::string newValue) override;
     bool handleEvent(Event* event) override;
-    std::string filterText(std::string value);
+    std::string filterText(std::string inValue);
     void render(DrawData* data) override;
 
     std::string value;
