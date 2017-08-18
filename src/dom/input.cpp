@@ -98,13 +98,13 @@ bool Input::handleEvent(Event* event) {
     return true;
 }
 
-std::string Input::filterText(std::string value)
+std::string Input::filterText(std::string inValue)
 {
     if (mType == "password")
     {
         std::string filtered{""};
 
-        for (auto& c : value)
+        for (size_t i = 0; i < inValue.length(); i++)
         {
             char bullet[] = u8"•";
             filtered += std::string(bullet);
@@ -113,7 +113,7 @@ std::string Input::filterText(std::string value)
         return filtered;
     }
 
-    return value;
+    return inValue;
 }
 
 void Input::render(DrawData* data) {
