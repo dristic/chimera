@@ -7,6 +7,7 @@
 #include <utility>
 
 #include "src/context.h"
+#include "src/dom/body.h"
 #include "src/dom/div.h"
 #include "src/dom/input.h"
 
@@ -14,7 +15,7 @@ namespace Chimera {
 
 Document::Document(Context& context)
     : body{nullptr}
-    , styleManager{}
+    , styleManager{body}
     , focusManager{}
     , animationController{}
     , mElements{}
@@ -22,12 +23,15 @@ Document::Document(Context& context)
     , mCursorType{CursorType::Arrow}
 {
     // Default element set
+    registerElement<Body>("body");
     registerElement<Div>("div");
     registerElement<Img>("img");
     registerElement<Input>("input");
     registerElement<Button>("button");
 
-    body = createElement<Div>();
+    body = createElement<Body>();
+
+    styleManager.setGlobalRoot(body);
 }
 
 Document::~Document() { }

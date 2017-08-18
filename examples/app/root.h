@@ -125,6 +125,10 @@ public:
         int width = document.getWidth();
         int height = document.getHeight();
 
+        document.styleManager.addRule("body", {
+            {StyleProp::Color, Color::fromRGBA(255, 255, 255, 1)}
+        });
+
         document.styleManager.addRule("#background", {
             {StyleProp::Width, width},
             {StyleProp::Height, height},
@@ -133,7 +137,6 @@ public:
         });
 
         document.styleManager.addRule("#title", {
-            {StyleProp::Color, Color::fromRGBA(255, 255, 255, 1)},
             {StyleProp::Margin, LayoutProperty({10, 10, 10, 10})}
         });
 
@@ -146,14 +149,12 @@ public:
         document.styleManager.addRule("#input-box", {
             {StyleProp::Width, 380},
             {StyleProp::Height, 24},
-            {StyleProp::Color, Color::fromRGBA(255, 255, 255, 1)},
             {StyleProp::FontSize, 18},
             {StyleProp::BackgroundColor, Color::fromRGBA(15, 40, 67, 1)},
             {StyleProp::Margin, LayoutProperty({10, 10, 10, 10})}
         });
 
         document.styleManager.addRule("#button", {
-            {StyleProp::Color, Color::fromRGBA(255, 255, 255, 1)},
             {StyleProp::FontSize, 18},
             {StyleProp::BackgroundColor, Color::fromRGBA(15, 40, 67, 1)},
             {StyleProp::Padding, LayoutProperty({10, 10, 10, 10})},

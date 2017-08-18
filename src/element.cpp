@@ -28,6 +28,20 @@ void Element::append(Element* element) {
     mChildren.push_back(element);
 
     mDocument->styleManager.applyRules(element);
+
+    std::stack<Element*> stack;
+    stack.push(element);
+
+    while (!stack.empty()) {
+        Element* el = stack.top();
+        stack.pop();
+
+        for(auto& child : el->getChildren()) {
+            stack.push(child);
+        }
+
+        style.inheritValues(el->style);
+    }
 }
 
 void Element::remove(Element* element) {

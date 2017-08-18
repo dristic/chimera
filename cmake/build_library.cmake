@@ -37,6 +37,8 @@ set(
     "src/rendering.cpp"
     "src/rendering.h"
 
+    "src/dom/body.cpp"
+    "src/dom/body.h"
     "src/dom/div.cpp"
     "src/dom/div.h"
     "src/dom/input.cpp"

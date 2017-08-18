@@ -110,6 +110,12 @@ class Style {
  public:
     static const int AUTO = -1;
 
+    static const char SET_COLOR = 1;
+
+    unsigned char setMap{0};
+
+    void inheritValues(Style& other);
+
     // Layout
     int width = 0;
     NumericType widthType{NumericType::Pixels};
@@ -302,7 +308,7 @@ private:
 
 class StyleManager {
  public:
-    StyleManager();
+    explicit StyleManager(Element* root);
     ~StyleManager();
 
     void parseSelector(std::string selector, StyleRule& rule);
@@ -311,10 +317,13 @@ class StyleManager {
     void addRule(std::string selector, std::vector<StyleAttribute> attributes);
     void applyRules(Element* root);
 
+    void setGlobalRoot(Element* element);
+
  private:
     PseudoClass getPseudoFromString(std::string value);
 
-    std::vector<StyleRule> mRules;
+    Element* mGlobalRoot{nullptr};
+    std::vector<StyleRule> mRules{};
 };
 
 }  // namespace Chimera

@@ -9,6 +9,16 @@
 
 namespace Chimera {
 
+void Style::inheritValues(Style& other)
+{
+    if ((setMap & SET_COLOR) == SET_COLOR
+            && (other.setMap & SET_COLOR) != SET_COLOR)
+    {
+        other.color = color;
+        other.setMap |= SET_COLOR;
+    }
+}
+
 void Style::update(Element* element, AnimationController& controller) {
     // Check for changed animation
     auto result = std::find_if(animations.begin(), animations.end(), [this](Animation& anim) {
@@ -79,6 +89,7 @@ void StyleRule::addValue(StyleProp property, Color value) {
                 value,
                 [](Style& style, Color& color) {
                     style.color = color;
+                    style.setMap |= Style::SET_COLOR;
                 })
         };
 
@@ -340,14 +351,20 @@ bool StyleRule::matches(Element* element) {
     return matches;
 }
 
-StyleManager::StyleManager()
+StyleManager::StyleManager(Element* root)
     : mRules{}
+    , mGlobalRoot{root}
     { }
 
 StyleManager::~StyleManager() { }
 
 void StyleManager::addRule(StyleRule&& rule) {
     mRules.push_back(std::move(rule));
+
+    if (mGlobalRoot)
+    {
+        applyRules(mGlobalRoot);
+    }
 }
 
 PseudoClass StyleManager::getPseudoFromString(std::string value)
@@ -481,6 +498,11 @@ void StyleManager::applyRules(Element* root) {
             stack.push(child);
         }
     }
+}
+
+void StyleManager::setGlobalRoot(Element* element)
+{
+    mGlobalRoot = element;
 }
 
 }  // namespace Chimera
