@@ -17,6 +17,13 @@ void Style::inheritValues(Style& other)
         other.color = color;
         other.setMap |= SET_COLOR;
     }
+
+    if ((setMap & SET_FONT_FAMILY) == SET_FONT_FAMILY
+            && (other.setMap & SET_FONT_FAMILY) != SET_FONT_FAMILY)
+    {
+        other.fontFamily = fontFamily;
+        other.setMap |= SET_FONT_FAMILY;
+    }
 }
 
 void Style::update(Element* element, AnimationController& controller) {
@@ -319,6 +326,19 @@ void StyleRule::addValue(StyleProp property, std::string value) {
         mProperties[property] = std::move(styleValue);
         break;
     }
+    case StyleProp::FontFamily:
+    {
+        std::unique_ptr<StyleValueInternal> styleValue{
+            new StyleValue<std::string>(
+                value,
+                [](Style& style, std::string value) {
+                    style.fontFamily = value;
+                })
+        };
+
+        mProperties[property] = std::move(styleValue);
+        break;
+    }
     default: break;
     }
 }
@@ -446,9 +466,8 @@ void StyleManager::addRule(std::string selector, std::vector<StyleAttribute> att
                 rule.addValue(attribute.getProp(), attribute.asInt());
                 break;
             case StyleProp::BackgroundImage:
-                rule.addValue(attribute.getProp(), attribute.asString());
-                break;
             case StyleProp::AnimationName:
+            case StyleProp::FontFamily:
                 rule.addValue(attribute.getProp(), attribute.asString());
                 break;
             case StyleProp::FlexDirection:
@@ -471,7 +490,7 @@ void StyleManager::addRule(std::string selector, std::vector<StyleAttribute> att
                 rule.addValue(attribute.getProp(), attribute.asPosition());
                 break;
             default:
-                CHIMERA_DEBUG(printf("Unrecognized style attribute property."));
+                CHIMERA_DEBUG(printf("Unrecognized style attribute property.\n"));
                 break;
         }
     }

@@ -126,7 +126,8 @@ public:
         int height = document.getHeight();
 
         document.styleManager.addRule("body", {
-            {StyleProp::Color, Color::fromRGBA(255, 255, 255, 1)}
+            {StyleProp::Color, Color::fromRGBA(255, 255, 255, 1)},
+            {StyleProp::FontFamily, "LucidaGrande"}
         });
 
         document.styleManager.addRule("#background", {
@@ -149,6 +150,12 @@ public:
         document.styleManager.addRule("#input-box", {
             {StyleProp::Width, 380},
             {StyleProp::Height, 24},
+            {StyleProp::FontSize, 18},
+            {StyleProp::BackgroundColor, Color::fromRGBA(15, 40, 67, 1)},
+            {StyleProp::Margin, LayoutProperty({10, 10, 10, 10})}
+        });
+
+        document.styleManager.addRule("#input-checkbox", {
             {StyleProp::FontSize, 18},
             {StyleProp::BackgroundColor, Color::fromRGBA(15, 40, 67, 1)},
             {StyleProp::Margin, LayoutProperty({10, 10, 10, 10})}
@@ -182,6 +189,10 @@ public:
                     Virtual::VElement("input", {
                         {"id", "input-box"},
                         {"type", "password"}
+                    }),
+                    Virtual::VElement("input", {
+                        {"id", "input-checkbox"},
+                        {"type", "checkbox"}
                     }),
                     Virtual::VElement("button", {{"id", "button"}}, "Accept")
                 }))

@@ -8,6 +8,10 @@
 
 namespace Chimera {
 
+const char ICN_BULLET[] = "\u2022";
+const char ICN_CIRCLE[] = "\u25cf";
+const char ICN_CHECK[] = "\u2713";
+
 Input::Input(Document& document)
     : Element("input", document)
     , value{""}
@@ -106,8 +110,7 @@ std::string Input::filterText(std::string inValue)
 
         for (size_t i = 0; i < inValue.length(); i++)
         {
-            char bullet[] = u8"•";
-            filtered += std::string(bullet);
+            filtered += std::string(ICN_CIRCLE);
         }
 
         return filtered;
@@ -116,7 +119,8 @@ std::string Input::filterText(std::string inValue)
     return inValue;
 }
 
-void Input::render(DrawData* data) {
+void Input::render(DrawData* data)
+{
     style.update(this, mDocument->animationController);
 
     if (layout.intrinsicHeight < style.fontSize)
@@ -146,15 +150,31 @@ void Input::render(DrawData* data) {
     // Draw normal background
     data->addRectFilled(layout.rect, style.backgroundColor);
 
+    if (mType == "text" || mType == "password")
+    {
+        renderAsText(data);
+    }
+    else if (mType == "checkbox")
+    {
+        renderAsCheckbox(data);
+    }
+}
+
+void Input::renderAsText(DrawData* data)
+{
     bool isFocused = mDocument->focusManager.focusedElement == this;
 
+    auto renderText = value != "" ?
+        filterText(value) : placeholder;
+    auto fontFamily = (value != "" && mType == "password") ?
+        "system" : style.fontFamily;
+    float textWidth = data->measureText(
+        renderText, fontFamily, style.fontSize);
+
     // Draw current text
-    if (value != "" || placeholder != "") {
-        auto renderText = value != "" ? filterText(value) : placeholder;
-
-        auto color = value != "" ? style.color : Color::fromRGBA(150, 150, 150, 0.6f);
-
-        float textWidth = data->measureText(renderText, style.fontFamily, style.fontSize);
+    if (renderText != "") {
+        auto color = value != "" ?
+            style.color : Color::fromRGBA(150, 150, 150, 0.6f);
         float pad = textWidth > layout.rect.width ?
             layout.rect.width - textWidth : 0;
 
@@ -165,16 +185,19 @@ void Input::render(DrawData* data) {
             layout.rect.height
         };
 
-        data->addText(position, renderText, style.fontFamily, style.fontSize, layout.rect, style.color);
+        data->addText(
+            position,
+            renderText,
+            fontFamily,
+            style.fontSize,
+            layout.rect,
+            color);
     }
 
     // Draw input line
     if (isFocused) {
         mFrames++;
         if (mFrames < 15) {
-            float textWidth = data->measureText(
-                filterText(value), style.fontFamily, style.fontSize);
-
             Rect inputLine{
                 layout.rect.x + textWidth,
                 layout.rect.y + ((layout.rect.height - style.fontSize) / 2),
@@ -213,6 +236,32 @@ void Input::render(DrawData* data) {
         };
 
         data->addRectFilled(highlight, Color::fromRGBA(255, 255, 255, 0.5));
+    }
+}
+
+void Input::renderAsCheckbox(DrawData* data)
+{
+    bool isFocused = mDocument->focusManager.focusedElement == this;
+
+    auto renderText = std::string(ICN_CHECK);
+    float textWidth = data->measureText(
+        renderText, "system", style.fontSize);
+
+    if (renderText != "") {
+        Rect position{
+            layout.rect.x,
+            layout.rect.y + ((layout.rect.height - style.fontSize) / 2),
+            layout.rect.width,
+            layout.rect.height
+        };
+
+        data->addText(
+            position,
+            renderText,
+            "system",
+            style.fontSize,
+            layout.rect,
+            style.color);
     }
 }
 

@@ -19,6 +19,9 @@ class Input: public Element {
     std::string placeholder;
 
  private:
+    void renderAsText(DrawData* data);
+    void renderAsCheckbox(DrawData* data);
+
     std::string mType{"text"};
     int mFrames;
     int mSelectionStart{0};

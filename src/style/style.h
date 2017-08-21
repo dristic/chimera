@@ -29,6 +29,7 @@ enum class StyleProp {
     TextAlign,
     TextDecoration,
     FontSize,
+    FontFamily,
     AlignItems,
     JustifyContent,
     FlexDirection,
@@ -111,6 +112,7 @@ class Style {
     static const int AUTO = -1;
 
     static const char SET_COLOR = 1;
+    static const char SET_FONT_FAMILY = 2;
 
     unsigned char setMap{0};
 
