@@ -74,6 +74,12 @@ bool Input::handleEvent(Event* event) {
         if (layout.rect.contains(float(mouseDownEvent->x), float(mouseDownEvent->y)))
         {
             mDocument->focusManager.focusElement(this);
+
+            if (mType == "checkbox")
+            {
+                value = value == "checked" ? "" : "checked";
+            }
+
             return false;
         }
         else
@@ -86,7 +92,10 @@ bool Input::handleEvent(Event* event) {
         MouseMoveEvent* mouseMoveEvent = dynamic_cast<MouseMoveEvent*>(event);
         if (layout.rect.contains(float(mouseMoveEvent->x), float(mouseMoveEvent->y)))
         {
-            mDocument->setCursorType(CursorType::IBeam);
+            if (mType == "text" || mType == "password")
+            {
+                mDocument->setCursorType(CursorType::IBeam);
+            }
         }
     }
     else if (event->type == EventType::DoubleClick)
@@ -126,6 +135,17 @@ void Input::render(DrawData* data)
     if (layout.intrinsicHeight < style.fontSize)
     {
         layout.intrinsicHeight = style.fontSize;
+    }
+
+    float defaultCharacter = data->measureText("W", "system", style.fontSize);
+
+    if (mType == "text" || mType == "password")
+    {
+        layout.intrinsicWidth = defaultCharacter * 20; // default "size"
+    }
+    else if (mType == "checkbox")
+    {
+        layout.intrinsicWidth = defaultCharacter;
     }
 
     // Do layout
@@ -243,7 +263,7 @@ void Input::renderAsCheckbox(DrawData* data)
 {
     bool isFocused = mDocument->focusManager.focusedElement == this;
 
-    auto renderText = std::string(ICN_CHECK);
+    auto renderText = value == "checked" ? std::string(ICN_CHECK) : "";
     float textWidth = data->measureText(
         renderText, "system", style.fontSize);
 
