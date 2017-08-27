@@ -275,6 +275,9 @@ void Input::renderAsCheckbox(DrawData* data)
             layout.rect.height
         };
 
+        // Draw normal background
+        data->addRectFilled(layout.rect, Color::fromRGBA(255, 255, 255, 0.1));
+
         data->addText(
             position,
             renderText,

@@ -48,16 +48,7 @@ class Element {
         CHIMERA_UNUSED(newValue);
     };
 
-    // Declarative methods
-    Element* children(std::vector<Element*> children) {
-        mChildren.insert(mChildren.end(), children.begin(), children.end());
-
-        return this;
-    }
-    Element* onEvent(EventType type, EventCallback func) {
-        on(type, std::forward<EventCallback>(func));
-        return this;
-    }
+    std::string toHTML();
 
     Element* getElementById(std::string query) {
         std::stack<Element*> stack;
@@ -119,15 +110,6 @@ class Img: public Element {
  private:
     std::string mSrc;
     std::unique_ptr<ImageRef> mImageRef;
-};
-
-class Button: public Element {
- public:
-    explicit Button(Document& document);
-    ~Button();
-
-    bool handleEvent(Event* event) override;
-    void render(DrawData* data) override;
 };
 
 }  // namespace Chimera

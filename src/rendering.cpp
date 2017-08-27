@@ -204,7 +204,11 @@ float DrawData::measureText(const std::string& text, std::string name, int size)
 
     for (auto &character : utf32str) {
         Character* ch = renderer->getFontManager()->getGlyph(name, character);
-        result += (ch->advance >> 6) * scale;
+
+        if (ch)
+        {
+            result += (ch->advance >> 6) * scale;
+        }
     }
 
     return result;

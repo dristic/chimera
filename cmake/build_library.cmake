@@ -39,6 +39,8 @@ set(
 
     "src/dom/body.cpp"
     "src/dom/body.h"
+    "src/dom/button.cpp"
+    "src/dom/button.h"
     "src/dom/div.cpp"
     "src/dom/div.h"
     "src/dom/input.cpp"
