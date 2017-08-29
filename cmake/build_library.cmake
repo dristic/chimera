@@ -43,6 +43,8 @@ set(
     "src/dom/button.h"
     "src/dom/div.cpp"
     "src/dom/div.h"
+    "src/dom/img.cpp"
+    "src/dom/img.h"
     "src/dom/input.cpp"
     "src/dom/input.h"
 

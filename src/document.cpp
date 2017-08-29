@@ -10,6 +10,7 @@
 #include "src/dom/body.h"
 #include "src/dom/button.h"
 #include "src/dom/div.h"
+#include "src/dom/img.h"
 #include "src/dom/input.h"
 
 namespace Chimera {

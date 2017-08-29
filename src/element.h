@@ -97,21 +97,6 @@ class Element {
     std::unique_ptr<ImageRef> mBackgroundImage;
 };
 
-class Img: public Element {
- public:
-    explicit Img(Document& document);
-    ~Img();
-
-    void render(DrawData* data);
-
-    std::string const& getSrc() const { return mSrc; }
-    void setSrc(std::string const& newSrc);
-
- private:
-    std::string mSrc;
-    std::unique_ptr<ImageRef> mImageRef;
-};
-
 }  // namespace Chimera
 
 #endif  // SRC_ELEMENT_H_

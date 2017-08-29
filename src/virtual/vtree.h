@@ -9,6 +9,7 @@
 
 #include "src/core.h"
 #include "src/element.h"
+#include "src/dom/img.h"
 #include "src/document.h"
 
 namespace Chimera {
