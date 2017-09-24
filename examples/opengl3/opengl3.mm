@@ -135,6 +135,11 @@ class GLFWapplication {
         if (key == GLFW_KEY_BACKSPACE && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
             mContext->setKeyPress(Chimera::KeyType::Backspace);
         }
+
+        if (key == GLFW_KEY_TAB && action == GLFW_PRESS)
+        {
+            mContext->setKeyPress(Chimera::KeyType::Tab);
+        }
     }
 
  private:

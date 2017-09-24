@@ -14,6 +14,35 @@ Body::Body(Document& document)
 Body::~Body() { }
 
 bool Body::handleEvent(Event* event) {
+    if (event->type == EventType::Key)
+    {
+        auto keyEvent = dynamic_cast<KeyEvent*>(event);
+
+        if (keyEvent->key == KeyType::Tab)
+        {
+            std::stack<Element*> stack;
+
+            stack.push(this);
+
+            while (!stack.empty()) {
+                Element* el = stack.top();
+                stack.pop();
+
+                if (el->tagName == "input")
+                {
+                    mDocument->focusManager.focusElement(el);
+                    break;
+                }
+
+                auto children = el->getChildren();
+                for (auto it = children.rbegin(); it != children.rend(); ++it)
+                {
+                    stack.push(*it);
+                }
+            }
+        }
+    }
+
     if (!Element::handleEvent(event)) {
         return false;
     }

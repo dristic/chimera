@@ -124,6 +124,33 @@ static inline VirtualElement VElement(
     return element;
 }
 
+static inline VirtualElement V(
+    std::string name,
+    std::vector<Attribute> attributes)
+{
+    return {name, attributes};
+}
+
+static inline VirtualElement V(
+    std::string name,
+    std::vector<Attribute> attributes,
+    std::string textContent)
+{
+    VirtualElement element{name, attributes};
+    element.textContent = textContent;
+    return element;
+}
+
+static inline VirtualElement V(
+    std::string name,
+    std::vector<Attribute> attributes,
+    std::vector<VirtualElement> children)
+{
+    VirtualElement element{name, attributes};
+    element.children = children;
+    return element;
+}
+
 static inline Element* CreateTree(Document& document, VirtualElement element)
 {
     return element.create(document);

@@ -109,7 +109,8 @@ class TextInputEvent: public Event {
 enum KeyType {
     Backspace,
     Enter,
-    Spacebar
+    Spacebar,
+    Tab
 };
 
 class KeyEvent: public Event {
