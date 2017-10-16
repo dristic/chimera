@@ -372,8 +372,8 @@ bool StyleRule::matches(Element* element) {
 }
 
 StyleManager::StyleManager(Element* root)
-    : mRules{}
-    , mGlobalRoot{root}
+    : mGlobalRoot{root}
+    , mRules{}
     { }
 
 StyleManager::~StyleManager() { }

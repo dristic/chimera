@@ -8,7 +8,7 @@
 
 namespace Chimera {
 
-const char ICN_BULLET[] = "\u2022";
+// const char ICN_BULLET[] = "\u2022";
 const char ICN_CIRCLE[] = "\u25cf";
 const char ICN_CHECK[] = "\u2713";
 
@@ -261,11 +261,11 @@ void Input::renderAsText(DrawData* data)
 
 void Input::renderAsCheckbox(DrawData* data)
 {
-    bool isFocused = mDocument->focusManager.focusedElement == this;
+    // bool isFocused = mDocument->focusManager.focusedElement == this;
 
     auto renderText = value == "checked" ? std::string(ICN_CHECK) : "";
-    float textWidth = data->measureText(
-        renderText, "system", style.fontSize);
+    // float textWidth = data->measureText(
+    //     renderText, "system", style.fontSize);
 
     if (renderText != "") {
         Rect position{

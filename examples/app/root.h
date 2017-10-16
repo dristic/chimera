@@ -5,115 +5,30 @@
 
 #include <Chimera/Chimera.h>
 
-class CustomComponent : public Chimera::Element {
-public:
-    CustomComponent(Chimera::Document& document)
-        : Chimera::Element("heading", document)
+#include "src/dom/div.h"
+
+#include <string>
+#include <algorithm>
+
+#include "absl/strings/substitute.h"
+#include "gumbo.h"
+
+std::string trim(const std::string& str)
+{
+    std::size_t first = str.find_first_not_of(' ');
+    if (std::string::npos == first)
     {
-        addStyles(document);
-        createTree(document);
+        return str;
     }
-
-    void attributeChangedCallback(
-        std::string name, std::string oldValue, std::string newValue) override
-    {
-        CHIMERA_UNUSED(oldValue);
-
-        if (name == "size")
-        {
-            mSize = newValue;
-
-            auto element = getElementById("user-icon");
-            element->className = mSize;
-
-            element = getElementById("username");
-            element->className = mSize;
-        }
-
-        if (name == "name")
-        {
-            auto element = getElementById("username");
-            element->textContent = newValue;
-        }
-
-        if (name == "status")
-        {
-            auto element = getElementById("status");
-            element->textContent = newValue;
-        }
-    }
-
-    void addStyles(Chimera::Document& document)
-    {
-        using namespace Chimera;
-
-        document.styleManager.addRule("#heading", {
-            {StyleProp::Margin, LayoutProperty({5, 5, 5, 5})}
-        });
-
-        document.styleManager.addRule("#username", {
-            {StyleProp::Margin, LayoutProperty({5, 5, 5, 0})},
-            {StyleProp::Color, Color::fromRGBA(255, 255, 255, 1)},
-            {StyleProp::FontSize, 24}
-        });
-
-        document.styleManager.addRule("#username.small", {
-            {StyleProp::FontSize, 18}
-        });
-
-        document.styleManager.addRule("#status", {
-            {StyleProp::Margin, LayoutProperty({2, 5, 5, 5})},
-            {StyleProp::Color, Color::fromRGBA(150, 150, 150, 1)},
-            {StyleProp::FontSize, 16}
-        });
-
-        document.styleManager.addRule("#user-icon", {
-            {StyleProp::Width, 50},
-            {StyleProp::Height, 50},
-            {StyleProp::Margin, LayoutProperty({10, 10, 10, 10})}
-        });
-
-        document.styleManager.addRule("#user-icon.small", {
-            {StyleProp::Width, 30},
-            {StyleProp::Height, 30}
-        });
-
-        document.styleManager.addRule("#heading-right", {
-            {StyleProp::FlexDirection, Chimera::Direction::Column}
-        });
-    }
-
-    void createTree(Chimera::Document& document)
-    {
-        using namespace Chimera;
-
-        append(Virtual::CreateTree(document,
-            Virtual::VElement("div", {{"id", "heading"}},
-                std::vector<Virtual::VirtualElement>({
-                    Virtual::VElement("img", {
-                        {"src", "assets/logo.png"},
-                        {"id", "user-icon"}
-                    }),
-                    Virtual::VElement("div", {{"id", "heading-right"}},
-                        std::vector<Virtual::VirtualElement>({
-                            Virtual::VElement("div", {{"id", "username"}}, "Username"),
-                            Virtual::VElement("div", {{"id", "status"}}, "Online")
-                        }))
-                }))
-        ));
-    }
-
- private:
-    std::string mSize{"large"};
-};
+    std::size_t last = str.find_last_not_of(' ');
+    return str.substr(first, (last - first + 1));
+}
 
 class AppElement : public Chimera::Element {
 public:
     AppElement(Chimera::Document& document)
         : Chimera::Element("app-element", document)
     {
-        document.registerElement<CustomComponent>("custom-component");
-
         addStyles(document);
         createTree(document);
     }
@@ -173,34 +88,149 @@ public:
         });
     }
 
+    void onClick(Chimera::Event* event)
+    {
+        CHIMERA_UNUSED(event);
+        printf("Got event!\n");
+    }
+
+    #define CHIMERA_REGISTER_EVENT(c, n) \
+        if (name == #n) \
+        { return std::bind(&c::n, this, std::placeholders::_1); }
+
+    std::function<void(Chimera::Event*)> connect(std::string name)
+    {
+        CHIMERA_REGISTER_EVENT(AppElement, onClick)
+
+        return [](Chimera::Event*) {};
+    }
+
+    Chimera::Virtual::VirtualElement createNodes(GumboNode* node) {
+        using namespace Chimera::Virtual;
+
+        VirtualElement element = V("div", {});
+
+        if (node->v.element.original_tag.data)
+        {
+            std::string elementText{node->v.element.original_tag.data};
+            std::size_t spaceIndex = elementText.find_first_of(" ");
+            std::size_t caretIndex = elementText.find_first_of(">");
+            std::string tagName = elementText.substr(
+                1, std::min(spaceIndex, caretIndex) - 1);
+            std::cout << tagName << std::endl;
+        }
+
+        GumboAttribute* id{nullptr};
+        GumboAttribute* src{nullptr};
+        if (node->v.element.tag == GUMBO_TAG_DIV) {
+            id = gumbo_get_attribute(&node->v.element.attributes, "id");
+
+            element.attributes["id"] = {"id", id->value};
+        }
+
+        if (node->v.element.tag == GUMBO_TAG_IMG) {
+            id = gumbo_get_attribute(&node->v.element.attributes, "id");
+            src = gumbo_get_attribute(&node->v.element.attributes, "src");
+
+            element = V("img", {
+                {"id", id->value},
+                {"src", src->value}
+            });
+        }
+
+        GumboVector* children = &node->v.element.children;
+        for (unsigned int i = 0; i < children->length; ++i) {
+            GumboNode* childNode = static_cast<GumboNode*>(children->data[i]);
+            if (childNode->type == GUMBO_NODE_TEXT)
+            {
+                std::string str{childNode->v.text.text};
+                str.erase(std::remove(str.begin(), str.end(), '\n'), str.end());
+                element.textContent = trim(str);
+            }
+            else if (childNode->type == GUMBO_NODE_ELEMENT)
+            {
+                if (childNode->v.element.tag != GUMBO_TAG_STYLE)
+                {
+                    element.children.push_back(createNodes(childNode));
+                }
+            }
+        }
+
+        return element;
+    }
+
     void createTree(Chimera::Document& document)
     {
-        using namespace Chimera;
+        using namespace Chimera::Virtual;
 
-        append(Virtual::CreateTree(document,
-            Virtual::VElement("div", {{"id", "background"}},
-                std::vector<Virtual::VirtualElement>({
-                    Virtual::VElement("div", {{"id", "title"}}, "Hello World"),
-                    Virtual::VElement("img", {
+        std::string title = "Hello world!";
+
+        auto source = absl::Substitute(R"html(
+            <div id="background">
+                <style>
+                    body {
+                        color: rgba(255, 255, 255, 1);
+                        font-family: "LucidaGrande";
+                    }
+
+                    #background {
+                        width: 1280;
+                        height: 720;
+                    }
+                </style>
+
+                <div id="title">$0</div>
+
+                <my-custom-element>
+                    Hello
+                </my-custom-element>
+
+                <img src="assets/logo.png" id="image" />
+                <input id="input-box" type="password" />
+                <input id="input-checkbox" type="checkbox" />
+                <button id="button" onMouseDown="onClick">
+                    Accept
+                </button>
+            </div>
+        )html", title);
+
+        CHIMERA_UNUSED(source);
+
+        // GumboOutput* output = gumbo_parse(source.c_str());
+
+        // auto virtualRoot = createNodes(output->root);
+
+        // append(CreateTree(document, virtualRoot));
+
+        // gumbo_destroy_output(&kGumboDefaultOptions, output);
+
+        append(CreateTree(document,
+            V("div", {{"id", "background"}},
+                std::vector<VirtualElement>({
+                    V("div", {{"id", "title"}}, "Hello World"),
+                    V("img", {
                         {"src", "assets/logo.png"},
                         {"id", "image"}
                     }),
-                    Virtual::VElement("input", {{"id", "input-box"}}),
-                    Virtual::VElement("input", {
+                    V("input", {{"id", "input-box"}}),
+                    V("input", {
                         {"id", "input-box"},
                         {"type", "password"}
                     }),
-                    Virtual::VElement("input", {
+                    V("input", {
                         {"id", "input-checkbox"},
                         {"type", "checkbox"}
                     }),
-                    Virtual::VElement("button", {{"id", "button"}}, "Accept")
+                    V("button", {
+                        {"id", "button"},
+                        {"onMouseDown", connect("onClick")}
+                    }, "Accept")
                 }))
         ));
     }
 
-private:
-    bool loaded{false};
+// private:
+//     bool loaded{false};
 };
 
 #endif  // EXAMPLES_APP_ROOT_H_

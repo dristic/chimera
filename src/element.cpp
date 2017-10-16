@@ -17,6 +17,7 @@ Element::Element(std::string name, Document& document)
     , layout{&style}
     , tagName{name}
     , textContent{""}
+    , dirty{3}
     , mEventObservers{}
     , mChildren{}
     , mPseudoClass{PseudoClass::None}
@@ -42,6 +43,8 @@ void Element::append(Element* element) {
 
         style.inheritValues(el->style);
     }
+
+    element->attachedCallback(this);
 }
 
 void Element::remove(Element* element) {

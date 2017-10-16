@@ -1,0 +1,27 @@
+filegroup(
+    name = "assets",
+    srcs = glob([
+        "assets/bg.png",
+        "assets/*.ttf"
+    ]),
+)
+
+cc_binary(
+    name = "chimera-example",
+    srcs = [
+        "opengl3/opengl3.cpp",
+        "opengl3/opengl3_adaptor.cpp",
+        "opengl3/opengl3_adaptor.h",
+        "app/root.h"
+    ],
+    copts = ["-std=c++14"],
+    linkopts = ["-framework Cocoa"],
+    data = ["//examples:assets"],
+    deps = [
+        "//include:chimera-include",
+        "//src:chimera",
+        "//vendor:lodepng",
+        "@com_google_absl//absl/strings",
+        "@gumbo//:gumbo",
+    ]
+)

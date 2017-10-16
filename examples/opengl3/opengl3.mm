@@ -9,7 +9,7 @@
 #include "Chimera/Chimera.h"
 
 #include "src/adaptor/opengl3.h"
-#include "app/root.h"
+#include "examples/app/root.h"
 
 #ifdef _WIN32
     #include <Windows.h>

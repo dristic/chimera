@@ -63,44 +63,50 @@ void Div::render(DrawData* data) {
     scissor.height = layout.rect.height;
 
     // Rendering
-    if (style.backgroundImage != "") {
-        if (mBackgroundImage == nullptr) {
-            mBackgroundImage = mDocument->loadImage(style.backgroundImage,
-                style.width, style.height);
-        }
-        data->addImage(layout.rect, mBackgroundImage->textureId);
-    } else {
-        data->addRectFilled(layout.rect, style.backgroundColor);
-    }
-
-#define CHIMERA_DEBUG_RENDER 0
-#if CHIMERA_DEBUG_RENDER
-    if (style.backgroundColor.a == 0)
+    if (dirty > 0)
     {
-        style.backgroundColor = Color::fromRGBA(rand() % 255, rand() % 255, rand() % 255, 1);
-    }
-#endif
+        if (style.backgroundImage != "") {
+            if (mBackgroundImage == nullptr) {
+                mBackgroundImage = mDocument->loadImage(style.backgroundImage,
+                    style.width, style.height);
+            }
 
-    if (textContent != "") {
-        Rect position{
-            layout.rect.x + style.padding.left,
-            layout.rect.y + style.padding.top,
-            layout.rect.width,
-            layout.rect.height
-        };
-
-        if (style.textAlign == Align::Center) {
-            position.x = layout.rect.x + (layout.rect.width / 2) - (textWidth / 2);
+            data->addImage(layout.rect, mBackgroundImage->textureId);
+        } else {
+            data->addRectFilled(layout.rect, style.backgroundColor);
         }
 
-        auto newColor = style.color;
-        newColor.a *= style.opacity;
-        data->addText(position, textContent, style.fontFamily, style.fontSize, scissor, newColor);
-
-        if (style.textDecoration == TextDecoration::Underline) {
-            Rect decorationRect{position.x, position.y + style.fontSize, textWidth, 2};
-            data->addRectFilled(decorationRect, style.color, scissor);
+    #define CHIMERA_DEBUG_RENDER 0
+    #if CHIMERA_DEBUG_RENDER
+        if (style.backgroundColor.a == 0)
+        {
+            style.backgroundColor = Color::fromRGBA(rand() % 255, rand() % 255, rand() % 255, 1);
         }
+    #endif
+
+        if (textContent != "") {
+            Rect position{
+                layout.rect.x + style.padding.left,
+                layout.rect.y + style.padding.top,
+                layout.rect.width,
+                layout.rect.height
+            };
+
+            if (style.textAlign == Align::Center) {
+                position.x = layout.rect.x + (layout.rect.width / 2) - (textWidth / 2);
+            }
+
+            auto newColor = style.color;
+            newColor.a *= style.opacity;
+            data->addText(position, textContent, style.fontFamily, style.fontSize, scissor, newColor);
+
+            if (style.textDecoration == TextDecoration::Underline) {
+                Rect decorationRect{position.x, position.y + style.fontSize, textWidth, 2};
+                data->addRectFilled(decorationRect, style.color, scissor);
+            }
+        }
+
+        // dirty--;
     }
 
     // Render scrollbars

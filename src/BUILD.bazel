@@ -1,0 +1,25 @@
+load(
+    "//src:copts.bzl",
+    "GCC_FLAGS",
+)
+
+cc_library(
+    name = "chimera",
+    srcs = glob([
+        "*.cpp",
+        "dom/*.cpp",
+        "render/*.cpp",
+        "style/*.cpp",
+        "virtual/*.cpp"
+    ]),
+    hdrs = glob([
+        "*.h",
+        "**/*.h"
+    ]),
+    copts = GCC_FLAGS,
+    deps = [
+        "//vendor:freetype2",
+        "//vendor:glfw"
+    ],
+    visibility = ["//visibility:public"],
+)

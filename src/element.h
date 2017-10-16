@@ -48,6 +48,11 @@ class Element {
         CHIMERA_UNUSED(newValue);
     };
 
+    virtual void attachedCallback(Element* parent)
+    {
+        CHIMERA_UNUSED(parent);
+    }
+
     std::string toHTML();
 
     Element* getElementById(std::string query) {
@@ -86,6 +91,7 @@ class Element {
     std::string tagName;
     std::string className;
     std::string textContent;
+    int dirty{2};
 
     std::string id;
 

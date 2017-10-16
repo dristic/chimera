@@ -1,0 +1,9 @@
+cc_test(
+    name = "chimera-test",
+    srcs = ["layout.cpp"],
+    copts = ["-Iexternal/gtest/include"],
+    deps = [
+        "@gtest//:gtest",
+        "//src:chimera",
+    ],
+)

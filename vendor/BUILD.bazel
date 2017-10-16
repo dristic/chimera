@@ -1,0 +1,27 @@
+cc_library(
+    name = "freetype2",
+    srcs = ["freetype2/objs/.libs/libfreetype.a"],
+    hdrs = glob(["freetype2/include/**/*.h"]),
+    strip_include_prefix = "freetype2/include",
+    visibility = ["//visibility:public"],
+)
+
+cc_library(
+    name = "glfw",
+    srcs = ["glfw/src/libglfw3.a"],
+    hdrs = glob(["glfw/include/**/*.h"]),
+    strip_include_prefix = "glfw/include",
+    visibility = ["//visibility:public"],
+)
+
+cc_library(
+    name = "lodepng",
+    srcs = [
+        "lodepng/lodepng.cpp",
+        "lodepng/lodepng.h"
+    ],
+    hdrs = ["lodepng/lodepng.h"],
+    strip_include_prefix = "lodepng",
+    include_prefix = "lodepng",
+    visibility = ["//visibility:public"],
+)
