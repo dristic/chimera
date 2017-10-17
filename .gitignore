@@ -3,3 +3,9 @@ build
 */*.DS_Store
 TODO.md
 xcode
+bazel-bin
+bazel-chimera-bazel
+bazel-genfiles
+bazel-out
+bazel-testlogs
+
