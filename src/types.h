@@ -7,6 +7,8 @@
 
 namespace Chimera {
 
+class Element;
+
 struct Vec2 {
     float x, y;
     Vec2() { x = y = 0.0f; }
@@ -56,10 +58,12 @@ class Event {
  public:
     explicit Event(EventType type)
         : type{type}
+        , target{nullptr}
         { }
     virtual ~Event() { }
 
     EventType type;
+    Element* target;
 };
 
 class MouseScrollEvent: public Event {

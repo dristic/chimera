@@ -27,6 +27,12 @@ Element* VirtualElement::create(Document& document)
         element->id = id.asString();
     }
 
+    if (attributes.count("class") == 1)
+    {
+        auto className = attributes.at("class");
+        element->className = className.asString();
+    }
+
     if (attributes.count("src") == 1)
     {
         auto src = attributes.at("src");

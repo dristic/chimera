@@ -156,6 +156,19 @@ static inline Element* CreateTree(Document& document, VirtualElement element)
     return element.create(document);
 }
 
+template<class InputIt, class Func>
+std::vector<VirtualElement> VList(InputIt first, InputIt last, Func f)
+{
+    std::vector<VirtualElement> result{};
+
+    for (; first != last; ++first)
+    {
+        result.push_back(f(*first));
+    }
+
+    return result;
+}
+
 }  // namespace Virtual
     
 }  // namespace Chimera

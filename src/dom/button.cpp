@@ -29,6 +29,7 @@ bool Button::handleEvent(Event* event) {
     } else if (event->type == EventType::MouseDown) {
         MouseDownEvent* mouseDownEvent = dynamic_cast<MouseDownEvent*>(event);
         if (layout.rect.contains(float(mouseDownEvent->x), float(mouseDownEvent->y))) {
+            event->target = this;
             dispatch(event);
             return false;
         }
