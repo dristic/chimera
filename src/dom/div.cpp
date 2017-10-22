@@ -14,10 +14,6 @@ Div::Div(Document& document)
 Div::~Div() { }
 
 bool Div::handleEvent(Event* event) {
-    if (!Element::handleEvent(event)) {
-        return false;
-    }
-
     if (event->type == EventType::Scroll) {
         auto mouseScrollEvent = dynamic_cast<MouseScrollEvent*>(event);
 
@@ -42,6 +38,7 @@ void Div::render(DrawData* data) {
 
     float textWidth = data->measureText(textContent, style.fontFamily, style.fontSize);
 
+    // Layout
     layout.calculateDimensions(mChildren);
 
     if (textWidth > layout.intrinsicWidth)
@@ -54,15 +51,14 @@ void Div::render(DrawData* data) {
         layout.intrinsicHeight = style.fontSize + 10;
     }
 
-    // Layout
     layout.layout();
 
+    // Rendering
     scissor.x = layout.rect.x;
     scissor.y = layout.rect.y;
     scissor.width = layout.rect.width;
     scissor.height = layout.rect.height;
 
-    // Rendering
     if (dirty > 0)
     {
         if (style.backgroundImage != "") {
@@ -120,6 +116,7 @@ void Div::render(DrawData* data) {
     //     //data->addRectFilled(scrollbar, Color::fromRGBA(150, 150, 150, 0.7), scrollbar);
     // }
 
+    // Updating and propagation
     layout.updateChildren(mChildren);
 
     float previousAlpha = data->globalAlpha;

@@ -39,6 +39,7 @@ enum class EventType {
     Input,
     Change,
     MouseMove,
+    MouseOut,
     MouseDown,
     Click,
     DoubleClick,
@@ -76,6 +77,17 @@ class MouseScrollEvent: public Event {
         { }
 
     int direction, x, y;
+};
+
+class MouseEvent: public Event {
+ public:
+    explicit MouseEvent(int x, int y, EventType type)
+        : Event(type)
+        , x{x}
+        , y{y}
+        { }
+
+    int x, y;
 };
 
 class MouseDownEvent: public Event {

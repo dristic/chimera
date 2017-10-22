@@ -29,21 +29,42 @@ namespace Chimera {
 
     void Context::addInputCharacters(std::string characters) {
         TextInputEvent event{characters};
-        document.body->handleEvent(dynamic_cast<Event*>(&event));
+
+        if (document.focusManager.focusedElement)
+        {
+            document.focusManager.focusedElement->handleEvent(
+                static_cast<Event*>(&event));
+        }
     }
 
     void Context::setKeyPress(KeyType key) {
         KeyEvent event{key};
-        document.body->handleEvent(dynamic_cast<Event*>(&event));
+
+        if (document.focusManager.focusedElement)
+        {
+            document.focusManager.focusedElement->handleEvent(
+                static_cast<Event*>(&event));
+        }
     }
 
     void Context::setMousePosition(int x, int y) {
         document.setCursorType(CursorType::Arrow);
 
-        // if (x != mMouseX || y != mMouseY) {
-            MouseMoveEvent event{x, y};
-            document.body->handleEvent(dynamic_cast<Event*>(&event));
-        // }
+        MouseMoveEvent event{x, y};
+        event.target = document.elementFromPoint(x, y);
+
+        if (event.target)
+        {
+            if (mLastMouseOverTarget && mLastMouseOverTarget != event.target)
+            {
+                MouseEvent outEvent{x, y, EventType::MouseOut};
+                mLastMouseOverTarget->handleEvent(
+                    static_cast<Event*>(&outEvent));
+            }
+
+            mLastMouseOverTarget = event.target;
+            event.target->handleEvent(dynamic_cast<Event*>(&event));
+        }
 
         mMouseX = x;
         mMouseY = y;
@@ -53,7 +74,8 @@ namespace Chimera {
         mScrollDirection = direction;
 
         MouseScrollEvent event{direction, mMouseX, mMouseY};
-        document.body->handleEvent(dynamic_cast<Event*>(&event));
+        event.target = document.elementFromPoint(mMouseX, mMouseY);
+        event.target->handleEvent(static_cast<Event*>(&event));
     }
 
     Vec2 Context::getMousePosition() {
@@ -63,18 +85,19 @@ namespace Chimera {
 
     void Context::setMouseDown() {
         MouseDownEvent event{mMouseX, mMouseY};
-        bool bubbled = document.body->handleEvent(dynamic_cast<Event*>(&event));
+        event.target = document.elementFromPoint(mMouseX, mMouseY);
 
-        if (bubbled) {
-            document.focusManager.focusedElement = nullptr;
-        }
+        document.focusManager.focusedElement = event.target;
+
+        event.target->handleEvent(dynamic_cast<Event*>(&event));
     }
 
     void Context::setDoubleClick()
     {
         Event event{EventType::DoubleClick};
+        event.target = document.elementFromPoint(mMouseX, mMouseY);
 
-        document.body->handleEvent(&event);
+        event.target->handleEvent(&event);
     }
 
     void Context::useAdaptor(std::shared_ptr<Adaptor> adaptor) {

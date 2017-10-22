@@ -4,6 +4,7 @@
 
 #include <algorithm>
 #include <stack>
+#include <queue>
 #include <utility>
 
 #include "src/context.h"
@@ -62,6 +63,30 @@ int Document::getScreenWidth() {
 
 int Document::getScreenHeight() {
     return mScreenHeight;
+}
+
+Element* Document::elementFromPoint(int x, int y)
+{
+    Element* result{nullptr};
+
+    std::queue<Element*> queue;
+    queue.push(body);
+
+    while (!queue.empty()) {
+        Element* el = queue.front();
+        queue.pop();
+
+        if (el->layout.rect.contains(x, y))
+        {
+            result = el;
+
+            for(auto& child : el->getChildren()) {
+                queue.push(child);
+            }
+        }
+    }
+
+    return result;
 }
 
 std::unique_ptr<ImageRef> Document::loadImage(std::string src, int& width, int& height) {

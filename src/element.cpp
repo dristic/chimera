@@ -71,11 +71,7 @@ void Element::dispatch(Event* event) {
 }
 
 bool Element::handleEvent(Event* event) {
-    for (auto &element : mChildren) {
-        if (!element->handleEvent(event)) {
-            return false;
-        }
-    }
+    CHIMERA_UNUSED(event);
 
     return true;
 }

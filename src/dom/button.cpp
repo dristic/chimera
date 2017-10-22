@@ -15,18 +15,15 @@ Button::~Button() { }
 
 bool Button::handleEvent(Event* event) {
     if (event->type == EventType::MouseMove) {
-        MouseMoveEvent* mouseMoveEvent = dynamic_cast<MouseMoveEvent*>(event);
-        if (layout.rect.contains(float(mouseMoveEvent->x), float(mouseMoveEvent->y))) {
-            mPseudoClass = PseudoClass::Hover;
-            mDocument->setCursorType(CursorType::Hand);
-
-            mDocument->styleManager.applyRules(this);
-        } else {
-            mPseudoClass = PseudoClass::None;
-
-            mDocument->styleManager.applyRules(this);
-        }
-    } else if (event->type == EventType::MouseDown) {
+        mPseudoClass = PseudoClass::Hover;
+        mDocument->setCursorType(CursorType::Hand);
+        mDocument->styleManager.applyRules(this);
+    }
+    else if (event->type == EventType::MouseOut) {
+        mPseudoClass = PseudoClass::None;
+        mDocument->styleManager.applyRules(this);
+    }
+    else if (event->type == EventType::MouseDown) {
         MouseDownEvent* mouseDownEvent = dynamic_cast<MouseDownEvent*>(event);
         if (layout.rect.contains(float(mouseDownEvent->x), float(mouseDownEvent->y))) {
             event->target = this;

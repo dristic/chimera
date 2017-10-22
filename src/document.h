@@ -67,6 +67,10 @@ class Document {
     void setScreenDimensions(int width, int height);
     int getScreenWidth();
     int getScreenHeight();
+
+    // https://developer.mozilla.org/en-US/docs/Web/API/Document/elementFromPoint
+    Element* elementFromPoint(int x, int y);
+
     std::unique_ptr<ImageRef> loadImage(std::string src, int& width, int& height);
     void notifyRemoval(Element* element);
     void setCursorType(CursorType type);

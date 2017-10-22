@@ -40,6 +40,7 @@ class Context {
     int mMouseX, mMouseY, mScrollDirection;
     std::shared_ptr<Adaptor> mAdaptor;
     std::unique_ptr<Renderer> mRenderer;
+    Element* mLastMouseOverTarget{nullptr};
 };
 
 }  // namespace Chimera
