@@ -11,8 +11,8 @@ namespace ChimeraTest {
 class LayoutTest : public ::testing::Test {
  protected:
     LayoutTest()
-        : style{}
-        , layout{&style}
+        : layout{&style}
+        , style{}
         { }
 
     virtual ~LayoutTest() { }

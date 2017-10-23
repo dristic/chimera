@@ -1,6 +1,6 @@
 load(
     "//src:copts.bzl",
-    "GCC_FLAGS",
+    "CHIMERA_DEFAULT_COPTS",
 )
 
 cc_library(
@@ -16,10 +16,9 @@ cc_library(
         "*.h",
         "**/*.h"
     ]),
-    copts = GCC_FLAGS,
+    copts = CHIMERA_DEFAULT_COPTS,
     deps = [
-        "//vendor:freetype2",
-        "//vendor:glfw"
+        "//vendor:freetype2"
     ],
     visibility = ["//visibility:public"],
 )

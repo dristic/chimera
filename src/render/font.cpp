@@ -86,7 +86,7 @@ void FontManager::loadGlyph(std::string name, unsigned long glyph)
     auto buffer = static_cast<unsigned char*>(malloc(size * 4));
 
     for (size_t i = 0; i < size; i++) {
-        int p = i * 4;
+        int p = int(i) * 4;
         buffer[p] = 255;
         buffer[p+1] = 255;
         buffer[p+2] = 255;

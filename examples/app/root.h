@@ -10,9 +10,6 @@
 #include <string>
 #include <algorithm>
 
-#include "absl/strings/substitute.h"
-#include "gumbo.h"
-
 std::string trim(const std::string& str)
 {
     std::size_t first = str.find_first_not_of(' ');
@@ -105,96 +102,96 @@ public:
         return [](Chimera::Event*) {};
     }
 
-    Chimera::Virtual::VirtualElement createNodes(GumboNode* node) {
-        using namespace Chimera::Virtual;
+    // Chimera::Virtual::VirtualElement createNodes(GumboNode* node) {
+    //     using namespace Chimera::Virtual;
 
-        VirtualElement element = V("div", {});
+    //     VirtualElement element = V("div", {});
 
-        if (node->v.element.original_tag.data)
-        {
-            std::string elementText{node->v.element.original_tag.data};
-            std::size_t spaceIndex = elementText.find_first_of(" ");
-            std::size_t caretIndex = elementText.find_first_of(">");
-            std::string tagName = elementText.substr(
-                1, std::min(spaceIndex, caretIndex) - 1);
-            std::cout << tagName << std::endl;
-        }
+    //     if (node->v.element.original_tag.data)
+    //     {
+    //         std::string elementText{node->v.element.original_tag.data};
+    //         std::size_t spaceIndex = elementText.find_first_of(" ");
+    //         std::size_t caretIndex = elementText.find_first_of(">");
+    //         std::string tagName = elementText.substr(
+    //             1, std::min(spaceIndex, caretIndex) - 1);
+    //         std::cout << tagName << std::endl;
+    //     }
 
-        GumboAttribute* id{nullptr};
-        GumboAttribute* src{nullptr};
-        if (node->v.element.tag == GUMBO_TAG_DIV) {
-            id = gumbo_get_attribute(&node->v.element.attributes, "id");
+    //     GumboAttribute* id{nullptr};
+    //     GumboAttribute* src{nullptr};
+    //     if (node->v.element.tag == GUMBO_TAG_DIV) {
+    //         id = gumbo_get_attribute(&node->v.element.attributes, "id");
 
-            element.attributes["id"] = {"id", id->value};
-        }
+    //         element.attributes["id"] = {"id", id->value};
+    //     }
 
-        if (node->v.element.tag == GUMBO_TAG_IMG) {
-            id = gumbo_get_attribute(&node->v.element.attributes, "id");
-            src = gumbo_get_attribute(&node->v.element.attributes, "src");
+    //     if (node->v.element.tag == GUMBO_TAG_IMG) {
+    //         id = gumbo_get_attribute(&node->v.element.attributes, "id");
+    //         src = gumbo_get_attribute(&node->v.element.attributes, "src");
 
-            element = V("img", {
-                {"id", id->value},
-                {"src", src->value}
-            });
-        }
+    //         element = V("img", {
+    //             {"id", id->value},
+    //             {"src", src->value}
+    //         });
+    //     }
 
-        GumboVector* children = &node->v.element.children;
-        for (unsigned int i = 0; i < children->length; ++i) {
-            GumboNode* childNode = static_cast<GumboNode*>(children->data[i]);
-            if (childNode->type == GUMBO_NODE_TEXT)
-            {
-                std::string str{childNode->v.text.text};
-                str.erase(std::remove(str.begin(), str.end(), '\n'), str.end());
-                element.textContent = trim(str);
-            }
-            else if (childNode->type == GUMBO_NODE_ELEMENT)
-            {
-                if (childNode->v.element.tag != GUMBO_TAG_STYLE)
-                {
-                    element.children.push_back(createNodes(childNode));
-                }
-            }
-        }
+    //     GumboVector* children = &node->v.element.children;
+    //     for (unsigned int i = 0; i < children->length; ++i) {
+    //         GumboNode* childNode = static_cast<GumboNode*>(children->data[i]);
+    //         if (childNode->type == GUMBO_NODE_TEXT)
+    //         {
+    //             std::string str{childNode->v.text.text};
+    //             str.erase(std::remove(str.begin(), str.end(), '\n'), str.end());
+    //             element.textContent = trim(str);
+    //         }
+    //         else if (childNode->type == GUMBO_NODE_ELEMENT)
+    //         {
+    //             if (childNode->v.element.tag != GUMBO_TAG_STYLE)
+    //             {
+    //                 element.children.push_back(createNodes(childNode));
+    //             }
+    //         }
+    //     }
 
-        return element;
-    }
+    //     return element;
+    // }
 
     void createTree(Chimera::Document& document)
     {
         using namespace Chimera::Virtual;
 
-        std::string title = "Hello world!";
+        // std::string title = "Hello world!";
 
-        auto source = absl::Substitute(R"html(
-            <div id="background">
-                <style>
-                    body {
-                        color: rgba(255, 255, 255, 1);
-                        font-family: "LucidaGrande";
-                    }
+        // auto source = absl::Substitute(R"html(
+        //     <div id="background">
+        //         <style>
+        //             body {
+        //                 color: rgba(255, 255, 255, 1);
+        //                 font-family: "LucidaGrande";
+        //             }
 
-                    #background {
-                        width: 1280;
-                        height: 720;
-                    }
-                </style>
+        //             #background {
+        //                 width: 1280;
+        //                 height: 720;
+        //             }
+        //         </style>
 
-                <div id="title">$0</div>
+        //         <div id="title">$0</div>
 
-                <my-custom-element>
-                    Hello
-                </my-custom-element>
+        //         <my-custom-element>
+        //             Hello
+        //         </my-custom-element>
 
-                <img src="assets/logo.png" id="image" />
-                <input id="input-box" type="password" />
-                <input id="input-checkbox" type="checkbox" />
-                <button id="button" onMouseDown="onClick">
-                    Accept
-                </button>
-            </div>
-        )html", title);
+        //         <img src="assets/logo.png" id="image" />
+        //         <input id="input-box" type="password" />
+        //         <input id="input-checkbox" type="checkbox" />
+        //         <button id="button" onMouseDown="onClick">
+        //             Accept
+        //         </button>
+        //     </div>
+        // )html", title);
 
-        CHIMERA_UNUSED(source);
+        // CHIMERA_UNUSED(source);
 
         // GumboOutput* output = gumbo_parse(source.c_str());
 

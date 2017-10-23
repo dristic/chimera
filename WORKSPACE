@@ -1,14 +1,3 @@
-local_repository(
-  name = "com_google_absl",
-  path = "/Users/dan/workspace/abseil-cpp",
-)
-
-new_local_repository(
-    name = "gumbo",
-    path = "/Users/dan/workspace/gumbo-parser",
-    build_file = "gumbo.BUILD",
-)
-
 new_http_archive(
     name = "gtest",
     url = "https://github.com/google/googletest/archive/release-1.8.0.zip",
@@ -17,8 +6,8 @@ new_http_archive(
     strip_prefix = "googletest-release-1.8.0",
 )
 
-git_repository(
-    name = "build_bazel_rules_apple",
-    remote = "https://github.com/bazelbuild/rules_apple.git",
-    tag = "0.1.0",
-)
+# git_repository(
+#     name = "build_bazel_rules_apple",
+#     remote = "https://github.com/bazelbuild/rules_apple.git",
+#     tag = "0.1.0",
+# )
