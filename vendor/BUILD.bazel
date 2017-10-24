@@ -1,12 +1,4 @@
 cc_library(
-    name = "freetype2",
-    srcs = ["freetype2/objs/.libs/libfreetype.a"],
-    hdrs = glob(["freetype2/include/**/*.h"]),
-    strip_include_prefix = "freetype2/include",
-    visibility = ["//visibility:public"],
-)
-
-cc_library(
     name = "glfw",
     srcs = ["glfw/src/libglfw3.a"],
     hdrs = glob(["glfw/include/**/*.h"]),
