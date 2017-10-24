@@ -18,7 +18,7 @@ cc_library(
     ]),
     copts = CHIMERA_DEFAULT_COPTS,
     deps = [
-        "@freetype2//:freetype2"
+        "//vendor:freetype2"
     ],
     visibility = ["//visibility:public"],
 )

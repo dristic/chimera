@@ -1,0 +1,9 @@
+cc_library(
+    name = "config",
+    hdrs = glob([
+        "config/*.h",
+    ]),
+    include_prefix = "freetype",
+    licenses = ["permissive"],
+    visibility = ["//visibility:public"],
+)
