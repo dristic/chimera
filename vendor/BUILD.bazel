@@ -1,6 +1,7 @@
 cc_library(
     name = "glfw",
-    srcs = ["glfw/src/libglfw3.a"],
+    # srcs = ["glfw/src/libglfw3.a"],
+    srcs = ["glfw/src/Debug/glfw3.lib"],
     hdrs = glob(["glfw/include/**/*.h"]),
     strip_include_prefix = "glfw/include",
     visibility = ["//visibility:public"],
@@ -47,7 +48,7 @@ cc_library(
         "freetype2/src/base/fttype1.c",
         "freetype2/src/base/ftwinfnt.c",
 
-        "freetype2/src/base/ftmac.c",
+        #"freetype2/src/base/ftmac.c",
 
         # Driver
         "freetype2/src/bdf/bdf.c",
@@ -77,7 +78,7 @@ cc_library(
     ],
     hdrs = glob([
         "freetype2/include/*.h",
-        "freetype2/include/freetype/*.h",
+        "freetype2/include/**/*.h",
         "freetype2/include/freetype/internal/**/*.h",
     ]),
     defines = [

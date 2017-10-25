@@ -6,8 +6,8 @@ GCC_FLAGS = [
 
 
 MSVC_FLAGS = [
-    "/W3",
-    "/WX"
+    #"/W3",
+    #"/WX"
 ]
 
 CHIMERA_DEFAULT_COPTS = select({

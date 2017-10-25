@@ -30,6 +30,22 @@ cc_binary(
     ]
 )
 
+cc_binary(
+    name = "dx9",
+    srcs = [
+        "dx9/dx9.cpp",
+        "dx9/dx9_adaptor.h",
+        "dx9/dx9_adaptor.cpp",
+        "app/root.h",
+    ],
+    data = ["//examples:assets"],
+    deps = [
+        "//include:chimera-include",
+        "//src:chimera",
+        "//vendor:lodepng"
+    ]
+)
+
 # objc_library(
 #     name = "chimera-cocoa-lib",
 #     srcs = [

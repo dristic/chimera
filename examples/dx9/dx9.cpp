@@ -2,8 +2,8 @@
 
 #include "Chimera/Chimera.h"
 
-#include "src/adaptor/dx9.h"
-#include "app/root.h"
+#include "examples/dx9/dx9_adaptor.h"
+#include "examples/app/root.h"
 
 #include <Windows.h>
 #include <windowsx.h>
