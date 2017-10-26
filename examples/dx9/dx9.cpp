@@ -12,6 +12,8 @@
 // include the Direct3D Library file
 #pragma comment (lib, "d3d9.lib")
 
+#pragma comment (lib,"user32.lib")
+
 // define the screen resolution
 #define SCREEN_WIDTH 1280
 #define SCREEN_HEIGHT 720

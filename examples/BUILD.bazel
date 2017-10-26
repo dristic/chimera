@@ -38,6 +38,7 @@ cc_binary(
         "dx9/dx9_adaptor.cpp",
         "app/root.h",
     ],
+    linkopts = ["-subsystem:windows"],
     data = ["//examples:assets"],
     deps = [
         "//include:chimera-include",

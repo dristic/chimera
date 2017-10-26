@@ -17,6 +17,7 @@ cc_library(
         "**/*.h"
     ]),
     copts = CHIMERA_DEFAULT_COPTS,
+    defines = ['WIN32'],
     deps = [
         "//vendor:freetype2"
     ],
