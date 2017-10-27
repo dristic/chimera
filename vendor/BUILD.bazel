@@ -1,10 +1,9 @@
 cc_library(
     name = "glfw",
-    # srcs = ["glfw/src/libglfw3.a"],
-    srcs = ["glfw/src/Debug/glfw3.lib"],
+    srcs = ["glfw/src/libglfw3.a"],
     hdrs = glob(["glfw/include/**/*.h"]),
     strip_include_prefix = "glfw/include",
-    visibility = ["//visibility:public"],
+    visibility = ["//examples:__subpackages__"],
 )
 
 cc_library(
@@ -16,7 +15,7 @@ cc_library(
     hdrs = ["lodepng/lodepng.h"],
     strip_include_prefix = "lodepng",
     include_prefix = "lodepng",
-    visibility = ["//visibility:public"],
+    visibility = ["//examples:__subpackages__"],
 )
 
 cc_library(
@@ -92,5 +91,5 @@ cc_library(
         "//third_party/freetype:config"
     ],
     strip_include_prefix = "freetype2/include",
-    visibility = ["//visibility:public"],
+    visibility = ["//src:__subpackages__"],
 )

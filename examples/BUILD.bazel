@@ -9,7 +9,7 @@ filegroup(
 )
 
 cc_binary(
-    name = "chimera-example",
+    name = "opengl3",
     srcs = [
         "opengl3/opengl3.cpp",
         "opengl3/opengl3_adaptor.cpp",
