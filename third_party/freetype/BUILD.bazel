@@ -5,5 +5,5 @@ cc_library(
     ]),
     include_prefix = "freetype",
     licenses = ["permissive"],
-    visibility = ["//visibility:public"],
+    visibility = ["//third_party:__subpackages__"],
 )

@@ -3,7 +3,7 @@
 filegroup(
     name = "assets",
     srcs = glob([
-        "assets/bg.png",
+        "assets/*.png",
         "assets/*.ttf"
     ]),
 )
@@ -16,17 +16,24 @@ cc_binary(
         "opengl3/opengl3_adaptor.h",
         "app/root.h"
     ],
-    copts = ["-std=c++14"],
+    copts = select({
+        "//chimera:windows": [],
+        "//conditions:default": ["-std=c++14"],
+    }),
     linkopts = select({
         "//chimera:windows": [],
-        "//conditions:default": ["-framework Cocoa"],
+        "//conditions:default": [
+            "-framework Cocoa",     # glfw
+            "-framework IOKit",     # glfw
+            "-framework CoreVideo", # glfw
+            "-framework OpenGL"     # glfw, chimera
+        ],
     }),
     data = ["//examples:assets"],
     deps = [
-        "//include:chimera-include",
-        "//src:chimera",
-        "//vendor:lodepng",
-        "//vendor:glfw"
+        "//chimera:lib",
+        "//third_party:lodepng",
+        "//third_party:glfw"
     ]
 )
 
@@ -41,8 +48,7 @@ cc_binary(
     linkopts = ["-subsystem:windows"],
     data = ["//examples:assets"],
     deps = [
-        "//include:chimera-include",
-        "//src:chimera",
+        "//chimera:lib",
         "//vendor:lodepng"
     ]
 )

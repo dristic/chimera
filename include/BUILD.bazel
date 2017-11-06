@@ -1,7 +1,0 @@
-cc_library(
-    name = "chimera-include",
-    hdrs = ["Chimera/Chimera.h"],
-    strip_include_prefix = "Chimera",
-    include_prefix = "Chimera",
-    visibility = ["//visibility:public"],
-)

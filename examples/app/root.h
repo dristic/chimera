@@ -3,9 +3,9 @@
 #ifndef EXAMPLES_APP_ROOT_H_
 #define EXAMPLES_APP_ROOT_H_
 
-#include <Chimera/Chimera.h>
+#include "chimera/chimera.h"
 
-#include "src/dom/div.h"
+#include "chimera/dom/div.h"
 
 #include <string>
 #include <algorithm>
@@ -45,7 +45,7 @@ public:
         document.styleManager.addRule("#background", {
             {StyleProp::Width, width},
             {StyleProp::Height, height},
-            {StyleProp::BackgroundImage, "assets/bg.png"},
+            {StyleProp::BackgroundImage, "examples/assets/bg.png"},
             {StyleProp::FlexDirection, Direction::Column}
         });
 
@@ -206,7 +206,7 @@ public:
                 std::vector<VirtualElement>({
                     V("div", {{"id", "title"}}, "Hello World"),
                     V("img", {
-                        {"src", "assets/logo.png"},
+                        {"src", "examples/assets/logo.png"},
                         {"id", "image"}
                     }),
                     V("input", {{"id", "input-box"}}),

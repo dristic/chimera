@@ -8,9 +8,9 @@
 #define GLFW_INCLUDE_GLCOREARB
 #include <GLFW/glfw3.h>
 
-#include "Chimera/Chimera.h"
+#include "chimera/chimera.h"
 
-#include "src/adaptor/opengl3.h"
+#include "examples/opengl3/opengl3_adaptor.h"
 #include "examples/app/root.h"
 
 #ifdef _WIN32
@@ -193,9 +193,9 @@ int main() {
     auto adaptor = std::make_shared<Chimera::OpenGL3Bridge>();
     context.useAdaptor(adaptor);
 
-    context.loadFont("Noto", "assets/NotoEmoji-Regular.ttf");
-    context.loadFont("Roboto", "assets/Roboto-Regular.ttf");
-    context.loadFont("Roboto Thin", "assets/Roboto-Thin.ttf");
+    context.loadFont("Noto", "examples/assets/NotoEmoji-Regular.ttf");
+    context.loadFont("Roboto", "examples/assets/Roboto-Regular.ttf");
+    context.loadFont("Roboto Thin", "examples/assets/Roboto-Thin.ttf");
 
     // Load the system default font
     context.loadFont("system", "/System/Library/Fonts/LucidaGrande.ttc");

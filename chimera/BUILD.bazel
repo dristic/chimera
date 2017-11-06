@@ -1,8 +1,35 @@
 package(default_visibility = ["//visibility:public"])
 
+load(
+    "//chimera:copts.bzl",
+    "CHIMERA_DEFAULT_COPTS",
+    "CHIMERA_DEFAULT_DEFINES"
+)
+
 config_setting(
     name = "windows",
     values = {
         "cpu": "x64_windows",
     }
+)
+
+cc_library(
+    name = "lib",
+    srcs = glob([
+        "*.cpp",
+        "dom/*.cpp",
+        "render/*.cpp",
+        "style/*.cpp",
+        "virtual/*.cpp"
+    ]),
+    hdrs = glob([
+        "*.h",
+        "**/*.h"
+    ]),
+    copts = CHIMERA_DEFAULT_COPTS,
+    defines = CHIMERA_DEFAULT_DEFINES,
+    deps = [
+        "//third_party:freetype2"
+    ],
+    visibility = ["//visibility:public"],
 )

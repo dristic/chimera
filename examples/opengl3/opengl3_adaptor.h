@@ -15,10 +15,10 @@
 #include <atomic>
 #include <thread>
 
-#include "src/context.h"
-#include "src/rendering.h"
-#include "src/types.h"
-#include "src/adaptor/adaptor.h"
+#include "chimera/context.h"
+#include "chimera/rendering.h"
+#include "chimera/types.h"
+#include "chimera/adaptor/adaptor.h"
 
 namespace Chimera {
 
