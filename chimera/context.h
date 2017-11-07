@@ -33,6 +33,7 @@ class Context {
     std::unique_ptr<ImageRef> loadImage(std::string name, int& width, int& height);
     unsigned int loadTexture(unsigned int width, unsigned int height, unsigned char* buffer);
     void loadFont(std::string name, std::string location);
+    void notifyRemoval(Element* element);
 
     Document document;
 

@@ -112,6 +112,8 @@ void Document::notifyRemoval(Element* element) {
                     return other.get() == el;
                 }),
             mElements.end());
+
+        mContext->notifyRemoval(el);
     }
 }
 

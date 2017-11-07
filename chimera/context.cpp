@@ -122,6 +122,14 @@ namespace Chimera {
         mRenderer->getFontManager()->loadFont(name, location);
     }
 
+    void Context::notifyRemoval(Element* element)
+    {
+        if (mLastMouseOverTarget == element)
+        {
+            mLastMouseOverTarget = nullptr;
+        }
+    }
+
     void Context::render(float dt) {
         CHIMERA_UNUSED(dt);
 
