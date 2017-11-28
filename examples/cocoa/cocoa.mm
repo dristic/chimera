@@ -7,12 +7,9 @@
 #include <thread>
 #include <chrono>
 
-#define GLFW_INCLUDE_GLCOREARB
-#include <GLFW/glfw3.h>
-
 #include "Chimera/Chimera.h"
 
-#include "src/adaptor/opengl3.h"
+#include "examples/cocoa/cocoa_adaptor.h"
 #include "examples/app/root.h"
 
 using namespace std::placeholders;

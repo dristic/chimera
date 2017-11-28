@@ -1,5 +1,5 @@
 
-#include "examples/opengl3/opengl3_adaptor.h"
+#include "examples/cocoa/cocoa_adaptor.h"
 
 #include <stddef.h>
 #include <cstdlib>

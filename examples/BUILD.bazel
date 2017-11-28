@@ -1,4 +1,4 @@
-# load("@build_bazel_rules_apple//apple:macos.bzl", "macos_command_line_application")
+load("@build_bazel_rules_apple//apple:macos.bzl", "macos_command_line_application")
 
 filegroup(
     name = "assets",
@@ -53,27 +53,24 @@ cc_binary(
     ]
 )
 
-# objc_library(
-#     name = "chimera-cocoa-lib",
-#     srcs = [
-#         "cocoa/cocoa.mm",
-#         "opengl3/opengl3_adaptor.cpp",
-#         "opengl3/opengl3_adaptor.h",
-#         "app/root.h"
-#     ],
-#     copts = ["-std=c++14"],
-#     sdk_frameworks = ["OpenGL"],
-#     deps = [
-#         "//include:chimera-include",
-#         "//src:chimera",
-#         "//vendor:lodepng",
-#         "@com_google_absl//absl/strings",
-#         "@gumbo//:gumbo",
-#     ]
-# )
+objc_library(
+    name = "chimera-cocoa-lib",
+    srcs = [
+        "cocoa/cocoa.mm",
+        "cocoa/cocoa_adaptor.cpp",
+        "cocoa/cocoa_adaptor.h",
+        "app/root.h"
+    ],
+    copts = ["-std=c++14"],
+    sdk_frameworks = ["OpenGL"],
+    deps = [
+        "//chimera:lib",
+        "//third_party:lodepng"
+    ]
+)
 
-# macos_command_line_application(
-#     name = "chimera-cocoa",
-#     linkopts = ["-framework Cocoa"],
-#     deps = [":chimera-cocoa-lib"]
-# )
+macos_command_line_application(
+    name = "cocoa",
+    linkopts = ["-framework Cocoa"],
+    deps = [":chimera-cocoa-lib"]
+)

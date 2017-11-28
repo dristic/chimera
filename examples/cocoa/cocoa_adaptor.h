@@ -3,13 +3,6 @@
 #ifndef EXAMPLES_OPENGL3BRIDGE_H_
 #define EXAMPLES_OPENGL3BRIDGE_H_
 
-#ifdef _WIN32
-    #include <GL\glew.h>
-#endif
-
-#define GLFW_INCLUDE_GLCOREARB
-#include <GLFW/glfw3.h>
-
 #include <vector>
 #include <unordered_map>
 #include <atomic>
